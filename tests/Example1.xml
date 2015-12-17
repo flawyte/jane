@@ -1,10 +1,9 @@
-<entity name="Task" plural="">
+<entity name="Task" plural="Tasks">
   <attributes>
     <attribute name="id" type="Integer" required="true" primary-key="true" /> <!-- required (explicit) -->
-    <attribute name="number" type="Integer" default="800" /> <!-- required (explicit) -->
+    <attribute name="number" type="Integer" default="800" /> <!-- required (implicit) -->
     <attribute name="label" type="String" length="255" /> <!-- required by default (implicit) -->
     <attribute name="description" type="String" default='' /> <!-- required by default (implicit) -->
     <attribute name="completed" type="Boolean" optional="true" default="false" /> <!-- optional (explicit) -->
-    <attribute name="comments" type="String[]" default="[]" /> <!-- optional array (implicit) -->
   </attributes>
 </entity>

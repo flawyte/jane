@@ -49,6 +49,18 @@ else {
   });
 }
 
+function help() {
+  console.log('Jane version 0.0.0');
+  console.log('Usage: nodejs index.js SOURCE DESTINATION TYPE');
+  console.log('');
+  console.log('Parameters');
+  console.log('==========');
+  console.log('');
+  console.log('* source       : Path to the XML source file (should be Jane compliant');
+  console.log('* destination  : Path to the file to write the output in');
+  console.log('* type         : Output type (e.g. js, sql)');
+}
+
 function js(xml) {
   var ent = xml.entity;
   var str = '';
@@ -72,18 +84,6 @@ function sql(xml) {
   str += '\n';
 
   return str;
-}
-
-function help() {
-  console.log('Jane version 0.0.0');
-  console.log('Usage: nodejs index.js SOURCE DESTINATION TYPE');
-  console.log('');
-  console.log('Parameters');
-  console.log('==========');
-  console.log('');
-  console.log('* source       : Path to the XML source file (should be Jane compliant');
-  console.log('* destination  : Path to the file to write the output in');
-  console.log('* type         : Output type (e.g. js, sql)');
 }
 
 function printConstructor(ent) {
@@ -129,7 +129,7 @@ function printConstructorParameter(attr) {
   if (attr.optional === 'true' || attr.default !== undefined) {
     if (attr.default === undefined)
       throw new Error("[jane] printConstructorParameter(): attribute '" + attr.name + "' is optional but no default value given");
-    
+
     if (attr.type === 'String')
       str += ' = \'' + attr.default + '\'';
     else
