@@ -53,7 +53,7 @@ export default class Attribute {
     this.name = name;
     this.optional = primaryKey ? false : ((defaultValue !== undefined) || optional);
     this.primaryKey = primaryKey;
-    this.required = !optional;
+    this.required = !this.optional;
     this.type = type;
 
     if (this.optional && this.defaultValue === undefined)
