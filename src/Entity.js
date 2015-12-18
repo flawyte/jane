@@ -29,8 +29,6 @@ export default class Entity {
   }
 
   addAttribute(attr) {
-    console.log('addAttribute()');
-    console.log(attr);
     this.attributes.push(attr);
   }
 }
