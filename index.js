@@ -9,8 +9,8 @@ require('traceur').require.makeDefault(function(filename) {
 
 var Entity = require('./src/Entity').default;
 var fs = require('fs');
-var JSGenerator = require('./src/generators/JS').default;
-var SQLiteGenerator = require('./src/generators/SQLite').default;
+var JSGenerator = require('./src/generators/js').default;
+var SQLiteGenerator = require('./src/generators/sqlite').default;
 var xml2js = require('xml2js');
 var yargs = require('yargs').argv;
 
@@ -48,30 +48,15 @@ if (!yargs.src || !yargs.gen)
 else {
   fs.readFile(dir + yargs.src, function(err, buffer) {
     parser.parseString(buffer, function (err, obj) {
-      var ent = Entity.fromXMLObject(obj.entity);
-      var out = null;
-      var res = null;
+      try {
+        var ent = Entity.fromXMLObject(obj.entity);
+        var Gen = require('./src/generators/' + yargs.gen.toLowerCase()).default; // e.g. js, sqlite
+        var out = new Gen(ent);
 
-      switch (yargs.gen) {
-        case 'js': {
-          out = new JSGenerator(ent);
-        }
-        break;
-        case 'sqlite': {
-          out = new SQLiteGenerator(ent);
-        }
-        break;
-        default:
-          console.log('Error. Unknown generator "' + yargs.gen + '"\n');
-          help();
-        break;
+        console.log(out.generate());
+      } catch(e) {
+        throw e;
       }
-
-      if (out !== null)
-        res = out.generate();
-
-      if (res !== null)
-        console.log(res);
     });
   });
 }

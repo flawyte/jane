@@ -3,7 +3,7 @@
     <attribute name="id" type="Integer" primary-key="true" /> <!-- required (implicit) because is primary-key -->
     <attribute name="number" type="Integer" default="800" optional="true" /> <!-- optional (explicit) -->
     <attribute name="label" type="String" length="255" /> <!-- required (explicit) -->
-    <attribute name="description" type="String" default="" /> <!-- optional (implicit) -->
-    <attribute name="completed" type="Boolean" default="false" /> <!-- optional (explicit) -->
+    <attribute name="description" type="String" default="" /> <!-- optional (implicit) because default value -->
+    <attribute name="completed" type="Boolean" default="false" /> <!-- optional (implicit) because default value -->
   </attributes>
 </entity>
