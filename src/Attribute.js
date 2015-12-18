@@ -9,6 +9,16 @@
  */
 export default class Attribute {
 
+  static fromXMLObject(obj) {
+    var attr = new Attribute(obj.$.name,
+      obj.$.type,
+      JSON.parse(obj.$['primary-key'] || 'false'),
+      JSON.parse(obj.$.optional || !obj.$.required || 'true')
+    );
+
+    return attr;
+  }
+
   constructor(name, type, primaryKey = false, optional = true) {
     this.name = name;
     this.optional = optional;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/nodeunit/bin/nodeunit tests/units/"
   },
   "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "license": "MIT",
