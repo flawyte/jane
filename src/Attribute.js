@@ -1,3 +1,5 @@
+import Toolkit from './Toolkit';
+
 /*
  * Attributes ✓✗
  * ==========
@@ -10,29 +12,22 @@
  */
 export default class Attribute {
 
-  static cast(val) {
-    if (Attribute.type(val) === 'String')
-      return JSON.parse(val);
-    else
-      return val;
-  }
-
   static fromXMLObject(obj) {
     var defaultValue;
     if (obj.$['default'] !== undefined) {
       if (obj.$['default'].length > 0)
-        defaultValue = Attribute.cast(obj.$['default']);
+        defaultValue = Toolkit.cast(obj.$['default']);
       else
         defaultValue = '';
     }
     var optional;
     if (obj.$.optional !== undefined) {
-      optional = Attribute.cast(obj.$.optional);
+      optional = Toolkit.cast(obj.$.optional);
     }
     else if (obj.$.required !== undefined) {
-      optional = !Attribute.cast(obj.$.required);
+      optional = !Toolkit.cast(obj.$.required);
     }
-    var primaryKey = Attribute.cast(obj.$['primary-key']) || false;
+    var primaryKey = Toolkit.cast(obj.$['primary-key']) || false;
 
     var attr = new Attribute(obj.$.name,
       obj.$.type,
@@ -42,10 +37,6 @@ export default class Attribute {
     );
 
     return attr;
-  }
-
-  static type(val) {
-    return Object.prototype.toString.call(val).match(/\[object (.*)\]/)[1];
   }
 
   constructor(name, type, primaryKey = false, optional = false, defaultValue = undefined) {
