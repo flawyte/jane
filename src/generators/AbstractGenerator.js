@@ -8,6 +8,7 @@ export default class AbstractGenerator {
       throw '[panda] "entity" should be an instance of the Entity class'
 
     this.entity = entity;
+    this.indentation = 0;
   }
 
   /*
@@ -16,5 +17,17 @@ export default class AbstractGenerator {
    */
   generate() {
     return null;
+  }
+
+  /*
+   * Returns `this.indentation * 2` whitespaces (e.g. 2, 4...).
+   */
+  indent() {
+    var str = '';
+
+    for (var i = 0; i < this.indentation * 2; i++)
+      str += ' ';
+
+    return str;
   }
 }

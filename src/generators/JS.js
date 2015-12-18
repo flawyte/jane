@@ -2,20 +2,6 @@ import AbstractGenerator from './AbstractGenerator';
 
 export default class JSGenerator extends AbstractGenerator {
 
-  constructor(entity) {
-    super(entity);
-    this.indentation = 0;
-  }
-
-  indent() {
-    var str = '';
-
-    for (var i = 0; i < this.indentation * 2; i++)
-      str += ' ';
-
-    return str;
-  }
-
   generate() {
     var e = this.entity;
     var str = '';
