@@ -5,6 +5,7 @@
  * ✓ name         : Attribute's name (e.g. Game Object, Home Screen)
  * ✗ [optional]   :
  * ✗ [primaryKey] :
+ * ✗ [required]   :
  * ✓ type         : Attribute's type (one of Boolean, Date, Double, Integer, String)
  */
 export default class Attribute {
@@ -13,7 +14,10 @@ export default class Attribute {
     var attr = new Attribute(obj.$.name,
       obj.$.type,
       JSON.parse(obj.$['primary-key'] || 'false'),
-      JSON.parse(obj.$.optional || !obj.$.required || 'true')
+      JSON.parse(obj.$.optional
+        || (obj.$.required === 'false' ? 'true' : 'false') // <== !required
+        || 'true'
+        )
     );
 
     return attr;
@@ -23,6 +27,7 @@ export default class Attribute {
     this.name = name;
     this.optional = optional;
     this.primaryKey = primaryKey;
+    this.required = !optional;
     this.type = type;
   }
 }
