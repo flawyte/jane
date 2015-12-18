@@ -14,33 +14,38 @@ export default class Attribute {
 
   static fromXMLObject(obj) {
     var defaultValue;
+    var optional;
+    var primaryKey = Toolkit.cast(obj.$['primary-key']) || false;
+
     if (obj.$['default'] !== undefined) {
       if (obj.$['default'].length > 0)
         defaultValue = Toolkit.cast(obj.$['default']);
       else
         defaultValue = '';
     }
-    var optional;
+
     if (obj.$.optional !== undefined) {
       optional = Toolkit.cast(obj.$.optional);
     }
     else if (obj.$.required !== undefined) {
       optional = !Toolkit.cast(obj.$.required);
     }
-    var primaryKey = Toolkit.cast(obj.$['primary-key']) || false;
 
     var attr = new Attribute(obj.$.name,
       obj.$.type,
       primaryKey,
       optional,
-      defaultValue
+      defaultValue,
+      Toolkit.cast(obj.$.maxLength)
     );
 
     return attr;
   }
 
-  constructor(name, type, primaryKey = false, optional = false, defaultValue = undefined) {
+  constructor(name, type, primaryKey = false, optional = false, defaultValue = undefined,
+              maxLength = Number.POSITIVE_INFINITY) {
     this.defaultValue = defaultValue;
+    this.maxLength = maxLength;
     this.name = name;
     this.optional = primaryKey ? false : ((defaultValue !== undefined) || optional);
     this.primaryKey = primaryKey;

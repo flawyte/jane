@@ -18,11 +18,13 @@ module.exports = {
   'attrs default values': function(assert) {
     var attr = new Attribute('email', 'String');
 
-    assert.equal(attr.name, 'email');
-    assert.equal(attr.optional, true);
-    assert.equal(attr.plural, null);
-    assert.equal(attr.primaryKey, false);
-    assert.equal(attr.type, 'String');
+    assert.equal(undefined, attr.defaultValue);
+    assert.equal(Number.POSITIVE_INFINITY, attr.maxLength);
+    assert.equal('email', attr.name);
+    assert.equal(false, attr.optional);
+    assert.equal(false, attr.primaryKey);
+    assert.equal(true, attr.required);
+    assert.equal('String', attr.type);
 
     assert.done();
   },
@@ -36,31 +38,36 @@ module.exports = {
       '$': {
         name: 'id',
         type: 'Integer',
-        required: 'true',
         'primary-key': 'true'
       }
     };
     attr = Attribute.fromXMLObject(obj);
 
+    assert.equal(undefined, attr.defaultValue);
+    assert.equal(Number.POSITIVE_INFINITY, attr.maxLength);
     assert.equal('id', attr.name);
-    assert.equal('Integer', attr.type);
     assert.equal(false, attr.optional);
     assert.equal(true, attr.primaryKey);
+    assert.equal(true, attr.required);
+    assert.equal('Integer', attr.type);
 
     obj = {
       '$': {
         name: 'name',
         type: 'String',
-        optional: 'true',
-        'primary-key': 'false'
+        default: 'null',
+        maxLength: '255'
       }
     };
     attr = Attribute.fromXMLObject(obj);
 
+    assert.equal(null, attr.defaultValue);
+    assert.equal(255, attr.maxLength);
     assert.equal('name', attr.name);
-    assert.equal('String', attr.type);
     assert.equal(true, attr.optional);
     assert.equal(false, attr.primaryKey);
+    assert.equal(false, attr.required);
+    assert.equal('String', attr.type);
 
     assert.done();
   }
