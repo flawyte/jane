@@ -1,5 +1,6 @@
 import Attribute from './Attribute';
 import Reference from './Reference';
+import Toolkit from './Toolkit';
 
 /*
  * Entity ✓✗
@@ -10,6 +11,13 @@ import Reference from './Reference';
  * ✓ [plural]     : Entity's name's plural if appropriated (e.g. Game Objects, Screens)
  */
 export default class Entity {
+
+  static add(entity) {
+    if (Entity.instances === undefined)
+      Entity.instances = {};
+
+    Entity.instances[entity.name] = entity;
+  }
 
   static fromXMLObject(obj) {
     var ent = new Entity(obj.$.name, obj.$.plural);
@@ -32,11 +40,24 @@ export default class Entity {
     return ent;
   }
 
+  static get(name) {
+    if (!Entity.instances[name]) {
+      if (Toolkit.ready)
+        Entity.instances[name] = Entity.fromXMLObject(Toolkit.readXMLFile(name + '.xml').entity);
+      else
+        return name;
+    }
+
+    return Entity.instances[name];
+  }
+
   constructor(name, plural = null) {
     this.attributes = [];
     this.name = name;
     this.plural = plural;
     this.references = [];
+
+    Entity.add(this);
   }
 
   addAttribute(attr) {
