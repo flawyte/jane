@@ -1,5 +1,3 @@
-import Toolkit from './Toolkit';
-
 export default class Reference {
 
   static fromXMLObject(obj) {
