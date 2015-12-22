@@ -6,4 +6,8 @@
     <attribute name="description" type="String" default="" /> <!-- optional (implicit) because default value -->
     <attribute name="completed" type="Boolean" default="false" /> <!-- optional (implicit) because default value -->
   </attributes>
+  <!-- Foreign keys -->
+  <references>
+    <reference entity="Label" attribute="id" as="label" />
+  </references>
 </entity>
