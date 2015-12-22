@@ -19,9 +19,9 @@ require('traceur').require.makeDefault(function(filename) {
 });
 
 var Entity = require('./src/Entity').default;
+var args = require('yargs').argv;
 var fs = require('fs');
 var xml2js = require('xml2js');
-var yargs = require('yargs').argv;
 
 /*
  * Global variables
@@ -31,20 +31,19 @@ var yargs = require('yargs').argv;
 var dir = __dirname + '/';
 var parser = new xml2js.Parser();
 
-
 /*
  * Command line parsing
  * ====================
  */
 
-if (!yargs.src || !yargs.gen)
+if (!args.src || !args.gen)
   help();
 else {
-  fs.readFile(dir + yargs.src, function(err, buffer) {
+  fs.readFile(dir + args.src, function(err, buffer) {
     parser.parseString(buffer, function (err, obj) {
       try {
         var ent = Entity.fromXMLObject(obj.entity);
-        var Gen = require('./src/generators/' + yargs.gen.toLowerCase()).default; // e.g. js, sqlite
+        var Gen = require('./src/generators/' + args.gen.toLowerCase()).default; // e.g. js, sqlite
         var out = new Gen(ent);
 
         console.log(out.generate());
