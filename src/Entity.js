@@ -1,4 +1,5 @@
 import Attribute from './Attribute';
+import Reference from './Reference';
 
 /*
  * Entity ✓✗
@@ -13,9 +14,18 @@ export default class Entity {
   static fromXMLObject(obj) {
     var ent = new Entity(obj.$.name, obj.$.plural);
 
-    for (var attrs of obj.attributes) {
-      for (var attr of attrs.attribute) {
-        ent.addAttribute(Attribute.fromXMLObject(attr))
+    if (obj.attributes instanceof Array) {
+      for (var attrs of obj.attributes) {
+        for (var attr of attrs.attribute) {
+          ent.addAttribute(Attribute.fromXMLObject(attr));
+        }
+      }
+    }
+    if (obj.references instanceof Array) {
+      for (var refs of obj.references) {
+        for (var ref of refs.reference) {
+          ent.addReference(Reference.fromXMLObject(ref));
+        }
       }
     }
 
@@ -26,9 +36,15 @@ export default class Entity {
     this.attributes = [];
     this.name = name;
     this.plural = plural;
+    this.references = [];
   }
 
   addAttribute(attr) {
     this.attributes.push(attr);
+  }
+
+  addReference(ref) {
+    ref.source = this;
+    this.references.push(ref);
   }
 }

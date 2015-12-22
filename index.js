@@ -3,7 +3,9 @@
  * ===============
  *
  * ✗ Add foreign keys (references) support
+ * ✗ Add 'matches' attribute support
  * ✗ JS: add partial set(object) and all setters
+ * ✗ SQLite: cast true/false values to 1/0
  * ✗ SQLite: add support for foreign keys
  */
 
