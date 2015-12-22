@@ -15,6 +15,26 @@ export default class Toolkit {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
   }
 
+  static readXMLFile(name) {
+    if (!Toolkit.fs)
+      throw "Toolkit.fs not set, can't read file '" + path + name + "'";
+    if (!Toolkit.xml2js)
+      throw "Toolkit.xml2js not set, can't parse file '" + path + name + "'";
+
+    var path = Toolkit.basePath;
+    var res = null;
+    var buffer = Toolkit.fs.readFileSync(path + name); // sync function
+
+    Toolkit.xml2js.parseString(buffer, function(err, obj) { // sync function
+      if (err)
+        throw err;
+
+      res = obj;
+    });
+
+    return res;
+  }
+
   static type(val) {
     return Object.prototype.toString.call(val).match(/\[object (.*)\]/)[1];
   }
