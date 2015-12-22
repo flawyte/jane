@@ -7,6 +7,10 @@ export default class Toolkit {
       return val;
   }
 
+  static get ready() {
+    return Toolkit.basePath && Toolkit.fs && Toolkit.xml2js;
+  }
+
   static getDirectoryPath(filePath) {
     return filePath.substring(0, filePath.lastIndexOf('/') + 1);
   }
