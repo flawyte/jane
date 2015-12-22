@@ -1,0 +1,8 @@
+<entity name="Task" plural="Tasks">
+  <attributes>
+    <attribute name="id" type="Integer" primary-key="true" /> <!-- required (implicit) because is primary-key -->
+    <attribute name="name" type="String" />
+    <!-- Color in hexadecimal e.g. #AARRGGBB -->
+    <attribute name="color" type="String" matches="#[0-9a-fA-F]{8}" default="#ffdddddd" /> <!-- optional (implicit) -->
+  </attributes>
+</entity>
