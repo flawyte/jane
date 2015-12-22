@@ -7,6 +7,10 @@ export default class Toolkit {
       return val;
   }
 
+  static getDirectoryPath(filePath) {
+    return filePath.substring(0, filePath.lastIndexOf('/'));
+  }
+
   static type(val) {
     return Object.prototype.toString.call(val).match(/\[object (.*)\]/)[1];
   }
