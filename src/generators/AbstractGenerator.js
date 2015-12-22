@@ -4,9 +4,6 @@
 export default class AbstractGenerator {
 
   constructor(entity) {
-    if (!entity)
-      throw '[panda] "entity" should be an instance of the Entity class'
-
     this.entity = entity;
     this.indentation = 0;
   }
