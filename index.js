@@ -7,6 +7,7 @@
  * ✗ JS: add partial set(object) and all setters
  * ✗ SQLite: add random inserts generation
  * ✗ CLI: pass additional arguments as options to the generator e.g. --create, --drop --inserts
+ * ✗ Generators: add support to generate multiple entities at once (with multiple output files if appropriated)
  */
 
 /*
@@ -47,11 +48,26 @@ else {
   var Generator = require('./src/generators/' + args.gen.toLowerCase()).default;
   var gen = new Generator();
   var obj = Toolkit.readXMLFile(Toolkit.getFileName(args.src));
+  var outputDir = Toolkit.basePath + 'output/' + args.gen.toLowerCase() + '/';
+  var outputFile;
+  var outputString;
 
   entity = Entity.fromXMLObject(obj.entity);
   gen.entity = entity;
+  outputFile = outputDir + gen.getOutputFileName();
+  outputString = gen.generate();
 
-  console.log(gen.generate());
+  console.log('*** Output code ***');
+  console.log(outputString);
+  console.log('*** /Output code ***');
+
+  if (!Toolkit.directoryExists(Toolkit.basePath + 'output/'))
+    Toolkit.createDirectory(Toolkit.basePath + 'output/');
+  if (!Toolkit.directoryExists(outputDir))
+    Toolkit.createDirectory(outputDir);
+
+  fs.writeFileSync(outputFile, outputString, 'utf8');
+  console.log('Code saved in file "' + outputFile + '".');
 }
 
 /*
