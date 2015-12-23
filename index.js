@@ -60,13 +60,7 @@ else {
   console.log('*** Output code ***');
   console.log(outputString);
   console.log('*** /Output code ***');
-
-  if (!Toolkit.directoryExists(Toolkit.basePath + 'output/'))
-    Toolkit.createDirectory(Toolkit.basePath + 'output/');
-  if (!Toolkit.directoryExists(outputDir))
-    Toolkit.createDirectory(outputDir);
-
-  fs.writeFileSync(outputFile, outputString, 'utf8');
+  saveCode(outputString, outputFile, outputDir);
   console.log('Code saved in file "' + outputFile + '".');
 }
 
@@ -92,4 +86,13 @@ function init() {
   Toolkit.basePath = dir + Toolkit.getDirectoryPath(args.src);
   Toolkit.fs = fs;
   Toolkit.xml2js = xml2js;
+}
+
+function saveCode(code, file, dir) {
+  if (!Toolkit.directoryExists(Toolkit.basePath + 'output/'))
+    Toolkit.createDirectory(Toolkit.basePath + 'output/');
+  if (!Toolkit.directoryExists(dir))
+    Toolkit.createDirectory(dir);
+
+  fs.writeFileSync(file, code, 'utf8');
 }
