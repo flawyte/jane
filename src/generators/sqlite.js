@@ -4,6 +4,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
   constructor() {
     super();
+    this.name = 'sqlite';
     this.result = '';
   }
 

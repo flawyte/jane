@@ -4,6 +4,7 @@ export default class JSGenerator extends AbstractGenerator {
 
   constructor() {
     super();
+    this.name = 'js';
     this.results = {};
   }
 

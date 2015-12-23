@@ -6,6 +6,7 @@ export default class AbstractGenerator {
   constructor() {
     this.entities = [];
     this.indentation = 0;
+    this.name = null;
   }
 
   addEntity(entity) {
