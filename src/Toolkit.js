@@ -7,6 +7,18 @@ export default class Toolkit {
       return val;
   }
 
+  static createDirectory(dir) {
+    Toolkit.fs.mkdirSync(dir);
+  }
+
+  static directoryExists(dir) {
+    try {
+      return Toolkit.fs.statSync(dir).isDirectory();
+    } catch (e) {
+      return false;
+    }
+  }
+
   static get ready() {
     return Toolkit.basePath && Toolkit.fs && Toolkit.xml2js;
   }
