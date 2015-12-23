@@ -4,8 +4,9 @@
  *
  * ✗ Add 'length' attribute support
  * ✗ Add 'matches' regex attribute support
- * ✗ Toolkit.readXMLFile(): use 'new Parser(options)' to automatically parse numbers/booleans as such and not as strings
  * ✗ JS: add partial set(object) and all setters
+ * ✗ SQLite: add random inserts generation
+ * ✗ CLI: pass additional arguments as options to the generator e.g. --create, --drop --inserts
  */
 
 /*
@@ -31,7 +32,6 @@ var xml2js = require('xml2js');
  */
 
 var dir = __dirname + '/';
-var parser = new xml2js.Parser();
 
 /*
  * Command line parsing
