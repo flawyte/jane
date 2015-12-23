@@ -2,7 +2,9 @@
  * Functionalities ✓✗
  * ===============
  *
+ * ✗ Add 'length' attribute support
  * ✗ Add 'matches' regex attribute support
+ * ✗ Toolkit.readXMLFile(): use 'new Parser(options)' to automatically parse numbers/booleans as such and not as strings
  * ✗ JS: add partial set(object) and all setters
  */
 

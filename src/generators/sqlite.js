@@ -85,7 +85,12 @@ export default class SQLiteGenerator extends AbstractGenerator {
       str += ',\n';
 
     e.references.forEach(function(ref, i) {
-      str += self.indent() + ref.alias + ' INTEGER NOT NULL';
+      str += self.indent() + ref.alias + ' INTEGER';
+
+      if (ref.nullable)
+        str += ' DEFAULT NULL';
+      else
+        str += ' NOT NULL';
 
       if (i < (e.references.length - 1))
         str += ',\n';

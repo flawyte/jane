@@ -13,15 +13,17 @@ export default class Reference {
     var attr = new Reference(null,
       Entity.default.get(obj.$.entity),
       obj.$.attribute,
-      obj.$.as);
+      obj.$.as,
+      Boolean(obj.$.nullable));
 
     return attr;
   }
 
-  constructor(source, entity, attribute, alias) {
+  constructor(source, entity, attribute, alias, nullable = false) {
     this.alias = alias;
     this.attribute = attribute;
     this.entity = entity;
+    this.nullable = nullable;
     this.source = source;
 
     Reference.add(this);

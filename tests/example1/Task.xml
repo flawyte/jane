@@ -7,6 +7,7 @@
   </attributes>
   <!-- Foreign keys -->
   <references>
-    <reference entity="Label" attribute="id" as="label" />
+    <reference entity="Label" attribute="id" as="label" /> <!-- non-nullable (implicit) by default -->
+    <reference entity="Task" attribute="id" as="parent" nullable="true" /> <!-- nullable (explicit) -->
   </references>
 </entity>
