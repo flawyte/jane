@@ -4,6 +4,7 @@
  *
  * ✗ Add 'length' attribute support
  * ✗ Add 'matches' regex attribute support
+ * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  * ✗ SQLite: add random inserts generation
  * ✗ CLI: pass additional arguments as options to the generator e.g. --create, --drop --inserts
@@ -19,10 +20,9 @@ require('traceur').require.makeDefault(function(filename) {
 });
 
 var args = require('yargs').argv;
-var Entity = require('./src/Entity').default;
 var fs = require('fs');
 var glob = require('glob');
-var Reference = require('./src/Reference').default;
+var Jane = require('./src/Jane').default;
 var Toolkit = require('./src/Toolkit').default;
 var util = require('util');
 var xml2js = require('xml2js');
@@ -32,6 +32,7 @@ var xml2js = require('xml2js');
  * ================
  */
 
+var src;
 var gen;
 var outputDir;
 
@@ -45,35 +46,21 @@ if (!args.src || !args.gen)
 else {
   init();
 
-  if (Toolkit.directoryExists(args.src)) { // Arg is a directory
-    if (args.src.slice(-1) !== '/') // Check if path contains a trailing '/' and if not adds one
-      args.src += '/';
-
-    Toolkit.basePath = args.src;
-    outputDir = Toolkit.basePath + 'output/' + args.gen.toLowerCase() + '/';
-
-    glob(args.src + '*.xml', function(err, files) {
-      files.forEach(function(file, i) {
-        gen.addEntity(process(file));
-      });
-
-      gen.generate();
-      gen.getOutputFilesNames().forEach(function(fileName) {
-        saveCode(gen.getContent(fileName), fileName + '.' + gen.getOutputFilesExtension(), outputDir);
-      });
-      console.log('✓ Done !');
+  if (Toolkit.directoryExists(src)) { // Arg is a directory
+    Jane.processDirectory(src, function(success) {
+      if (success)
+        console.log('✓ Done !');
+      else
+        console.log('Error while processing directory' + src + '.');
     });
   }
   else { // Arg is an XML file
-    Toolkit.basePath = Toolkit.getDirectoryPath(args.src);
-    outputDir = Toolkit.basePath + 'output/' + args.gen.toLowerCase() + '/';
-
-    gen.addEntity(process(args.src));
-    gen.generate();
-    gen.getOutputFilesNames().forEach(function(fileName) {
-      saveCode(gen.getContent(fileName), fileName + '.' + gen.getOutputFilesExtension(), outputDir);
+    Jane.processFile(src, function(success) {
+      if (success)
+        console.log('✓ Done !');
+      else
+        console.log('Error while processing file' + src + '.');
     });
-    console.log('✓ Done !');
   }
 }
 
@@ -94,28 +81,8 @@ function help() {
 }
 
 function init() {
-  args.src = __dirname + '/' + args.src;
+  src = __dirname + '/' + args.src;
   var Generator = require('./src/generators/' + args.gen.toLowerCase()).default;
-  gen = new Generator();
-  Entity.instances = {};
-  Reference.instances = [];
-  Toolkit.fs = fs;
-  Toolkit.xml2js = xml2js;
-}
 
-function process(file) {
-  return Entity.fromXMLObject(
-    Toolkit.readXMLFile(
-      Toolkit.getFileName(file)
-    ).entity
-  );
-}
-
-function saveCode(code, file, dir) {
-  if (!Toolkit.directoryExists(Toolkit.basePath + 'output/'))
-    Toolkit.createDirectory(Toolkit.basePath + 'output/');
-  if (!Toolkit.directoryExists(dir))
-    Toolkit.createDirectory(dir);
-
-  fs.writeFileSync(dir + file, code, 'utf8');
+  Jane.init(fs, new Generator(), glob, xml2js);
 }

@@ -1,3 +1,5 @@
+import Jane from './Jane';
+
 export default class Toolkit {
 
   static cast(val) {
@@ -8,19 +10,19 @@ export default class Toolkit {
   }
 
   static createDirectory(dir) {
-    Toolkit.fs.mkdirSync(dir);
+    Jane.default.fs.mkdirSync(dir);
   }
 
   static directoryExists(dir) {
     try {
-      return Toolkit.fs.statSync(dir).isDirectory();
+      return Jane.default.fs.statSync(dir).isDirectory();
     } catch (e) {
       return false;
     }
   }
 
   static get ready() {
-    return Toolkit.basePath && Toolkit.fs && Toolkit.xml2js;
+    return Jane.default.fs && Jane.default.xml2js;
   }
 
   static getDirectoryPath(filePath) {
@@ -31,17 +33,16 @@ export default class Toolkit {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
   }
 
-  static readXMLFile(name) {
-    if (!Toolkit.fs)
-      throw "Toolkit.fs not set, can't read file '" + path + name + "'";
-    if (!Toolkit.xml2js)
-      throw "Toolkit.xml2js not set, can't parse file '" + path + name + "'";
+  static readXMLFile(path) {
+    if (!Jane.default.fs)
+      throw "Jane.fs not set, can't read file '" + path + "'";
+    if (!Jane.default.xml2js)
+      throw "Jane.xml2js not set, can't parse file '" + path + "'";
 
-    var path = Toolkit.basePath;
     var res = null;
-    var buffer = Toolkit.fs.readFileSync(path + name); // sync function
+    var buffer = Jane.default.fs.readFileSync(path); // sync function
 
-    Toolkit.xml2js.parseString(buffer, function(err, obj) { // sync function
+    Jane.default.xml2js.parseString(buffer, function(err, obj) { // sync function
       if (err)
         throw err;
 

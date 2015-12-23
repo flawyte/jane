@@ -1,4 +1,5 @@
 import Attribute from './Attribute';
+import Jane from './Jane';
 import Reference from './Reference';
 import Toolkit from './Toolkit';
 
@@ -13,10 +14,14 @@ import Toolkit from './Toolkit';
 export default class Entity {
 
   static add(entity) {
-    if (Entity.instances === undefined)
+    if (!Entity.instances)
       Entity.instances = {};
 
     Entity.instances[entity.name] = entity;
+  }
+
+  static fromXMLFile(file) {
+    return Entity.fromXMLObject(Toolkit.readXMLFile(file).entity);
   }
 
   static fromXMLObject(obj) {
@@ -43,7 +48,7 @@ export default class Entity {
   static get(name) {
     if (!Entity.instances[name]) {
       if (Toolkit.ready)
-        Entity.instances[name] = Entity.fromXMLObject(Toolkit.readXMLFile(name + '.xml').entity);
+        Entity.instances[name] = Entity.fromXMLFile(Jane.default.basePath + name + '.xml');
       else
         return name;
     }
