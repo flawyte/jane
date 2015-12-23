@@ -17,6 +17,13 @@ export default class AbstractGenerator {
   }
 
   /*
+   * The function should return the output file name (specific to almost each generator).
+   */
+  getOutputFileName() {
+    return null;
+  }
+
+  /*
    * Returns `this.indentation * 2` whitespaces (e.g. 2, 4...).
    */
   indent() {

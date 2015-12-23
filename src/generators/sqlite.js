@@ -117,4 +117,8 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
     return str;
   }
+
+  getOutputFileName() {
+    return 'create-table-' + this.entity.plural + '.sql';
+  }
 }

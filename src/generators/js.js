@@ -87,14 +87,14 @@ export default class JSGenerator extends AbstractGenerator {
         self.indentation++;
         str += self.indent() + 'throw "' + self.generateValidationErrorMessage('required', attr) + '";';
         self.indentation--;
-        str += self.indent() + '\n';
+        str += '\n';
       }
       if (attr.maxLength !== Number.POSITIVE_INFINITY) {
         str += self.indent() + 'if (! (' + self.generateValidationCondition('maxLength', attr) + '))\n';
         self.indentation++;
         str += self.indent() + 'throw "' + self.generateValidationErrorMessage('maxLength', attr) + '";';
         self.indentation--;
-        str += self.indent() + '\n';
+        str += '\n';
       }
     });
 
@@ -137,5 +137,9 @@ export default class JSGenerator extends AbstractGenerator {
     }
 
     return str;
+  }
+
+  getOutputFileName() {
+    return this.entity.name + '.js';
   }
 }
