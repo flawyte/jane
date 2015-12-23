@@ -4,7 +4,6 @@
  *
  * ✗ Add 'matches' regex attribute support
  * ✗ JS: add partial set(object) and all setters
- * ✗ SQLite: cast true/false values to 1/0
  */
 
 /*

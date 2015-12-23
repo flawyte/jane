@@ -6,14 +6,29 @@ export default class SQLiteGenerator extends AbstractGenerator {
     var res = null;
 
     switch (type) {
-      // case '': {}
-      // break;
       case 'String': {
         res = 'VARCHAR'
       }
       break;
       default: {
         res = type; // sql type == js type
+      }
+      break;
+    }
+
+    return res;
+  }
+
+  static toSQLiteValue(value) {
+    var res = null;
+
+    switch (value) {
+      case true:
+      case false:
+        res = Number(value);
+      break;
+      default: {
+        res = value; // sql value == js value
       }
       break;
     }
@@ -57,7 +72,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
         str += ' DEFAULT ';
 
         if (attr.type !== 'String')
-          str += attr.defaultValue;
+          str += SQLiteGenerator.toSQLiteValue(attr.defaultValue);
         else
           str += '"' + attr.defaultValue + '"';
       }
