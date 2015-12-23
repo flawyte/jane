@@ -11,6 +11,7 @@
   "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "license": "MIT",
   "dependencies": {
+    "glob": "^6.0.1",
     "traceur": "0.0.93",
     "xml2js": "^0.4.15",
     "yargs": "^3.31.0"
