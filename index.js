@@ -7,7 +7,6 @@
  * ✗ JS: add partial set(object) and all setters
  * ✗ SQLite: add random inserts generation
  * ✗ CLI: pass additional arguments as options to the generator e.g. --create, --drop --inserts
- * ✗ Generators: add support to generate multiple entities at once (with multiple output files if appropriated)
  */
 
 /*
@@ -55,9 +54,13 @@ else {
 
     glob(args.src + '*.xml', function(err, files) {
       files.forEach(function(file, i) {
-        process(file);
+        gen.addEntity(process(file));
       });
 
+      gen.generate();
+      gen.getOutputFilesNames().forEach(function(fileName) {
+        saveCode(gen.getContent(fileName), fileName + '.' + gen.getOutputFilesExtension(), outputDir);
+      });
       console.log('✓ Done !');
     });
   }
@@ -65,10 +68,13 @@ else {
     Toolkit.basePath = Toolkit.getDirectoryPath(args.src);
     outputDir = Toolkit.basePath + 'output/' + args.gen.toLowerCase() + '/';
 
-    process(args.src);
+    gen.addEntity(process(args.src));
+    gen.generate();
+    gen.getOutputFilesNames().forEach(function(fileName) {
+      saveCode(gen.getContent(fileName), fileName + '.' + gen.getOutputFilesExtension(), outputDir);
+    });
     console.log('✓ Done !');
   }
-
 }
 
 /*
@@ -98,16 +104,11 @@ function init() {
 }
 
 function process(file) {
-  var fileName = Toolkit.getFileName(file);
-  console.log('Processing ' + fileName + ' ...');
-  var outputFile;
-  var outputString;
-
-  var obj = Toolkit.readXMLFile(fileName);
-  gen.entity = Entity.fromXMLObject(obj.entity);
-  outputFile = outputDir + gen.getOutputFileName();
-  outputString = gen.generate();
-  saveCode(outputString, outputFile, outputDir);
+  return Entity.fromXMLObject(
+    Toolkit.readXMLFile(
+      Toolkit.getFileName(file)
+    ).entity
+  );
 }
 
 function saveCode(code, file, dir) {
@@ -116,5 +117,5 @@ function saveCode(code, file, dir) {
   if (!Toolkit.directoryExists(dir))
     Toolkit.createDirectory(dir);
 
-  fs.writeFileSync(file, code, 'utf8');
+  fs.writeFileSync(dir + file, code, 'utf8');
 }

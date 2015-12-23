@@ -3,23 +3,38 @@
  */
 export default class AbstractGenerator {
 
-  constructor(entity) {
-    this.entity = entity;
+  constructor() {
+    this.entities = [];
     this.indentation = 0;
   }
 
+  addEntity(entity) {
+    this.entities.push(entity);
+  }
+
   /*
-   * The function that Jane will call to generate code based on the Entity object passes at instanciation time.
-   * Should return a string containing the generated code.
+   * Should generate code based on the 'entities' array.
    */
-  generate() {
+  generate() {}
+
+  /*
+   * Should return the output file's final content based on its name. Content will then be saved in the file, replacing its current content if any.
+   */
+  getContent(file) {
     return null;
   }
 
   /*
-   * The function should return the output file name (specific to almost each generator).
+   * The output file(s) extension without leading dot e.g. 'js', 'sql', 'java'...
    */
-  getOutputFileName() {
+  getOutputFilesExtension() {
+    return null;
+  }
+
+  /*
+   * Should return an array containing the output file(s) name(s) (specific to almost each generator).
+   */
+  getOutputFilesNames() {
     return null;
   }
 

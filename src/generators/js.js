@@ -2,63 +2,71 @@ import AbstractGenerator from './AbstractGenerator';
 
 export default class JSGenerator extends AbstractGenerator {
 
-  generate() {
-    var e = this.entity;
-    var str = '';
-
-    this.entity.attributes.sort(function(a, b) {
-      if (a.required && b.optional)
-        return -1;
-      else if (a.optional && b.required)
-        return 1;
-      else
-        return 0;
-    });
-
-    str += 'export default class ' + e.name + ' {\n';
-    str += '\n';
-    str += this.generateConstructor();
-    str += '\n}';
-    str += '\n';
-
-    return str;
+  constructor() {
+    super();
+    this.results = {};
   }
 
-  generateConstructor() {
+  generate() {
+    var self = this;
+
+    this.entities.forEach(function(e) {
+      var str = '';
+
+      e.attributes.sort(function(a, b) {
+        if (a.required && b.optional)
+          return -1;
+        else if (a.optional && b.required)
+          return 1;
+        else
+          return 0;
+      });
+
+      str += 'export default class ' + e.name + ' {\n';
+      str += '\n';
+      str += self.generateConstructor(e);
+      str += '\n}';
+      str += '\n';
+
+      self.results[e.name] = str;
+    });
+  }
+
+  generateConstructor(e) {
     var str = '';
 
     this.indentation++;
-    str += this.indent() + 'constructor(' + this.generateConstructorParameters() + ') {\n';
-    str += this.generateConstructorBody();
+    str += this.indent() + 'constructor(' + this.generateConstructorParameters(e) + ') {\n';
+    str += this.generateConstructorBody(e);
     str += this.indent() + '}'
     this.indentation--;
 
     return str;
   }
 
-  generateConstructorBody() {
+  generateConstructorBody(e) {
     var str = '';
 
-    this.entity.attributes.sort(function(a, b) {
+    e.attributes.sort(function(a, b) {
       return ~~(a.name > b.name);
     }); // sort in alphabetical order
 
     this.indentation++;
-    for (var attr of this.entity.attributes) {
+    for (var attr of e.attributes) {
       str += this.indent() + 'this.' + attr.name + ' = ' + attr.name + ';\n';
     }
     str += '\n';
-    str += this.generateConstructorValidation();
+    str += this.generateConstructorValidation(e);
     this.indentation--;
 
     return str;
   }
 
-  generateConstructorParameters() {
+  generateConstructorParameters(e) {
     var self = this;
     var str = '';
 
-    this.entity.attributes.forEach(function(attr, i) {
+    e.attributes.forEach(function(attr, i) {
       str += attr.name;
 
       if (attr.optional) {
@@ -68,7 +76,7 @@ export default class JSGenerator extends AbstractGenerator {
           str += ' = "' + attr.defaultValue + '"';
       }
 
-      if (i !== (self.entity.attributes.length - 1)) { // not last attribute
+      if (i !== (e.attributes.length - 1)) { // not last attribute
         str += ', ';
       }
     });
@@ -76,8 +84,7 @@ export default class JSGenerator extends AbstractGenerator {
     return str;
   }
 
-  generateConstructorValidation() {
-    var e = this.entity;
+  generateConstructorValidation(e) {
     var self = this;
     var str = '';
 
@@ -139,7 +146,17 @@ export default class JSGenerator extends AbstractGenerator {
     return str;
   }
 
-  getOutputFileName() {
-    return this.entity.name + '.js';
+  getContent(file) {
+    return this.results[file];
+  }
+
+  getOutputFilesExtension() {
+    return 'js';
+  }
+
+  getOutputFilesNames() {
+    return this.entities.map(function(e) {
+      return e.name;
+    });
   }
 }

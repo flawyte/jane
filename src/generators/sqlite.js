@@ -2,6 +2,11 @@ import AbstractGenerator from './AbstractGenerator';
 
 export default class SQLiteGenerator extends AbstractGenerator {
 
+  constructor() {
+    super();
+    this.result = '';
+  }
+
   static toSQLiteType(type) {
     var res = null;
 
@@ -37,26 +42,31 @@ export default class SQLiteGenerator extends AbstractGenerator {
   }
 
   generate() {
-    var e = this.entity;
-    var str = '';
+    var self = this;
 
-    str += 'CREATE TABLE ' + e.plural.toLowerCase() + ' (\n';
-    str += this.generateAttributes();
+    this.entities.forEach(function(e, i) {
+      var str = '';
 
-    if (this.entity.references.length > 0) {
-      str += ',\n';
+      str += 'CREATE TABLE ' + e.plural.toLowerCase() + ' (\n';
+      str += self.generateAttributes(e);
+
+      if (e.references.length > 0) {
+        str += ',\n';
+        str += '\n';
+        str += self.generateForeignKeys(e);
+      }
+
       str += '\n';
-      str += this.generateForeignKeys();
-    }
+      str += ');\n';
 
-    str += '\n';
-    str += ');\n';
+      if (i < (self.entities.length - 1))
+        str += '\n';
 
-    return str;
+      self.result += str;
+    });
   }
 
-  generateAttributes() {
-    var e = this.entity;
+  generateAttributes(e) {
     var self = this;
     var str = '';
 
@@ -100,8 +110,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
     return str;
   }
 
-  generateForeignKeys() {
-    var e = this.entity;
+  generateForeignKeys(e) {
     var self = this;
     var str = '';
 
@@ -118,7 +127,22 @@ export default class SQLiteGenerator extends AbstractGenerator {
     return str;
   }
 
-  getOutputFileName() {
-    return 'create-table-' + this.entity.plural + '.sql';
+  getContent(file) {
+    // Always return the same result as all SQL generated code will be placed in the same output file
+    // whatever the number of entities processed (only the output file name will change, see getOutputFilesNames()).
+    return this.result;
+  }
+
+  getOutputFilesExtension() {
+    return 'sql';
+  }
+
+  getOutputFilesNames() {
+    if (this.entities.length === 0)
+      return [];
+    else if (this.entities.length === 1)
+      return [ 'create-table-' + this.entities[0].plural.toLowerCase() ];
+    else
+      return [ 'create-database' ];
   }
 }
