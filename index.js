@@ -22,6 +22,7 @@ require('traceur').require.makeDefault(function(filename) {
 var args = require('yargs').argv;
 var Entity = require('./src/Entity').default;
 var fs = require('fs');
+var glob = require('glob');
 var Reference = require('./src/Reference').default;
 var Toolkit = require('./src/Toolkit').default;
 var util = require('util');
@@ -32,7 +33,8 @@ var xml2js = require('xml2js');
  * ================
  */
 
-var dir = __dirname + '/';
+var gen;
+var outputDir;
 
 /*
  * Command line parsing
@@ -44,24 +46,29 @@ if (!args.src || !args.gen)
 else {
   init();
 
-  var entity;
-  var Generator = require('./src/generators/' + args.gen.toLowerCase()).default;
-  var gen = new Generator();
-  var obj = Toolkit.readXMLFile(Toolkit.getFileName(args.src));
-  var outputDir = Toolkit.basePath + 'output/' + args.gen.toLowerCase() + '/';
-  var outputFile;
-  var outputString;
+  if (Toolkit.directoryExists(args.src)) { // Arg is a directory
+    if (args.src.slice(-1) !== '/') // Check if path contains a trailing '/' and if not adds one
+      args.src += '/';
 
-  entity = Entity.fromXMLObject(obj.entity);
-  gen.entity = entity;
-  outputFile = outputDir + gen.getOutputFileName();
-  outputString = gen.generate();
+    Toolkit.basePath = args.src;
+    outputDir = Toolkit.basePath + 'output/' + args.gen.toLowerCase() + '/';
 
-  console.log('*** Output code ***');
-  console.log(outputString);
-  console.log('*** /Output code ***');
-  saveCode(outputString, outputFile, outputDir);
-  console.log('Code saved in file "' + outputFile + '".');
+    glob(args.src + '*.xml', function(err, files) {
+      files.forEach(function(file, i) {
+        process(file);
+      });
+
+      console.log('✓ Done !');
+    });
+  }
+  else { // Arg is an XML file
+    Toolkit.basePath = Toolkit.getDirectoryPath(args.src);
+    outputDir = Toolkit.basePath + 'output/' + args.gen.toLowerCase() + '/';
+
+    process(args.src);
+    console.log('✓ Done !');
+  }
+
 }
 
 /*
@@ -76,16 +83,31 @@ function help() {
   console.log('Parameters');
   console.log('==========');
   console.log('');
-  console.log('* src : Path to the XML source file (should be Jane compliant, see tests/Example1.xml)');
+  console.log('* src : Path to the XML source file (should be Jane compliant, see tests/Example1.xml) or directory');
   console.log('* gen : Generator to use to produce the output string, typically the target file type\'s file extension letters (e.g. js, sql)');
 }
 
 function init() {
+  args.src = __dirname + '/' + args.src;
+  var Generator = require('./src/generators/' + args.gen.toLowerCase()).default;
+  gen = new Generator();
   Entity.instances = {};
   Reference.instances = [];
-  Toolkit.basePath = dir + Toolkit.getDirectoryPath(args.src);
   Toolkit.fs = fs;
   Toolkit.xml2js = xml2js;
+}
+
+function process(file) {
+  var fileName = Toolkit.getFileName(file);
+  console.log('Processing ' + fileName + ' ...');
+  var outputFile;
+  var outputString;
+
+  var obj = Toolkit.readXMLFile(fileName);
+  gen.entity = Entity.fromXMLObject(obj.entity);
+  outputFile = outputDir + gen.getOutputFileName();
+  outputString = gen.generate();
+  saveCode(outputString, outputFile, outputDir);
 }
 
 function saveCode(code, file, dir) {
