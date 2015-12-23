@@ -1,6 +1,6 @@
 /*
- * Functionalities ✓✗
- * ===============
+ * TODO ✓✗
+ * ====
  *
  * ✗ Add 'length' attribute support
  * ✗ Add 'matches' regex attribute support
@@ -33,8 +33,6 @@ var xml2js = require('xml2js');
  */
 
 var src;
-var gen;
-var outputDir;
 
 /*
  * Command line parsing
