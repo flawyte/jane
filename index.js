@@ -2,7 +2,6 @@
  * TODO ✓✗
  * ====
  *
- * ✗ SQLite: add drop table generation (via --drop argument)
  * ✗ SQLite: add random inserts generation (via --inserts argument)
  * ✗ Add 'length' attribute support
  * ✗ Add 'matches' regex attribute support
