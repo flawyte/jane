@@ -43,6 +43,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
   }
 
   generate() {
+    this.sortEntities();
     var self = this;
 
     this.entities.forEach(function(e, i) {

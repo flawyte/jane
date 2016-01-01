@@ -7,6 +7,7 @@ export default class AbstractGenerator {
     this.entities = [];
     this.indentation = 0;
     this.name = null;
+    this.options = {};
   }
 
   addEntity(entity) {
@@ -49,5 +50,11 @@ export default class AbstractGenerator {
       str += ' ';
 
     return str;
+  }
+
+  sortEntities() {
+    this.entities.sort(function(a, b) {
+      return a.references.length - b.references.length;
+    });
   }
 }
