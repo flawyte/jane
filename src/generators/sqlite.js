@@ -43,29 +43,15 @@ export default class SQLiteGenerator extends AbstractGenerator {
   }
 
   generate() {
-    this.sortEntities();
-    var self = this;
+    if (!(this.options.create || this.options.drop || this.options.insert))
+      throw 'SQLiteGenerator: you must specify an operation as CLI argument, one of --create / --drop / --insert'
 
-    this.entities.forEach(function(e, i) {
-      var str = '';
-
-      str += 'CREATE TABLE ' + e.plural.toLowerCase() + ' (\n';
-      str += self.generateAttributes(e);
-
-      if (e.references.length > 0) {
-        str += ',\n';
-        str += '\n';
-        str += self.generateForeignKeys(e);
-      }
-
-      str += '\n';
-      str += ');\n';
-
-      if (i < (self.entities.length - 1))
-        str += '\n';
-
-      self.result += str;
-    });
+    if (this.options.create)
+      this.generateCreate();
+    else if (this.options.drop)
+      throw 'Operation "drop" not yet supported'
+    else if (this.options.insert)
+      throw 'Operation "insert" not yet supported'
   }
 
   generateAttributes(e) {
@@ -110,6 +96,32 @@ export default class SQLiteGenerator extends AbstractGenerator {
     this.indentation--;
 
     return str;
+  }
+
+  generateCreate() {
+    this.sortEntities();
+    var self = this;
+
+    this.entities.forEach(function(e, i) {
+      var str = '';
+
+      str += 'CREATE TABLE ' + e.plural + ' (\n';
+      str += self.generateAttributes(e);
+
+      if (e.references.length > 0) {
+        str += ',\n';
+        str += '\n';
+        str += self.generateForeignKeys(e);
+      }
+
+      str += '\n';
+      str += ');\n';
+
+      if (i < (self.entities.length - 1))
+        str += '\n';
+
+      self.result += str;
+    });
   }
 
   generateForeignKeys(e) {
