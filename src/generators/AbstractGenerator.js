@@ -3,11 +3,11 @@
  */
 export default class AbstractGenerator {
 
-  constructor() {
+  constructor(options = {}) {
     this.entities = [];
     this.indentation = 0;
     this.name = null;
-    this.options = {};
+    this.options = options;
   }
 
   addEntity(entity) {

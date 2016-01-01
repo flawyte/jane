@@ -33,6 +33,17 @@ export default class Toolkit {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
   }
 
+  static getOptions(args) {
+    var arr = JSON.parse(JSON.stringify(args));
+
+    delete arr['_'];
+    delete arr['$0'];
+    delete arr['gen'];
+    delete arr['src'];
+
+    return arr;
+  }
+
   static readXMLFile(path) {
     if (!Jane.default.fs)
       throw "Jane.fs not set, can't read file '" + path + "'";

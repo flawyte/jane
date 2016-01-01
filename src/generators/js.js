@@ -2,8 +2,8 @@ import AbstractGenerator from './AbstractGenerator';
 
 export default class JSGenerator extends AbstractGenerator {
 
-  constructor() {
-    super();
+  constructor(options) {
+    super(options);
     this.name = 'js';
     this.results = {};
   }

@@ -2,13 +2,12 @@
  * TODO ✓✗
  * ====
  *
- * ✗ CLI: pass additional arguments as options to the generator e.g. --create, --drop --inserts
+ * ✗ SQLite: add drop table generation (via --drop argument)
+ * ✗ SQLite: add random inserts generation (via --inserts argument)
  * ✗ Add 'length' attribute support
  * ✗ Add 'matches' regex attribute support
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
- * ✗ SQLite: add drop table generation (via --drop argument)
- * ✗ SQLite: add random inserts generation (via --inserts argument)
  */
 
 /*
@@ -82,6 +81,7 @@ function help() {
 function init() {
   src = __dirname + '/' + args.src;
   var Generator = require('./src/generators/' + args.gen.toLowerCase()).default;
+  var options = Toolkit.getOptions(args);
 
-  Jane.init(fs, new Generator(), glob, xml2js);
+  Jane.init(fs, new Generator(options), glob, xml2js);
 }
