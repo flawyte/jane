@@ -29,6 +29,10 @@ export default class Toolkit {
     return filePath.substring(0, filePath.lastIndexOf('/') + 1);
   }
 
+  static getEntityName(filePath) {
+    return filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
+  }
+
   static getFileName(filePath) {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
   }

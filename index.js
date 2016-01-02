@@ -2,7 +2,7 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Add 'unique' attribute support for attributes
+ * ✗ SQLite: Add 'unique' support for attributes
  * ✗ Add 'length' attribute support for attributes
  * ✗ Add 'nullable' attribute support for attributes
  * ✗ SQLite: add random inserts generation (via --inserts argument)

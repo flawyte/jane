@@ -30,7 +30,13 @@ export default class Jane {
         throw err;
 
       files.forEach(function(file) {
-        gen.addEntity(Entity.fromXMLFile(file));
+        if (Entity.instances !== undefined)
+          if (Entity.instances[Toolkit.getEntityName(file)] !== undefined)
+            gen.addEntity(Entity.instances[Toolkit.getEntityName(file)]);
+          else
+            gen.addEntity(Entity.fromXMLFile(file));
+        else
+          gen.addEntity(Entity.fromXMLFile(file));
       });
 
       gen.generate();
