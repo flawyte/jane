@@ -87,8 +87,12 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
       if (ref.nullable)
         str += ' DEFAULT NULL';
-      else
+      else {
         str += ' NOT NULL';
+
+        if (ref.defaultValue !== undefined)
+          str += ' DEFAULT ' + SQLiteGenerator.toSQLiteValue(ref.defaultValue);
+      }
 
       if (i < (e.references.length - 1))
         str += ',\n';

@@ -2,7 +2,6 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Add 'default' attribute support for references
  * ✗ Add 'unique' attribute support for attributes
  * ✗ Add 'length' attribute support for attributes
  * ✗ Add 'nullable' attribute support for attributes
