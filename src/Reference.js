@@ -14,7 +14,7 @@ export default class Reference {
       Entity.default.get(obj.$.entity),
       obj.$.attribute,
       obj.$.as,
-      Boolean(obj.$.nullable));
+      Boolean(obj.$.nullable === 'true'));
 
     return attr;
   }

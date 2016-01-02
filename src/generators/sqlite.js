@@ -44,7 +44,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
   generate() {
     if (!(this.options.create || this.options.drop || this.options.insert))
-      throw 'SQLiteGenerator: you must specify an operation as CLI argument, one of --create / --drop / --insert'
+      throw 'SQLiteGenerator: you must specify an operation as CLI argument, one of --create / --drop / --insert';
 
     if (this.options.create)
       this.generateCreate();
