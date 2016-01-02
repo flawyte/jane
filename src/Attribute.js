@@ -34,6 +34,7 @@ export default class Attribute {
     var attr = new Attribute(obj.$.name,
       obj.$.type,
       primaryKey,
+      Boolean(obj.$.unique === 'true'),
       optional,
       defaultValue,
       Toolkit.cast(obj.$.maxLength)
@@ -42,7 +43,7 @@ export default class Attribute {
     return attr;
   }
 
-  constructor(name, type, primaryKey = false, optional = false, defaultValue = undefined,
+  constructor(name, type, primaryKey = false, unique = false, optional = false, defaultValue = undefined,
               maxLength = Number.POSITIVE_INFINITY) {
     this.defaultValue = defaultValue;
     this.maxLength = maxLength;
@@ -51,6 +52,7 @@ export default class Attribute {
     this.primaryKey = primaryKey;
     this.required = !this.optional;
     this.type = type;
+    this.unique = primaryKey || unique;
 
     if (this.optional && this.defaultValue === undefined)
       throw new Error("[jane] Attribute '" + this.name + "' is optional but no default value given");
