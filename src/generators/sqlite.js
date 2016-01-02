@@ -5,7 +5,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
   constructor(options) {
     super(options);
     this.name = 'sqlite';
-    this.result = '';
+    this.results = {};
   }
 
   static toSQLiteType(type) {
@@ -48,7 +48,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
     if (this.options.create)
       this.generateCreate();
-    else if (this.options.drop)
+    if (this.options.drop)
       this.generateDrop();
     else if (this.options.insert)
       throw 'Operation "insert" not yet supported'
@@ -117,10 +117,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
       str += '\n';
       str += ');\n';
 
-      if (i < (self.entities.length - 1))
-        str += '\n';
-
-      self.result += str;
+      self.results['create-table-' + e.plural.toLowerCase()] = str;
     });
   }
 
@@ -134,7 +131,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
       str += 'DROP TABLE IF EXISTS ' + e.plural + ';\n';
 
-      self.result += str;
+      self.results['drop-table-' + e.plural.toLowerCase()] = str;
     });
   }
 
@@ -155,10 +152,31 @@ export default class SQLiteGenerator extends AbstractGenerator {
     return str;
   }
 
-  getContent(file) {
+  getContent(fileName) {
+    var content = '';
+    var keys = Object.keys(this.results);
     // Always return the same result as all SQL generated code will be placed in the same output file
     // whatever the number of entities processed (only the output file name will change, see getOutputFilesNames()).
-    return this.result;
+    if (fileName in this.results)
+      return this.results[fileName];
+    else {
+      if (fileName === 'create-database') {
+        for (let key of keys) {
+          if (key.startsWith('create')) {
+            content += this.results[key] + '\n';
+          }
+        }
+      }
+      else if (fileName === 'drop-database') {
+        for (let key of keys) {
+          if (key.startsWith('drop')) {
+            content += this.results[key] + '\n';
+          }
+        }
+      }
+
+      return content;
+    }
   }
 
   getOutputFilesExtension() {
@@ -166,21 +184,18 @@ export default class SQLiteGenerator extends AbstractGenerator {
   }
 
   getOutputFilesNames() {
+    var names = [];
     var operation;
     var context;
 
-    if (this.options.create)
-      operation = 'create';
-    else if (this.options.drop)
-      operation = 'drop';
-    else if (this.options.insert)
-      operation = 'insert-into';
+    for (var opt in this.options) {
+      if (this.entities.length === 1)
+        names.push(opt + '-table-' + this.entities[0].plural.toLowerCase());
+      else {
+        names.push(opt + '-database');
+      }
+    }
 
-    if (this.entities.length === 1)
-      context = 'table-' + this.entities[0].plural.toLowerCase();
-    else
-      context = 'database';
-
-    return [ operation + '-' + context ];
+    return names;
   }
 }
