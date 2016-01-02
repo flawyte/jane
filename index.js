@@ -3,8 +3,8 @@
  * ====
  *
  * ✗ Add 'default' attribute support for references
- * ✗ Add 'unique' attribute support
- * ✗ Add 'length' attribute support
+ * ✗ Add 'unique' attribute support for attributes
+ * ✗ Add 'length' attribute support for attributes
  * ✗ Add 'nullable' attribute support for attributes
  * ✗ SQLite: add random inserts generation (via --inserts argument)
  * ✗ Add 'matches' regex attribute support

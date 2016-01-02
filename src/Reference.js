@@ -1,4 +1,5 @@
 import Entity from './Entity';
+import Toolkit from './Toolkit';
 
 export default class Reference {
 
@@ -14,16 +15,18 @@ export default class Reference {
       Entity.default.get(obj.$.entity),
       obj.$.attribute,
       obj.$.as,
+      Toolkit.cast(obj.$.default),
       Boolean(obj.$.nullable === 'true'));
 
     return attr;
   }
 
-  constructor(source, entity, attribute, alias, nullable = false) {
+  constructor(source, entity, attribute, alias, defaultValue, nullable = false) {
     this.alias = alias;
     this.attribute = attribute;
+    this.defaultValue = ((defaultValue === undefined) && (nullable === true)) ? null : defaultValue;
     this.entity = entity;
-    this.nullable = nullable;
+    this.nullable = nullable || (defaultValue === null);
     this.source = source;
 
     Reference.add(this);
