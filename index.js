@@ -2,13 +2,13 @@
  * TODO ✓✗
  * ====
  *
- * ✗ SQLite: Add 'unique' support for attributes
  * ✗ Add 'length' attribute support for attributes
  * ✗ Add 'nullable' attribute support for attributes
  * ✗ SQLite: add random inserts generation (via --inserts argument)
  * ✗ Add 'matches' regex attribute support
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
+ * ✗ CLI: add destination output dir (via --dst arg ?)
  */
 
 /*

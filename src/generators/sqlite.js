@@ -75,6 +75,9 @@ export default class SQLiteGenerator extends AbstractGenerator {
           str += '"' + attr.defaultValue + '"';
       }
 
+      if (!attr.primaryKey && attr.unique)
+        str += ' UNIQUE';
+
       if (i != (e.attributes.length - 1))
         str += ',\n';
     });
