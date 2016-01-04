@@ -43,15 +43,15 @@ export default class SQLiteGenerator extends AbstractGenerator {
   }
 
   generate() {
-    if (!(this.options.create || this.options.drop || this.options.insert))
-      throw 'SQLiteGenerator: you must specify an operation as CLI argument, one of --create / --drop / --insert';
+    if (!(this.options.create || this.options.drop || this.options['insert-into']))
+      throw 'SQLiteGenerator: you must specify an operation as CLI argument, one of --create / --drop / --insert-into';
 
     if (this.options.create)
       this.generateCreate();
     if (this.options.drop)
       this.generateDrop();
-    else if (this.options.insert)
-      throw 'Operation "insert" not yet supported'
+    if (this.options['insert-into'])
+      this.generateInserts();
   }
 
   generateAttributes(e) {
@@ -122,7 +122,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
       }
 
       str += '\n';
-      str += ');\n';
+      str += ');';
 
       self.results['create-table-' + e.plural.toLowerCase()] = str;
     });
@@ -136,10 +136,117 @@ export default class SQLiteGenerator extends AbstractGenerator {
     this.entities.forEach(function(e, i) {
       var str = '';
 
-      str += 'DROP TABLE IF EXISTS ' + e.plural + ';\n';
+      str += 'DROP TABLE IF EXISTS ' + e.plural + ';';
 
       self.results['drop-table-' + e.plural.toLowerCase()] = str;
     });
+  }
+
+  generateInserts() {
+    this.sortEntities();
+    var n = 10; // Generate `n` INSERT INTO statements for each table
+    var self = this;
+
+    this.entities.forEach(function(e, i) {
+      var str = '';
+
+      for (var i = 0; i < n; i++) {
+        if (i > 0)
+          str += '\n';
+
+        str += self.generateInsert(e);
+      }
+
+      self.results['insert-into-' + e.plural.toLowerCase()] = str;
+    });
+  }
+
+  generateInsert(entity) {
+    var e = entity;
+    var self = this;
+    var str = '';
+
+    str += 'INSERT INTO ' + e.plural + ' VALUES (\n';
+    self.indentation++;
+
+    e.attributes.forEach(function(attr, i) {
+      if (attr.primaryKey)
+        str += self.indent() + 'null';
+      else {
+        str += self.indent() + self.generateRandomValue(attr);
+      }
+
+      if ((i < (e.attributes.length - 1)) || (e.references.length > 0))
+        str += ',';
+      str += ' /* ' + attr.name + ' */';
+      if (i <= (e.attributes.length - 1))
+        str += '\n';
+    });
+    e.references.forEach(function(ref, i) {
+      str += self.indent() + (Math.floor(Math.random() * (10 - 1 + 1)) + 1); // Integer >= 1 && <= 10
+
+      if (i < (e.references.length - 1))
+        str += ',';
+      str += ' /* ' + ref.alias + ' */';
+      if (i <= (e.references.length - 1))
+        str += '\n';
+    });
+
+    self.indentation--;
+    str += ');';
+
+    return str;
+  }
+
+  generateRandomValue(attr) {
+    var res = null;
+
+    switch (attr.type) {
+      case 'Boolean': {
+        res = Math.random() >= 0.5;
+      }
+      break;
+      case 'String': {
+        res = (Math.random() + 1).toString(36).slice(2);
+      }
+      break;
+    }
+
+    return res;
+  }
+
+  getContent(fileName) {
+    var content = '';
+    var keys = Object.keys(this.results);
+    // Always return the same result as all SQL generated code will be placed in the same output file
+    // whatever the number of entities processed (only the output file name will change, see getOutputFilesNames()).
+    if (fileName in this.results)
+      return this.results[fileName];
+    else {
+      if (fileName === 'create-database') {
+        for (let key of keys) {
+          if (key.startsWith('create')) {
+            content += this.results[key] + '\n\n';
+          }
+        }
+      }
+      else if (fileName === 'drop-database') {
+        for (let key of keys) {
+          if (key.startsWith('drop')) {
+            content += this.results[key] + '\n\n';
+          }
+        }
+      }
+      else if (fileName === 'insert-into-database') {
+        for (let key of keys) {
+          if (key.startsWith('insert-into')) {
+            content += this.results[key] + '\n\n';
+          }
+        }
+      }
+
+      return content;
+    }
   }
 
   generateForeignKeys(e) {
@@ -159,43 +266,22 @@ export default class SQLiteGenerator extends AbstractGenerator {
     return str;
   }
 
-  getContent(fileName) {
-    var content = '';
-    var keys = Object.keys(this.results);
-    // Always return the same result as all SQL generated code will be placed in the same output file
-    // whatever the number of entities processed (only the output file name will change, see getOutputFilesNames()).
-    if (fileName in this.results)
-      return this.results[fileName];
-    else {
-      if (fileName === 'create-database') {
-        for (let key of keys) {
-          if (key.startsWith('create')) {
-            content += this.results[key] + '\n';
-          }
-        }
-      }
-      else if (fileName === 'drop-database') {
-        for (let key of keys) {
-          if (key.startsWith('drop')) {
-            content += this.results[key] + '\n';
-          }
-        }
-      }
-
-      return content;
-    }
-  }
-
   getOutputFilesExtension() {
     return 'sql';
   }
 
   getOutputFilesNames() {
+    var allowed = [ 'create', 'drop', 'insert-into' ];
     var names = [];
     var operation;
     var context;
 
     for (var opt in this.options) {
+      if (allowed.indexOf(opt) === -1) {
+        console.log('Unsupported argument "' + opt + '"');
+        continue;
+      }
+
       if (this.entities.length === 1)
         names.push(opt + '-table-' + this.entities[0].plural.toLowerCase());
       else {

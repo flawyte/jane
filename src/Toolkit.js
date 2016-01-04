@@ -43,6 +43,7 @@ export default class Toolkit {
     delete arr['_'];
     delete arr['$0'];
     delete arr['gen'];
+    delete arr['insertInto'];
     delete arr['src'];
 
     return arr;

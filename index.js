@@ -2,10 +2,11 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Add 'length' attribute support for attributes
- * ✗ Add 'nullable' attribute support for attributes
- * ✗ SQLite: add random inserts generation (via --inserts argument)
- * ✗ Add 'matches' regex attribute support
+ * ✗ SQLite / insert-into generation: check for circular references when generating random foreign keys (for example for a given table T1 having two foreign keys F11 and F12, with F11 pointing at table T2 and F12 pointing at table T3 and table T3 having a foreign key F22 pointing at table T2 too, F11 and F22 should have the same value for each T1-T3 records pair to ensure data integrity)
+ * ✗ XML: Add 'format' attribute support (e.g. email, last-name, first-name) with appropriated value generation if '--insert-into' argument is used
+ * ✗ XML: Add 'length' attribute support for attributes
+ * ✗ XML: Add 'nullable' attribute support for attributes
+ * ✗ XML: Add 'matches' regex attribute support
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  * ✗ CLI: add destination output dir (via --dst arg ?)
