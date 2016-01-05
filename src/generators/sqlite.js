@@ -142,6 +142,24 @@ export default class SQLiteGenerator extends AbstractGenerator {
     });
   }
 
+  generateForeignKeys(entity) {
+    var e = entity;
+    var self = this;
+    var str = '';
+
+    this.indentation++;
+    e.references.forEach(function(ref, i) {
+      str += self.indent() + 'FOREIGN KEY (' + ref.alias + ') REFERENCES ' + ref.entity.plural + ' (' + ref.attribute + ')';
+
+      if (i < (e.references.length - 1)) {
+        str += ',\n';
+      }
+    });
+    this.indentation--;
+
+    return str;
+  }
+
   generateInserts() {
     this.sortEntities();
     var n = 10; // Generate `n` INSERT INTO statements for each table
@@ -247,23 +265,6 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
       return content;
     }
-  }
-
-  generateForeignKeys(e) {
-    var self = this;
-    var str = '';
-
-    this.indentation++;
-    e.references.forEach(function(ref, i) {
-      str += self.indent() + 'FOREIGN KEY (' + ref.alias + ') REFERENCES ' + ref.entity.plural + ' (' + ref.attribute + ')';
-
-      if (i < (e.references.length - 1)) {
-        str += ',\n';
-      }
-    });
-    this.indentation--;
-
-    return str;
   }
 
   getOutputFilesExtension() {
