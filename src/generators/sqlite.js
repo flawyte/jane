@@ -5,7 +5,11 @@ export default class SQLiteGenerator extends AbstractGenerator {
   constructor(options) {
     super(options);
     this.name = 'sqlite';
-    this.results = {};
+    this.results = {
+      'create': {},
+      'drop': {},
+      'insert-into': {}
+    };
   }
 
   static toSQLiteType(type) {
@@ -124,7 +128,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
       str += '\n';
       str += ');';
 
-      self.results['create-table-' + e.plural.toLowerCase()] = str;
+      self.results['create'][e.plural.toLowerCase()] = str;
     });
   }
 
@@ -138,7 +142,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
       str += 'DROP TABLE IF EXISTS ' + e.plural + ';';
 
-      self.results['drop-table-' + e.plural.toLowerCase()] = str;
+      self.results['drop'][e.plural.toLowerCase()] = str;
     });
   }
 
@@ -175,7 +179,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
         str += self.generateInsert(e);
       }
 
-      self.results['insert-into-' + e.plural.toLowerCase()] = str;
+      self.results['insert-into'][e.plural.toLowerCase()] = str;
     });
   }
 
@@ -235,36 +239,22 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
   getContent(fileName) {
     var content = '';
-    var keys = Object.keys(this.results);
-    // Always return the same result as all SQL generated code will be placed in the same output file
-    // whatever the number of entities processed (only the output file name will change, see getOutputFilesNames()).
-    if (fileName in this.results)
-      return this.results[fileName];
-    else {
-      if (fileName === 'create-database') {
-        for (let key of keys) {
-          if (key.startsWith('create')) {
-            content += this.results[key] + '\n\n';
-          }
-        }
-      }
-      else if (fileName === 'drop-database') {
-        for (let key of keys) {
-          if (key.startsWith('drop')) {
-            content += this.results[key] + '\n\n';
-          }
-        }
-      }
-      else if (fileName === 'insert-into-database') {
-        for (let key of keys) {
-          if (key.startsWith('insert-into')) {
-            content += this.results[key] + '\n\n';
-          }
-        }
-      }
 
-      return content;
+    if (fileName.indexOf('-database') !== -1) {
+      var ope = fileName.substring(0, fileName.lastIndexOf('-database'));
+
+      for (let key of Object.keys(this.results[ope])) {
+        content += this.results[ope][key] + '\n\n';
+      }
     }
+    else {
+      var ope = fileName.substring(0, fileName.lastIndexOf('-table'));
+      var ent = fileName.substring(fileName.lastIndexOf('-') + 1);
+
+      content = this.results[ope][ent] + '\n';
+    }
+
+    return content;
   }
 
   getOutputFilesExtension() {
@@ -272,13 +262,13 @@ export default class SQLiteGenerator extends AbstractGenerator {
   }
 
   getOutputFilesNames() {
-    var allowed = [ 'create', 'drop', 'insert-into' ];
+    var allowedOptions = [ 'create', 'drop', 'insert-into' ];
     var names = [];
     var operation;
     var context;
 
     for (var opt in this.options) {
-      if (allowed.indexOf(opt) === -1) {
+      if (allowedOptions.indexOf(opt) === -1) {
         console.log('Unsupported argument "' + opt + '"');
         continue;
       }
