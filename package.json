@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "example1-js": "node index.js --src tests/Example1.xml --gen js",
-    "example1-sqlite": "node index.js --src tests/Example1.xml --gen sqlite",
-    "test": "node_modules/nodeunit/bin/nodeunit tests/units/"
+    "test": "node_modules/nodeunit/bin/nodeunit tests/units/sqlite/InsertIntoStatementTest.js"
   },
   "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "license": "MIT",
