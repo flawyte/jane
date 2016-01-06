@@ -7,6 +7,7 @@
  * ✗ XML: Add 'length' attribute support for attributes
  * ✗ XML: Add 'nullable' attribute support for attributes
  * ✗ XML: Add 'matches' regex attribute support
+ * ✗ Update README.md: update usage, example & add TODO section (refer reader to this file)
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  * ✗ CLI: add destination output dir (via --dst arg ?)

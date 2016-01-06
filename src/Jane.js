@@ -70,6 +70,8 @@ export default class Jane {
     if (!Toolkit.directoryExists(Jane.basePath + 'output/' + Jane.generator.name))
       Toolkit.createDirectory(Jane.basePath + 'output/' + Jane.generator.name);
 
-    Jane.fs.writeFileSync(Jane.basePath + 'output/' + Jane.generator.name + '/' + file, code, 'utf8');
+    var fullFileName = Jane.basePath + 'output/' + Jane.generator.name + '/' + file;
+    console.log('Writing ' + fullFileName);
+    Jane.fs.writeFileSync(fullFileName, code, 'utf8');
   }
 }
