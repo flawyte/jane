@@ -2,7 +2,6 @@
  * TODO ✓✗
  * ====
  *
- * ✗ SQLite insert-into generation: check for circular references when generating random foreign keys (for example for a given table T1 having two foreign keys F11 and F12, with F11 pointing at table T2 and F12 pointing at table T3 and table T3 having a foreign key F22 pointing at table T2 too, F11 and F22 should have the same value for each T1-T3 records pair to ensure data integrity)
  * ✗ SQLite insert-into generation: use randexp.js and 'matches' (?) XML attribute to generate valid random values
  * ✗ CLI / SQLite insert-into generation: add an argument to specify how many inserts to generate for each table (--insert-into=<VALUE> ?)
  * ✗ XML: Add 'length' attribute support for attributes

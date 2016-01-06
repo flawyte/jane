@@ -189,10 +189,49 @@ export default class SQLiteGenerator extends AbstractGenerator {
             values[attr.name] = SQLiteGenerator.toSQLiteValue(Random.value(attr));
         });
         e.references.forEach(function(ref) {
-          values[ref.alias] = Random.integer(1, n);
+          var otherRefs = [];
+
+          if (values[ref.alias] === undefined) // If no foreign key id set for this reference yet
+            values[ref.alias] = Random.integer(1, n); // Choose a random foreign key id from the number of insert statements generated
+
+          e.references.forEach(function(ref2) {
+            if (ref2 == ref)
+              return;
+
+            otherRefs = otherRefs.concat(
+              ref2.entity.references.filter(function(ref3) {
+                return (ref3.entity === ref.entity)
+                  && (ref3.attribute === ref.attribute);
+              })
+            );
+          });
+
+          // If another reference from this entity points to an entity having a reference to the same Entity-Attribute pair as the current reference
+          if (otherRefs.length > 0) {
+            // Ensure that the value for this foreign key is the same as the other entity's foreign key's value as they should both point to the same table record (for data integrity)
+
+            otherRefs.forEach(function(ref3) {
+              var ref2 = e.references.filter(function(r) {
+                return (r.source === ref.source) && (r.entity === ref3.source);
+              })[0];
+              // Look for an insert statement which has a foreign key to the same table & field and which value is the same as the randomly generated current foreign key id
+              var index = self.results['insert-into'][ref3.source.plural.toLowerCase()]
+                .findIndex(function(val, i) {
+                  return (val.values[ref3.alias] === values[ref.alias]);
+                }
+              );
+
+              if (index !== -1)
+                values[ref2.alias] = (index + 1);
+              else
+                values[ref2.alias] = null;
+
+            });
+          }
         });
 
-        self.results['insert-into'][e.plural.toLowerCase()].push(new InsertIntoStatement(e.plural, values));
+        var stmt = new InsertIntoStatement(e.plural, values);
+        self.results['insert-into'][e.plural.toLowerCase()].push(stmt);
       }
     });
   }
