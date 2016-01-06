@@ -1,4 +1,6 @@
 import AbstractGenerator from './AbstractGenerator';
+import InsertIntoStatement from './sqlite/InsertIntoStatement';
+import Random from './../Random';
 
 export default class SQLiteGenerator extends AbstractGenerator {
 
@@ -17,7 +19,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
     switch (type) {
       case 'String': {
-        res = 'VARCHAR'
+        res = 'VARCHAR';
       }
       break;
       default: {
@@ -44,6 +46,13 @@ export default class SQLiteGenerator extends AbstractGenerator {
     }
 
     return res;
+  }
+
+  addEntity(entity) {
+    super.addEntity(entity);
+
+    if (this.options['insert-into'])
+      this.results['insert-into'][entity.plural.toLowerCase()] = [];
   }
 
   generate() {
@@ -170,71 +179,22 @@ export default class SQLiteGenerator extends AbstractGenerator {
     var self = this;
 
     this.entities.forEach(function(e, i) {
-      var str = '';
-
       for (var i = 0; i < n; i++) {
-        if (i > 0)
-          str += '\n';
+        var values = {};
 
-        str += self.generateInsert(e);
+        e.attributes.forEach(function(attr) {
+          if (attr.primaryKey)
+            values[attr.name] = null;
+          else
+            values[attr.name] = SQLiteGenerator.toSQLiteValue(Random.value(attr));
+        });
+        e.references.forEach(function(ref) {
+          values[ref.alias] = Random.integer(1, n);
+        });
+
+        self.results['insert-into'][e.plural.toLowerCase()].push(new InsertIntoStatement(e.plural, values));
       }
-
-      self.results['insert-into'][e.plural.toLowerCase()] = str;
     });
-  }
-
-  generateInsert(entity) {
-    var e = entity;
-    var self = this;
-    var str = '';
-
-    str += 'INSERT INTO ' + e.plural + ' VALUES (\n';
-    self.indentation++;
-
-    e.attributes.forEach(function(attr, i) {
-      if (attr.primaryKey)
-        str += self.indent() + 'null';
-      else {
-        str += self.indent() + self.generateRandomValue(attr);
-      }
-
-      if ((i < (e.attributes.length - 1)) || (e.references.length > 0))
-        str += ',';
-      str += ' /* ' + attr.name + ' */';
-      if (i <= (e.attributes.length - 1))
-        str += '\n';
-    });
-    e.references.forEach(function(ref, i) {
-      str += self.indent() + (Math.floor(Math.random() * (10 - 1 + 1)) + 1); // Integer >= 1 && <= 10
-
-      if (i < (e.references.length - 1))
-        str += ',';
-      str += ' /* ' + ref.alias + ' */';
-      if (i <= (e.references.length - 1))
-        str += '\n';
-    });
-
-    self.indentation--;
-    str += ');';
-
-    return str;
-  }
-
-  generateRandomValue(attr) {
-    var res = null;
-
-    switch (attr.type) {
-      case 'Boolean': {
-        res = Math.random() >= 0.5;
-      }
-      break;
-      case 'String': {
-        res = (Math.random() + 1).toString(36).slice(2);
-      }
-      break;
-    }
-
-    return res;
   }
 
   getContent(fileName) {
@@ -243,8 +203,15 @@ export default class SQLiteGenerator extends AbstractGenerator {
     if (fileName.indexOf('-database') !== -1) {
       var ope = fileName.substring(0, fileName.lastIndexOf('-database'));
 
-      for (let key of Object.keys(this.results[ope])) {
-        content += this.results[ope][key] + '\n\n';
+      if (ope === 'insert-into') {
+        for (let key of Object.keys(this.results[ope])) {
+          content += this.results[ope][key].join('\n') + '\n\n';
+        }
+      }
+      else {
+        for (let key of Object.keys(this.results[ope])) {
+          content += this.results[ope][key] + '\n\n';
+        }
       }
     }
     else {
