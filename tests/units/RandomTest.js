@@ -43,5 +43,18 @@ module.exports = {
     assert.equal("string", typeof val);
 
     assert.done();
+  },
+  'static value': function(assert) {
+    var val;
+
+    assert.equal(true, Random.value instanceof Function);
+    val = Random.value({ type: 'Boolean' });
+    assert.equal("boolean", typeof val);
+    val = Random.value({ type: 'Integer' });
+    assert.equal("number", typeof val);
+    val = Random.value({ type: 'String' });
+    assert.equal("string", typeof val);
+
+    assert.done();
   }
 };

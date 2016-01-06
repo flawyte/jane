@@ -11,4 +11,29 @@ export default class Random {
   static string() {
     return (Math.random() + 1).toString(36).slice(2);
   }
+
+  static value(attr) {
+    var val;
+
+    switch (attr.type) {
+      case 'Boolean': {
+        val = Random.boolean();
+      }
+      break;
+      case 'Integer': {
+        val = Random.integer();
+      }
+      break;
+      case 'String': {
+        val = Random.string();
+      }
+      break;
+      default: {
+        throw 'Unsupported attribute type "' + attr.type + '"';
+      }
+      break;
+    }
+
+    return val;
+  }
 }
