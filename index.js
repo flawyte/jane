@@ -10,7 +10,6 @@
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  * ✗ CLI: add destination output dir (via --dst arg ?)
- * ✗ CLI: change usage syntax to 'node index.js <generator-name> --from=<XML source(s) file/directory> --to=<desination directory>'
  */
 
 /*
@@ -35,7 +34,9 @@ var xml2js = require('xml2js');
  * ====================
  */
 
-if (!args.src || !args.gen)
+var generatorName = args['_'][0];
+
+if (!generatorName || !args.from || args.help)
   help();
 else {
   init();
@@ -60,8 +61,8 @@ function help() {
 }
 
 function init() {
-  args.src = __dirname + '/' + args.src;
-  var Generator = require('./src/generators/' + args.gen.toLowerCase()).default;
+  args.src = __dirname + '/' + args.from;
+  var Generator = require('./src/generators/' + generatorName).default;
   var options = Toolkit.getGeneratorOptions(args);
 
   Jane.init(fs, new Generator(options), glob, xml2js);

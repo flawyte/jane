@@ -42,7 +42,7 @@ export default class Toolkit {
 
     delete arr['_'];
     delete arr['$0'];
-    delete arr['gen'];
+    delete arr['from'];
     delete arr['insertInto'];
     delete arr['src'];
 
