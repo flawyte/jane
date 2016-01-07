@@ -6,13 +6,13 @@
  * ✗ XML: Add 'length' attribute support for attributes
  * ✗ XML: Add 'nullable' attribute support for attributes
  * ✗ XML: Add 'matches' regex attribute support
- * ✗ Update README.md: update usage, example & add TODO section (refer reader to this file)
+ * ✗ Update CLI-help() + README.md: update usage, example & add TODO section (refer reader to this file)
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  * ✗ CLI: add destination output dir (via --dst arg ?)
  * ✗ Generators: switch from files to directories for each generator (load <gen-name>/index.js automatically) to allow adding additional classes if needed without polluting the base 'generators/' directory
  * ✗ Jane: add process() function (which automatically falls back on processFile() or processDirectory())
- * ✗ Jane processFile()/processDirectory(): replace 'src' arg by an 'args' object literal (to further allow passing additional options to Jane like the output dir if desired)
+ * ✗ CLI: change usage syntax to 'node index.js <generator-name> --from=<XML source(s) file/directory> --to=<desination directory>'
  */
 
 /*
@@ -33,13 +33,6 @@ var util = require('util');
 var xml2js = require('xml2js');
 
 /*
- * Global variables
- * ================
- */
-
-var src;
-
-/*
  * Command line parsing
  * ====================
  */
@@ -48,9 +41,10 @@ if (!args.src || !args.gen)
   help();
 else {
   init();
+  var src = args.src;
 
   if (Toolkit.directoryExists(src)) { // Arg is a directory
-    Jane.processDirectory(src, function(success) {
+    Jane.processDirectory(args, function(success) {
       if (success)
         console.log('✓ Done !');
       else
@@ -58,7 +52,7 @@ else {
     });
   }
   else { // Arg is an XML file
-    Jane.processFile(src, function(success) {
+    Jane.processFile(args, function(success) {
       if (success)
         console.log('✓ Done !');
       else
@@ -84,7 +78,7 @@ function help() {
 }
 
 function init() {
-  src = __dirname + '/' + args.src;
+  args.src = __dirname + '/' + args.src;
   var Generator = require('./src/generators/' + args.gen.toLowerCase()).default;
   var options = Toolkit.getGeneratorOptions(args);
 

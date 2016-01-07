@@ -10,7 +10,9 @@ export default class Jane {
     Jane.xml2js = xml2js;
   }
 
-  static processDirectory(path, callback) {
+  static processDirectory(args, callback) {
+    var path = args.src;
+
     if (!Toolkit.directoryExists(path))
       throw path + ' is not a directory';
     if (!Jane.generator)
@@ -49,7 +51,8 @@ export default class Jane {
     });
   }
 
-  static processFile(path, callback) {
+  static processFile(args, callback) {
+    var path = args.src;
     var gen = Jane.generator;
 
     Jane.basePath = Toolkit.getDirectoryPath(path);
