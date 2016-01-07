@@ -10,6 +10,27 @@ export default class Jane {
     Jane.xml2js = xml2js;
   }
 
+  static process(args) {
+    var src = args.src;
+
+    if (Toolkit.directoryExists(src)) { // Source is a directory
+      Jane.processDirectory(args, function(success) {
+        if (success)
+          console.log('✓ Done !');
+        else
+          console.log('Error while processing directory' + src + '.');
+      });
+    }
+    else { // Source is an XML file
+      Jane.processFile(args, function(success) {
+        if (success)
+          console.log('✓ Done !');
+        else
+          console.log('Error while processing file' + src + '.');
+      });
+    }
+  }
+
   static processDirectory(args, callback) {
     var path = args.src;
 

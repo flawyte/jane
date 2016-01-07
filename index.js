@@ -11,7 +11,6 @@
  * ✗ JS: add partial set(object) and all setters
  * ✗ CLI: add destination output dir (via --dst arg ?)
  * ✗ Generators: switch from files to directories for each generator (load <gen-name>/index.js automatically) to allow adding additional classes if needed without polluting the base 'generators/' directory
- * ✗ Jane: add process() function (which automatically falls back on processFile() or processDirectory())
  * ✗ CLI: change usage syntax to 'node index.js <generator-name> --from=<XML source(s) file/directory> --to=<desination directory>'
  */
 
@@ -41,24 +40,8 @@ if (!args.src || !args.gen)
   help();
 else {
   init();
-  var src = args.src;
 
-  if (Toolkit.directoryExists(src)) { // Arg is a directory
-    Jane.processDirectory(args, function(success) {
-      if (success)
-        console.log('✓ Done !');
-      else
-        console.log('Error while processing directory' + src + '.');
-    });
-  }
-  else { // Arg is an XML file
-    Jane.processFile(args, function(success) {
-      if (success)
-        console.log('✓ Done !');
-      else
-        console.log('Error while processing file' + src + '.');
-    });
-  }
+  Jane.process(args);
 }
 
 /*
