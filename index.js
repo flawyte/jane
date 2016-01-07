@@ -3,7 +3,6 @@
  * ====
  *
  * ✗ SQLite insert-into generation: use randexp.js and 'matches' (?) XML attribute to generate valid random values
- * ✗ CLI / SQLite insert-into generation: add an argument to specify how many inserts to generate for each table (--insert-into=<VALUE> ?)
  * ✗ XML: Add 'length' attribute support for attributes
  * ✗ XML: Add 'nullable' attribute support for attributes
  * ✗ XML: Add 'matches' regex attribute support

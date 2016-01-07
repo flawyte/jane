@@ -63,8 +63,14 @@ export default class SQLiteGenerator extends AbstractGenerator {
       this.generateCreate();
     if (this.options.drop)
       this.generateDrop();
-    if (this.options['insert-into'])
-      this.generateInserts();
+    if (this.options['insert-into']) {
+      var n = 10;
+
+      if (typeof this.options['insert-into'] === 'number')
+        n = this.options['insert-into'];
+
+      this.generateInserts(n);
+    }
   }
 
   generateAttributes(e) {
@@ -173,9 +179,8 @@ export default class SQLiteGenerator extends AbstractGenerator {
     return str;
   }
 
-  generateInserts() {
+  generateInserts(n) {
     this.sortEntities();
-    var n = 10; // Generate `n` INSERT INTO statements for each table
     var self = this;
 
     this.entities.forEach(function(e, i) {
