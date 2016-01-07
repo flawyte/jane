@@ -1,6 +1,6 @@
-import AbstractGenerator from './AbstractGenerator';
-import InsertIntoStatement from './sqlite/InsertIntoStatement';
-import Random from './../Random';
+import AbstractGenerator from './../AbstractGenerator';
+import InsertIntoStatement from './InsertIntoStatement';
+import Random from './../../Random';
 
 export default class SQLiteGenerator extends AbstractGenerator {
 

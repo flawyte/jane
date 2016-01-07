@@ -10,7 +10,6 @@
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  * ✗ CLI: add destination output dir (via --dst arg ?)
- * ✗ Generators: switch from files to directories for each generator (load <gen-name>/index.js automatically) to allow adding additional classes if needed without polluting the base 'generators/' directory
  * ✗ CLI: change usage syntax to 'node index.js <generator-name> --from=<XML source(s) file/directory> --to=<desination directory>'
  */
 

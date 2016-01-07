@@ -1,4 +1,4 @@
-import AbstractGenerator from './AbstractGenerator';
+import AbstractGenerator from './../AbstractGenerator';
 
 export default class JSGenerator extends AbstractGenerator {
 
