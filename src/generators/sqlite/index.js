@@ -216,24 +216,28 @@ export default class SQLiteGenerator extends AbstractGenerator {
             // Ensure that the value for this foreign key is the same as the other entity's foreign key's value as they should both point to the same table record (for data integrity)
 
             otherRefs.forEach(function(ref3) {
-              if (self.results['insert-into'][ref3.source.plural.toLowerCase()] === undefined)
+              var referencedEntityName = ref3.source.plural.toLowerCase();
+
+              if (self.results['insert-into'][referencedEntityName] === undefined)
                 return; // No inserts for this entity
 
               var ref2 = e.references.filter(function(r) {
                 return (r.source === ref.source) && (r.entity === ref3.source);
               })[0];
               // Look for an insert statement which has a foreign key to the same table & field and which value is the same as the randomly generated current foreign key id
-              var index = self.results['insert-into'][ref3.source.plural.toLowerCase()]
-                .findIndex(function(val, i) {
+              var inserts = self.results['insert-into'][referencedEntityName]
+                .filter(function(val, i) {
                   return (val.values[ref3.alias] === values[ref.alias]);
                 }
               );
 
-              if (index !== -1)
-                values[ref2.alias] = (index + 1);
-              else
+              if (inserts.length === 0) // No inserts on the second table with the same value for the same foreign key
                 values[ref2.alias] = null;
-
+              else {
+                // Choose randomly between the matching inserts
+                values[ref2.alias] = self.results['insert-into'][referencedEntityName]
+                  .indexOf(inserts[Random.integer(1, inserts.length) - 1]) + 1;
+              }
             });
           }
         });
