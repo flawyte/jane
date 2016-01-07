@@ -216,6 +216,9 @@ export default class SQLiteGenerator extends AbstractGenerator {
             // Ensure that the value for this foreign key is the same as the other entity's foreign key's value as they should both point to the same table record (for data integrity)
 
             otherRefs.forEach(function(ref3) {
+              if (self.results['insert-into'][ref3.source.plural.toLowerCase()] === undefined)
+                return; // No inserts for this entity
+
               var ref2 = e.references.filter(function(r) {
                 return (r.source === ref.source) && (r.entity === ref3.source);
               })[0];
