@@ -37,7 +37,7 @@ export default class Toolkit {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
   }
 
-  static getOptions(args) {
+  static getGeneratorOptions(args) {
     var arr = JSON.parse(JSON.stringify(args));
 
     delete arr['_'];

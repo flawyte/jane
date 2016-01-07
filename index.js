@@ -84,7 +84,7 @@ function help() {
 function init() {
   src = __dirname + '/' + args.src;
   var Generator = require('./src/generators/' + args.gen.toLowerCase()).default;
-  var options = Toolkit.getOptions(args);
+  var options = Toolkit.getGeneratorOptions(args);
 
   Jane.init(fs, new Generator(options), glob, xml2js);
 }
