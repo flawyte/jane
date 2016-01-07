@@ -262,7 +262,10 @@ export default class SQLiteGenerator extends AbstractGenerator {
       var ope = fileName.substring(0, fileName.lastIndexOf('-table'));
       var ent = fileName.substring(fileName.lastIndexOf('-') + 1);
 
-      content = this.results[ope][ent] + '\n';
+      if (ope === 'insert-into')
+        content = this.results[ope][ent].join('\n') + '\n';
+      else
+        content = this.results[ope][ent] + '\n';
     }
 
     return content;
