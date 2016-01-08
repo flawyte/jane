@@ -10,6 +10,7 @@
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  * ✗ CLI: add destination output dir (via --dst arg ?)
+ * ✗ Generators: add a generator specific 'help' function for usage & examples. Would be used via CLI e.g. when typing 'node index.js sqlite --help'
  */
 
 /*
@@ -51,13 +52,14 @@ else {
 
 function help() {
   console.log('Jane version 0.0.0');
-  console.log('Usage: node index.js --src SOURCE --gen GENERATOR');
+  console.log('Usage: node index.js <generator-name> --from <XML file/directory> [<generator-specific arguments>]');
   console.log('');
-  console.log('Parameters');
-  console.log('==========');
+  console.log('Arguments');
+  console.log('=========');
   console.log('');
-  console.log('* src : Path to the XML source file (should be Jane compliant, see tests/Example1.xml) or directory');
-  console.log('* gen : Generator to use to produce the output string, typically the target file type\'s file extension letters (e.g. js, sql)');
+  console.log('* generator-name : Supported values by default => sqlite');
+  console.log('* from : A Jane-compliant XML source file or a whole directory (each XML file it contains will be processed). See the XML files in one of the tests/example*/ directories for an example');
+  // console.log('* generator-specific arguments : Type "node index.js <generator-name> --help" for a list of supported arguments');
 }
 
 function init() {
