@@ -248,6 +248,14 @@ export default class SQLiteGenerator extends AbstractGenerator {
     });
   }
 
+  getAllowedOptions() {
+    return {
+      'create': 'For each entity, will generate the SQL query to create the related database table.',
+      'drop': 'For each entity, will generate the SQL query to drop the related database table.',
+      'insert-into <rows-count>': 'For each entity, will generate <rows-count> SQL queries to insert randomly generated data in the related database table.'
+    };
+  }
+
   getContent(fileName) {
     var content = '';
 

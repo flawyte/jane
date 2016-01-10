@@ -10,6 +10,23 @@ export default class Jane {
     Jane.xml2js = xml2js;
   }
 
+  static logHelpGenerator() {
+    if (!Jane.generator)
+      return;
+
+    var allowedOptions = Jane.generator.getAllowedOptions();
+
+    if (!allowedOptions)
+      console.log('Specified generator hasn\'t provided any help informations.');
+
+    console.log('Help for generator: ' + Jane.generator.name);
+    console.log('');
+
+    for (let key in allowedOptions) {
+      console.log('--' + key + ' : ' + allowedOptions[key]);
+    }
+  }
+
   static process(args) {
     var src = args.src;
 

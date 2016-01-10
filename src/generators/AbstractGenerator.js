@@ -20,6 +20,13 @@ export default class AbstractGenerator {
   generate() {}
 
   /*
+   * Should return an object literal with allowed options (typically CLI arguments) as keys and options' descriptions as values.
+   */
+  getAllowedOptions() {
+    return null;
+  }
+
+  /*
    * Should return the output file's final content based on its name. Content will then be saved in the file, replacing its current content if any.
    */
   getContent(file) {
