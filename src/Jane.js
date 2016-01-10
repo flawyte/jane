@@ -17,8 +17,14 @@ export default class Jane {
 
     var allowedOptions = Jane.generator.getAllowedOptions();
 
-    if (!allowedOptions)
-      console.log('Specified generator hasn\'t provided any help informations.');
+    if (!allowedOptions) {
+      console.log('Generator "' + Jane.generator.name + '" hasn\'t provided any help informations.');
+      return;
+    }
+    else if (Object.keys(allowedOptions).length === 0) {
+      console.log('Generator "' + Jane.generator.name + '" doesn\'t support any additional arguments.');
+      return;
+    }
 
     console.log('Help for generator: ' + Jane.generator.name);
     console.log('');
