@@ -3,10 +3,11 @@ import Toolkit from './Toolkit';
 
 export default class Jane {
 
-  static init(fs, generator, glob, xml2js) {
+  static init(fs, generator, glob, path, xml2js) {
     Jane.fs = fs;
     Jane.generator = generator;
     Jane.glob = glob;
+    Jane.path = path;
     Jane.xml2js = xml2js;
   }
 
@@ -49,6 +50,7 @@ export default class Jane {
   }
 
   static processDirectory(args, callback) {
+    var gen = Jane.generator;
     var path = args.src;
 
     if (!Toolkit.directoryExists(path))
@@ -60,8 +62,6 @@ export default class Jane {
 
     if (path.slice(-1) !== '/') // Check if path contains a trailing '/' and if not adds one
       path += '/';
-
-    var gen = Jane.generator;
 
     Jane.basePath = path;
 
@@ -81,7 +81,9 @@ export default class Jane {
 
       gen.generate();
       gen.getOutputFilesNames().forEach(function(fileName) {
-        Jane.saveCode(gen.getContent(fileName), fileName + '.' + gen.getOutputFilesExtension());
+        Jane.saveCode(gen.getContent(fileName),
+          fileName + '.' + gen.getOutputFilesExtension(),
+          args.to || ('output/' + Jane.generator.name));
       });
 
       if (callback instanceof Function)
@@ -90,29 +92,42 @@ export default class Jane {
   }
 
   static processFile(args, callback) {
-    var path = args.src;
     var gen = Jane.generator;
+    var path = args.src;
+
+    if (!Jane.generator)
+      throw "Jane.generator is null or undefined, can't generate code"
 
     Jane.basePath = Toolkit.getDirectoryPath(path);
 
     gen.addEntity(Entity.fromXMLFile(path));
     gen.generate();
     gen.getOutputFilesNames().forEach(function(fileName) {
-      Jane.saveCode(gen.getContent(fileName), fileName + '.' + gen.getOutputFilesExtension());
+        Jane.saveCode(gen.getContent(fileName),
+          fileName + '.' + gen.getOutputFilesExtension(),
+          args.to || ('output/' + Jane.generator.name));
     });
 
     if (callback instanceof Function)
       callback(true);
   }
 
-  static saveCode(code, file) {
-    if (!Toolkit.directoryExists(Jane.basePath + 'output/'))
-      Toolkit.createDirectory(Jane.basePath + 'output/');
-    if (!Toolkit.directoryExists(Jane.basePath + 'output/' + Jane.generator.name))
-      Toolkit.createDirectory(Jane.basePath + 'output/' + Jane.generator.name);
+  static saveCode(code, fileName, dir) {
+    var dirPath;
+    var fullPath;
 
-    var fullFileName = Jane.basePath + 'output/' + Jane.generator.name + '/' + file;
-    console.log('Writing ' + fullFileName);
-    Jane.fs.writeFileSync(fullFileName, code, 'utf8');
+    if (dir.startsWith('/')) // Absolute path
+      dirPath = dir;
+    else
+      dirPath = Jane.basePath + dir; // Relative path (to source(s) file(s)'s parent directory)
+
+    dirPath = Jane.path.normalize(dirPath + '/'); // Normalize to avoid '..' and '//' parts
+    fullPath = dirPath + fileName;
+
+    if (!Toolkit.directoryExists(dirPath))
+      Toolkit.createDirectory(dirPath);
+
+    console.log('Writing ' + fullPath);
+    Jane.fs.writeFileSync(fullPath, code, 'utf8');
   }
 }

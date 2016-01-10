@@ -10,7 +10,15 @@ export default class Toolkit {
   }
 
   static createDirectory(dir) {
-    Jane.default.fs.mkdirSync(dir);
+
+    try {
+      Jane.default.fs.mkdirSync(dir);
+    } catch (e) { // One of the parent directory doesn't exist
+      // Create all the parents recursively
+      Toolkit.createDirectory(Jane.default.path.dirname(dir));
+      // And then the directory
+      Toolkit.createDirectory(dir);
+    }
   }
 
   static directoryExists(dir) {
@@ -45,6 +53,7 @@ export default class Toolkit {
     delete arr['from'];
     delete arr['insertInto'];
     delete arr['src'];
+    delete arr['to'];
 
     return arr;
   }
