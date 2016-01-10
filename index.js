@@ -41,32 +41,19 @@ if (generatorName)
 
 if (args.help) {
   if (!generatorName)
-    help();
+    Jane.logHelp();
   else
     Jane.logHelpGenerator();
 }
 else if (generatorName)
   Jane.process(args);
 else
-  help();
+  Jane.logHelp();
 
 /*
  * Functions
  * =========
  */
-
-function help() {
-  console.log('Jane version 0.0.0');
-  console.log('Usage: node index.js <generator-name> --from <XML file/directory> [--to <output directory>] [<generator-specific arguments>]');
-  console.log('');
-  console.log('Arguments');
-  console.log('=========');
-  console.log('');
-  console.log('* generator-name : Supported values by default => sqlite');
-  console.log('* from : A Jane-compliant XML source file or a whole directory (each XML file it contains will be processed). See the XML files in one of the tests/example*/ directories for an example');
-  console.log('* to : Relative path (to the "from" argument) to a directory to write the output file(s) in. Default is "output/<generator-name>/"');
-  console.log('* generator-specific arguments : Type "node index.js <generator-name> --help" for a list of additional arguments supported by a generator if any');
-}
 
 function init() {
   args.src = __dirname + '/' + args.from;

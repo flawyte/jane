@@ -1,15 +1,5 @@
 import Toolkit from './Toolkit';
 
-/*
- * Attributes ✓✗
- * ==========
- *
- * ✓ name         : Attribute's name (e.g. Game Object, Home Screen)
- * ✗ [optional]   :
- * ✗ [primaryKey] :
- * ✗ [required]   :
- * ✓ type         : Attribute's type (one of Boolean, Date, Double, Integer, String)
- */
 export default class Attribute {
 
   static fromXMLObject(obj) {

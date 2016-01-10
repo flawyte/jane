@@ -3,7 +3,7 @@ import Jane from './Jane';
 export default class Toolkit {
 
   static cast(val) {
-    if (Toolkit.type(val) === 'String')
+    if (Toolkit.typeOf(val) === 'String')
       return JSON.parse(val);
     else
       return val;
@@ -30,7 +30,7 @@ export default class Toolkit {
   }
 
   static get ready() {
-    return Jane.default.fs && Jane.default.xml2js;
+    return Jane.default.fs && Jane.default.path && Jane.default.xml2js;
   }
 
   static getDirectoryPath(filePath) {
@@ -59,10 +59,8 @@ export default class Toolkit {
   }
 
   static readXMLFile(path) {
-    if (!Jane.default.fs)
-      throw "Jane.fs not set, can't read file '" + path + "'";
-    if (!Jane.default.xml2js)
-      throw "Jane.xml2js not set, can't parse file '" + path + "'";
+    if (!Toolkit.ready)
+      throw "You must call Jane.init(<params>) first";
 
     var res = null;
     var buffer = Jane.default.fs.readFileSync(path); // sync function
@@ -77,7 +75,7 @@ export default class Toolkit {
     return res;
   }
 
-  static type(val) {
+  static typeOf(val) {
     return Object.prototype.toString.call(val).match(/\[object (.*)\]/)[1];
   }
 }

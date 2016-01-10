@@ -3,14 +3,6 @@ import Jane from './Jane';
 import Reference from './Reference';
 import Toolkit from './Toolkit';
 
-/*
- * Entity ✓✗
- * ======
- *
- * ✓ attributes   : Entity's attributes list (e.g. id, name, age, gender, size)
- * ✓ name         : Entity's name (e.g. Game Object, Home Screen)
- * ✓ [plural]     : Entity's name's plural if appropriated (e.g. Game Objects, Screens)
- */
 export default class Entity {
 
   static add(entity) {

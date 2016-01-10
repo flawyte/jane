@@ -11,10 +11,20 @@ export default class Jane {
     Jane.xml2js = xml2js;
   }
 
-  static logHelpGenerator() {
-    if (!Jane.generator)
-      return;
+  static logHelp() {
+    console.log('Jane version 0.0.0');
+    console.log('Usage: node index.js <generator-name> --from <XML file/directory> [--to <output directory>] [<generator-specific arguments>]');
+    console.log('');
+    console.log('Arguments');
+    console.log('=========');
+    console.log('');
+    console.log('* generator-name : Supported values by default => sqlite');
+    console.log('* from : A Jane-compliant XML source file or a whole directory (each XML file it contains will be processed). See the XML files in one of the tests/example*/ directories for an example');
+    console.log('* to : Relative path (to the "from" argument) to a directory to write the output file(s) in. Default is "output/<generator-name>/"');
+    console.log('* generator-specific arguments : Type "node index.js <generator-name> --help" for a list of additional arguments supported by a generator if any');
+  }
 
+  static logHelpGenerator() {
     var allowedOptions = Jane.generator.getAllowedOptions();
 
     if (!allowedOptions) {
@@ -56,18 +66,14 @@ export default class Jane {
   }
 
   static processDirectory(args, callback) {
+    if (!Jane.ready)
+      throw "You must call Jane.init(<params>) first";
+
     var gen = Jane.generator;
-    var path = args.src;
+    var path = Jane.path.normalize(args.src + '/');
 
     if (!Toolkit.directoryExists(path))
       throw path + ' is not a directory';
-    if (!Jane.generator)
-      throw "Jane.generator is null or undefined, can't generate code"
-    if (!Jane.glob)
-      throw "Jane.glob is null or undefined, can't list directory's XML files without the npm package 'glob'"
-
-    if (path.slice(-1) !== '/') // Check if path contains a trailing '/' and if not adds one
-      path += '/';
 
     Jane.basePath = path;
 
@@ -98,11 +104,11 @@ export default class Jane {
   }
 
   static processFile(args, callback) {
+    if (!Jane.ready)
+      throw "You must call Jane.init(<params>) first";
+
     var gen = Jane.generator;
     var path = args.src;
-
-    if (!Jane.generator)
-      throw "Jane.generator is null or undefined, can't generate code"
 
     Jane.basePath = Toolkit.getDirectoryPath(path);
 
@@ -116,6 +122,14 @@ export default class Jane {
 
     if (callback instanceof Function)
       callback(true);
+  }
+
+  static get ready() {
+    return Jane.fs
+      && Jane.generator
+      && Jane.glob
+      && Jane.path
+      && Jane.xml2js;
   }
 
   static saveCode(code, fileName, dir) {
