@@ -6,7 +6,6 @@
  * ✗ XML: Add 'length' attribute support for attributes
  * ✗ XML: Add 'nullable' attribute support for attributes
  * ✗ XML: Add 'matches' regex attribute support
- * ✗ Update CLI-help() + README.md: update usage, example & add TODO section (refer reader to this file)
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  */

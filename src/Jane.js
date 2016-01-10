@@ -20,7 +20,7 @@ export default class Jane {
     console.log('');
     console.log('* generator-name : Supported values by default => sqlite');
     console.log('* from : A Jane-compliant XML source file or a whole directory (each XML file it contains will be processed). See the XML files in one of the tests/example*/ directories for an example');
-    console.log('* to : Relative path (to the "from" argument) to a directory to write the output file(s) in. Default is "output/<generator-name>/"');
+    console.log('* to : Relative path (to the "from" argument) to a directory to write the output file(s) in. Default is "generated/<generator-name>/"');
     console.log('* generator-specific arguments : Type "node index.js <generator-name> --help" for a list of additional arguments supported by a generator if any');
   }
 
@@ -95,7 +95,7 @@ export default class Jane {
       gen.getOutputFilesNames().forEach(function(fileName) {
         Jane.saveCode(gen.getContent(fileName),
           fileName + '.' + gen.getOutputFilesExtension(),
-          args.to || ('output/' + Jane.generator.name));
+          args.to || ('generated/' + Jane.generator.name));
       });
 
       if (callback instanceof Function)
@@ -117,7 +117,7 @@ export default class Jane {
     gen.getOutputFilesNames().forEach(function(fileName) {
         Jane.saveCode(gen.getContent(fileName),
           fileName + '.' + gen.getOutputFilesExtension(),
-          args.to || ('output/' + Jane.generator.name));
+          args.to || ('generated/' + Jane.generator.name));
     });
 
     if (callback instanceof Function)
