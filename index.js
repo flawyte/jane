@@ -3,6 +3,9 @@
  * ====
  *
  * ✗ SQLite insert-into generation: use randexp.js and 'matches' (?) XML attribute to generate valid random values
+ * ✗ XML: Consider adding 'Date/Datetime/Time' attribute types support (with default value support [ISO])
+ * ✗ XML: Consider adding 'Decimal(p,s)/Float|Real' attribute types support (with default value support)
+ * ✗ XML: Add 'Date' attribute type support (with default value support)
  * ✗ XML: Add 'length' attribute support for attributes
  * ✗ XML: Add 'nullable' attribute support for attributes
  * ✗ XML: Add 'matches' regex attribute support
