@@ -1,6 +1,6 @@
 <entity name="ProductCategory" plural="ProductsCategories">
   <attributes>
     <attribute name="id" type="Integer" primary-key="true" />
-    <attribute name="name" type="String" />
+    <attribute name="name" type="String" maxLength="31" />
   </attributes>
 </entity>

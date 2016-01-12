@@ -4,12 +4,12 @@
     <attribute name="first_name" type="String" />
     <attribute name="last_name" type="String" />
     <attribute name="email" type="String" />
-    <attribute name="password" type="String" />
+    <attribute name="password" type="String" minLength="8" />
     <attribute name="country" type="String" />
     <attribute name="city" type="String" />
     <attribute name="address" type="String" />
     <attribute name="postal_code" type="String" />
     <attribute name="phone" type="String" />
-    <attribute name="signup_date" type="Date" />
+    <attribute name="signup_date" type="Date" default="raw:DATE(NOW())" />
   </attributes>
 </entity>

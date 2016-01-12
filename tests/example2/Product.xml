@@ -1,9 +1,9 @@
 <entity name="Product" plural="Products">
   <attributes>
     <attribute name="id" type="Integer" primary-key="true" />
-    <attribute name="name" type="String" />
+    <attribute name="name" type="String" maxLength="63" />
     <attribute name="price" type="Decimal(5,2)" />
-    <attribute name="description" type="String" />
+    <attribute name="description" type="String" maxLength="1023" />
     <attribute name="stock" type="Integer" />
   </attributes>
   <references>
