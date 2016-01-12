@@ -97,7 +97,7 @@ export default class JSGenerator extends AbstractGenerator {
         self.indentation--;
         str += '\n';
       }
-      if (attr.maxLength !== Number.POSITIVE_INFINITY) {
+      if (attr.maxLength) {
         str += self.indent() + 'if (! (' + self.generateValidationCondition('maxLength', attr) + '))\n';
         self.indentation++;
         str += self.indent() + 'throw "' + self.generateValidationErrorMessage('maxLength', attr) + '";';

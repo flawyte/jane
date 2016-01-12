@@ -4,7 +4,7 @@ export default class Attribute {
 
   static fromXMLObject(obj) {
     var defaultValue;
-    var optional;
+    var nullable;
     var primaryKey = Toolkit.cast(obj.$['primary-key']) || false;
 
     if (obj.$['default'] !== undefined) {
@@ -14,21 +14,19 @@ export default class Attribute {
         defaultValue = '';
     }
 
-    if (obj.$.optional !== undefined) {
-      optional = Toolkit.cast(obj.$.optional);
-    }
-    else if (obj.$.required !== undefined) {
-      optional = !Toolkit.cast(obj.$.required);
+    if (obj.$.nullable !== undefined) {
+      nullable = Toolkit.cast(obj.$.nullable);
     }
 
     var attr = new Attribute(obj.$.name,
       obj.$.type,
       primaryKey,
       Boolean(obj.$.unique === 'true'),
-      optional,
-      defaultValue,
-      Toolkit.cast(obj.$.maxLength)
+      nullable,
+      defaultValue
     );
+
+    attr.maxLength = Toolkit.cast(obj.$.maxLength);
 
     var matches;
     if ((matches = attr.type.match(/Decimal\(([0-9]+),([0-9]+)\)/))) {
@@ -40,18 +38,23 @@ export default class Attribute {
     return attr;
   }
 
-  constructor(name, type, primaryKey = false, unique = false, optional = false, defaultValue = undefined,
-              maxLength = Number.POSITIVE_INFINITY) {
+  constructor(name, type, primaryKey = false, unique = false, nullable = false, defaultValue = undefined) {
     this.defaultValue = defaultValue;
-    this.maxLength = maxLength;
     this.name = name;
-    this.optional = primaryKey ? false : ((defaultValue !== undefined) || optional);
+    this.nullable = primaryKey ? false : ((defaultValue !== undefined) || nullable);
     this.primaryKey = primaryKey;
-    this.required = !this.optional;
     this.type = type;
     this.unique = primaryKey || unique;
 
-    if (this.optional && this.defaultValue === undefined)
-      throw new Error("[jane] Attribute '" + this.name + "' is optional but no default value given");
+    if (this.optional && (this.defaultValue === undefined))
+      this.defaultValue = null;
+  }
+
+  get optional() {
+    return this.nullable;
+  }
+
+  get required() {
+    return !this.nullable;
   }
 }
