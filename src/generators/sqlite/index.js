@@ -14,16 +14,20 @@ export default class SQLiteGenerator extends AbstractGenerator {
     };
   }
 
-  static toSQLiteType(type) {
+  static toSQLiteType(attr) {
     var res = null;
 
-    switch (type) {
+    switch (attr.type) {
+      case 'Decimal': {
+        res = 'DECIMAL(' + attr.precision + ',' + attr.scale + ')';
+      }
+      break;
       case 'String': {
         res = 'VARCHAR';
       }
       break;
       default: {
-        res = type; // sql type == js type
+        res = attr.type; // sql type == js type
       }
       break;
     }
@@ -79,7 +83,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
     this.indentation++;
     e.attributes.forEach(function(attr, i) {
-      str += self.indent() + attr.name + ' ' + SQLiteGenerator.toSQLiteType(attr.type).toUpperCase();
+      str += self.indent() + attr.name + ' ' + SQLiteGenerator.toSQLiteType(attr).toUpperCase();
 
       if (attr.primaryKey)
         str += ' PRIMARY KEY AUTOINCREMENT'
