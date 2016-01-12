@@ -1,4 +1,5 @@
 **/generated/
 **/js/
 **/sqlite/
+**/*.db
 node_modules/

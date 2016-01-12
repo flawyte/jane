@@ -93,7 +93,12 @@ export default class SQLiteGenerator extends AbstractGenerator {
         str += ' DEFAULT ';
 
         if (attr.type !== 'String')
-          str += SQLiteGenerator.toSQLiteValue(attr.defaultValue);
+          if (attr.defaultValueIsRaw)
+            str += '(' + attr.defaultValue + ')';
+          else if (attr.type !== 'Date')
+            str += SQLiteGenerator.toSQLiteValue(attr.defaultValue);
+          else
+            str += '"' + attr.defaultValue + '"';
         else
           str += '"' + attr.defaultValue + '"';
       }
@@ -194,6 +199,8 @@ export default class SQLiteGenerator extends AbstractGenerator {
         e.attributes.forEach(function(attr) {
           if (attr.primaryKey)
             values[attr.name] = null;
+          else if (attr.defaultValueIsRaw)
+            values[attr.name] = attr.defaultValue;
           else
             values[attr.name] = SQLiteGenerator.toSQLiteValue(Random.value(attr));
         });
@@ -246,7 +253,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
           }
         });
 
-        var stmt = new InsertIntoStatement(e.plural, values);
+        var stmt = new InsertIntoStatement(e, values);
         self.results['insert-into'][e.plural.toLowerCase()].push(stmt);
       }
     });
