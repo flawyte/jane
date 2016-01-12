@@ -1,2 +1,4 @@
-**/output/
+**/generated/
+**/js/
+**/sqlite/
 node_modules/

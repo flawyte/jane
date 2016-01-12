@@ -18,6 +18,41 @@ module.exports = {
 
     assert.done();
   },
+  'static date': function(assert) {
+    var val;
+
+    assert.equal(true, Random.date instanceof Function);
+    val = Random.date();
+    assert.equal(true, (val instanceof Date));
+    val = Random.date();
+    assert.equal(true, (val instanceof Date));
+    val = Random.date();
+    assert.equal(true, (val instanceof Date));
+
+    assert.done();
+  },
+  'static decimal': function(assert) {
+    var val;
+
+    assert.equal(true, Random.decimal instanceof Function);
+    assert.throws(function() {
+        Random.decimal(2, 2);
+    });
+    assert.throws(function() {
+        Random.decimal(2, 3);
+    });
+    val = Random.decimal();
+    assert.equal(true, (val >= 0) && (val < 100000));
+    assert.equal(true, (typeof val === 'number'));
+    val = Random.decimal(3, 2);
+    assert.equal(true, (val >= 0) && (val < 10));
+    assert.equal(true, (typeof val === 'number'));
+    val = Random.decimal(5, 2);
+    assert.equal(true, (val >= 0) && (val < 1000));
+    assert.equal(true, (typeof val === 'number'));
+
+    assert.done();
+  },
   'static integer': function(assert) {
     var val;
 
