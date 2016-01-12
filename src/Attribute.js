@@ -8,10 +8,15 @@ export default class Attribute {
     var primaryKey = Toolkit.cast(obj.$['primary-key']) || false;
 
     if (obj.$['default'] !== undefined) {
-      if (obj.$['default'].length > 0)
-        defaultValue = Toolkit.cast(obj.$['default']);
-      else
-        defaultValue = '';
+      if (obj.$['default'].startsWith('raw:')) {
+        defaultValue = obj.$['default'].split(':')[1];
+      }
+      else {
+        if (obj.$['default'].length > 0)
+          defaultValue = Toolkit.cast(obj.$['default']);
+        else
+          defaultValue = '';
+      }
     }
 
     if (obj.$.nullable !== undefined) {
@@ -26,6 +31,7 @@ export default class Attribute {
       defaultValue
     );
 
+    attr.defaultValueIsRaw = (obj.$['default'] && obj.$['default'].startsWith('raw:'));
     attr.maxLength = Toolkit.cast(obj.$.maxLength);
 
     var matches;
