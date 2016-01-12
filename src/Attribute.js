@@ -30,6 +30,13 @@ export default class Attribute {
       Toolkit.cast(obj.$.maxLength)
     );
 
+    var matches;
+    if ((matches = attr.type.match(/Decimal\(([0-9]+),([0-9]+)\)/))) {
+      attr.precision = Number(matches[1]);
+      attr.scale = Number(matches[2]);
+      attr.type = 'Decimal';
+    }
+
     return attr;
   }
 
