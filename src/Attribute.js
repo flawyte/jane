@@ -32,7 +32,7 @@ export default class Attribute {
     );
 
     attr.defaultValueIsRaw = (obj.$['default'] && obj.$['default'].startsWith('raw:'));
-    attr.maxLength = Toolkit.cast(obj.$.maxLength);
+    attr.maxLength = Toolkit.cast(obj.$.maxLength, attr.type);
 
     var matches;
     if ((matches = attr.type.match(/Decimal\(([0-9]+),([0-9]+)\)/))) {

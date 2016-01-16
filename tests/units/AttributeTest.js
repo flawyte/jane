@@ -19,8 +19,9 @@ module.exports = {
     var attr = new Attribute('email', 'String');
 
     assert.equal(undefined, attr.defaultValue);
-    assert.equal(Number.POSITIVE_INFINITY, attr.maxLength);
+    assert.equal(undefined, attr.maxLength);
     assert.equal('email', attr.name);
+    assert.equal(false, attr.nullable);
     assert.equal(false, attr.optional);
     assert.equal(false, attr.primaryKey);
     assert.equal(true, attr.required);
@@ -37,6 +38,7 @@ module.exports = {
     obj = {
       '$': {
         name: 'id',
+        nullable: 'true',
         type: 'Integer',
         'primary-key': 'true'
       }
@@ -44,8 +46,9 @@ module.exports = {
     attr = Attribute.fromXMLObject(obj);
 
     assert.equal(undefined, attr.defaultValue);
-    assert.equal(Number.POSITIVE_INFINITY, attr.maxLength);
+    assert.equal(undefined, attr.maxLength);
     assert.equal('id', attr.name);
+    assert.equal(false, attr.nullable);
     assert.equal(false, attr.optional);
     assert.equal(true, attr.primaryKey);
     assert.equal(true, attr.required);
@@ -64,6 +67,7 @@ module.exports = {
     assert.equal(null, attr.defaultValue);
     assert.equal(255, attr.maxLength);
     assert.equal('name', attr.name);
+    assert.equal(true, attr.nullable);
     assert.equal(true, attr.optional);
     assert.equal(false, attr.primaryKey);
     assert.equal(false, attr.required);

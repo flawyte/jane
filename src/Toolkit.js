@@ -2,10 +2,10 @@ import Jane from './Jane';
 
 export default class Toolkit {
 
-  static cast(val) {
-    if (new Date(val).toString() !== 'Invalid Date') // Date format
+  static cast(val, type) {
+    if ((type === 'Date') || (type === 'DateTime'))
       return new Date(val);
-    if (Toolkit.typeOf(val) === 'String')
+    else if (Toolkit.typeOf(val) === 'String')
       return JSON.parse(val);
     else
       return val;
