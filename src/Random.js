@@ -8,6 +8,11 @@ export default class Random {
     return new Date(Random.integer(1, 2015), Random.integer(0, 11), Random.integer(1, 31));
   }
 
+  static datetime() {
+    return new Date(Random.integer(1, 2015), Random.integer(0, 11), Random.integer(1, 31),
+      Random.integer(0, 23), Random.integer(0, 59), Random.integer(0, 59));
+  }
+
   static decimal(precision = 10, scale = 5) {
     if (scale >= precision)
       throw "Can't generate a decimal with scale >= precision";
@@ -35,6 +40,10 @@ export default class Random {
       break;
       case 'Date': {
         val = Random.date();
+      }
+      break;
+      case 'DateTime': {
+        val = Random.datetime();
       }
       break;
       case 'Decimal': {
