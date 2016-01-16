@@ -32,6 +32,7 @@ export default class Attribute {
     );
 
     attr.defaultValueIsRaw = (obj.$['default'] && obj.$['default'].startsWith('raw:'));
+    attr.regex = obj.$.regex;
     attr.maxLength = Toolkit.cast(obj.$.maxLength, attr.type);
 
     var matches;

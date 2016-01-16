@@ -1,3 +1,5 @@
+import Jane from './Jane';
+
 export default class Random {
 
   static boolean() {
@@ -32,6 +34,12 @@ export default class Random {
 
   static value(attr) {
     var val;
+
+    if (attr.regex) {
+      val = new Jane.randexp(attr.regex).gen();
+
+      return val;
+    }
 
     switch (attr.type) {
       case 'Boolean': {

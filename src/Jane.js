@@ -3,11 +3,12 @@ import Toolkit from './Toolkit';
 
 export default class Jane {
 
-  static init(fs, generator, glob, path, xml2js) {
+  static init(fs, generator, glob, path, randexp, xml2js) {
     Jane.fs = fs;
     Jane.generator = generator;
     Jane.glob = glob;
     Jane.path = path;
+    Jane.randexp = randexp;
     Jane.xml2js = xml2js;
   }
 

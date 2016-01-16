@@ -3,7 +3,7 @@
     <attribute name="id" type="Integer" primary-key="true" />
     <attribute name="first_name" type="String" />
     <attribute name="last_name" type="String" />
-    <attribute name="email" type="String" />
+    <attribute name="email" type="String" regex="[a-z0-9._+-]{1,20}@[a-z0-9]{3,15}\.[a-z]{2,4}" />
     <attribute name="password" type="String" minLength="8" />
     <attribute name="country" type="String" />
     <attribute name="city" type="String" />

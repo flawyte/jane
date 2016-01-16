@@ -27,6 +27,7 @@ var fs = require('fs');
 var glob = require('glob');
 var Jane = require('./src/Jane').default;
 var path = require('path');
+var randexp = require('randexp');
 var Toolkit = require('./src/Toolkit').default;
 var util = require('util');
 var xml2js = require('xml2js');
@@ -62,5 +63,5 @@ function init() {
   var Generator = require('./src/generators/' + generatorName).default;
   var options = Toolkit.getGeneratorOptions(args);
 
-  Jane.init(fs, new Generator(options), glob, path, xml2js);
+  Jane.init(fs, new Generator(options), glob, path, randexp, xml2js);
 }
