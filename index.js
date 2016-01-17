@@ -2,13 +2,12 @@
  * TODO ✓✗
  * ====
  *
+ * ✗ Tag v0.5.0
  * ✗ SQLite: Add bash script generation that could be executed to execute generated SQL queries (via its own --create/--drop/--insert-into args)
  * ✗ SQLite: Add 'auto' (or similar) attribute support for attributes (means that value is automatically set by the RDBMS and doesn't need to be manually set when executing INSERT INTO statements, typically for rows metadata columns like "created_at", "updated_at"...)
- * ✗ SQLite insert-into generation: use randexp.js and 'matches' (?) XML attribute to generate valid random values
  * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])
  * ✗ XML: Consider adding 'Float|Real' attribute types support (with default value support)
  * ✗ XML: Add 'length' attribute support for attributes
- * ✗ XML: Add 'matches' regex attribute support
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  */
