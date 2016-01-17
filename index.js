@@ -2,7 +2,7 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Tag v0.5.0
+ * ✗ Misc: Add XML syntax help sheet + SQLite help
  * ✗ SQLite: Add bash script generation that could be executed to execute generated SQL queries (via its own --create/--drop/--insert-into args)
  * ✗ SQLite: Add 'auto' (or similar) attribute support for attributes (means that value is automatically set by the RDBMS and doesn't need to be manually set when executing INSERT INTO statements, typically for rows metadata columns like "created_at", "updated_at"...)
  * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])
