@@ -10,6 +10,6 @@
     <attribute name="address" type="String" />
     <attribute name="postal_code" type="String" />
     <attribute name="phone" type="String" />
-    <attribute name="signup_date" type="Date" default="raw:DATE()" />
+    <attribute name="signup_date" type="DateTime" default="raw:DATETIME()" />
   </attributes>
 </entity>
