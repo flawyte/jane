@@ -65,7 +65,7 @@ For example, if you want to generate the SQL code to create, drop and insert som
 node index.js sqlite --from tests/example1/ --create --drop --insert-into=5
 ```
 
-And see the output files in `tests/example1/output/sqlite/`.
+And see the output files in `tests/example1/generated/sqlite/`.
 
 ## Supported generators
 
