@@ -2,11 +2,11 @@ import AbstractGenerator from './../AbstractGenerator';
 import InsertIntoStatement from './../InsertIntoStatement';
 import Random from './../../Random';
 
-export default class SQLiteGenerator extends AbstractGenerator {
+export default class MySQLGenerator extends AbstractGenerator {
 
   constructor(options) {
     super(options);
-    this.name = 'sqlite';
+    this.name = 'mysql';
     this.results = {
       'create': {},
       'drop': {},
@@ -14,7 +14,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
     };
   }
 
-  static toSQLiteType(attr) {
+  static toMySQLType(attr) {
     var res = null;
 
     switch (attr.type) {
@@ -22,8 +22,15 @@ export default class SQLiteGenerator extends AbstractGenerator {
         res = 'DECIMAL(' + attr.precision + ',' + attr.scale + ')';
       }
       break;
+      case 'Integer': {
+        res = 'INT';
+      }
+      break;
       case 'String': {
-        res = 'VARCHAR';
+        if (attr.maxLength)
+          res = 'VARCHAR(' + attr.maxLength + ')';
+        else
+          res = 'VARCHAR(255)';
       }
       break;
       default: {
@@ -35,13 +42,25 @@ export default class SQLiteGenerator extends AbstractGenerator {
     return res;
   }
 
-  static toSQLiteValue(value) {
+  static toMySQLValue(value) {
     var res = null;
 
     switch (value) {
+      case 'DATE()': {
+        res = 'CURRENT_DATE'; // sql value == js value
+      }
+      break;
+      case 'DATETIME()': {
+        res = 'CURRENT_TIMESTAMP'; // sql value == js value
+      }
+      break;
+      case 'TIME()': {
+        res = 'CURRENT_TIME'; // sql value == js value
+      }
+      break;
       case true:
       case false:
-        res = Number(value);
+        res = String(value).toUpperCase();
       break;
       default: {
         res = value; // sql value == js value
@@ -60,8 +79,12 @@ export default class SQLiteGenerator extends AbstractGenerator {
   }
 
   generate() {
+    if (!this.options['db-name'])
+      throw 'You must specify a database name using the --db-name argument.';
+    else if (this.options['db-name'].match(/.*-.*/))
+      throw 'Mysql does not allow dashes in databases names.';
     if (!(this.options.create || this.options.drop || this.options['insert-into']))
-      throw 'SQLiteGenerator: you must specify an operation as CLI argument, one of --create / --drop / --insert-into';
+      throw 'MySQLGenerator: you must specify an operation as CLI argument, one of --create / --drop / --insert-into';
 
     if (this.options.create)
       this.generateCreate();
@@ -83,20 +106,18 @@ export default class SQLiteGenerator extends AbstractGenerator {
 
     this.indentation++;
     e.attributes.forEach(function(attr, i) {
-      str += self.indent() + attr.name + ' ' + SQLiteGenerator.toSQLiteType(attr).toUpperCase();
+      str += self.indent() + attr.name + ' ' + MySQLGenerator.toMySQLType(attr).toUpperCase();
 
       if (attr.primaryKey)
-        str += ' PRIMARY KEY AUTOINCREMENT'
+        str += ' PRIMARY KEY AUTO_INCREMENT'
       else if (attr.required)
         str += ' NOT NULL';
       else {
         str += ' DEFAULT ';
 
         if (attr.type !== 'String')
-          if (attr.defaultValueIsRaw)
-            str += '(' + attr.defaultValue + ')';
-          else if (attr.type !== 'Date')
-            str += SQLiteGenerator.toSQLiteValue(attr.defaultValue);
+          if (attr.defaultValueIsRaw && attr.defaultValue.match(/.*\(\)/))
+            str += MySQLGenerator.toMySQLValue(attr.defaultValue);
           else
             str += '"' + attr.defaultValue + '"';
         else
@@ -114,7 +135,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
       str += ',\n';
 
     e.references.forEach(function(ref, i) {
-      str += self.indent() + ref.alias + ' ' + SQLiteGenerator.toSQLiteType({ type: 'Integer' });
+      str += self.indent() + ref.alias + ' ' + MySQLGenerator.toMySQLType({ type: 'Integer' });
 
       if (ref.nullable)
         str += ' DEFAULT NULL';
@@ -122,7 +143,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
         str += ' NOT NULL';
 
         if (ref.defaultValue !== undefined)
-          str += ' DEFAULT ' + SQLiteGenerator.toSQLiteValue(ref.defaultValue);
+          str += ' DEFAULT ' + MySQLGenerator.toMySQLValue(ref.defaultValue);
       }
 
       if (i < (e.references.length - 1))
@@ -200,9 +221,9 @@ export default class SQLiteGenerator extends AbstractGenerator {
           if (attr.primaryKey)
             values[attr.name] = null;
           else if (attr.defaultValueIsRaw)
-            values[attr.name] = attr.defaultValue;
+            values[attr.name] = MySQLGenerator.toMySQLValue(attr.defaultValue);
           else
-            values[attr.name] = SQLiteGenerator.toSQLiteValue(Random.value(attr));
+            values[attr.name] = MySQLGenerator.toMySQLValue(Random.value(attr));
         });
         e.references.forEach(function(ref) {
           var otherRefs = [];
@@ -262,19 +283,21 @@ export default class SQLiteGenerator extends AbstractGenerator {
   getAllowedOptions() {
     return {
       'create': 'For each entity, will generate the SQL query to create the related database table.',
+      'db-name': 'The database name.',
       'drop': 'For each entity, will generate the SQL query to drop the related database table.',
       'insert-into <rows-count>': 'For each entity, will generate <rows-count> SQL queries to insert randomly generated data in the related database table.'
     };
   }
 
   getContent(fileName) {
-    var content = '';
+    var content = 'CREATE DATABASE IF NOT EXISTS ' + this.options['db-name'] + ';\n';
+    content += 'USE ' + this.options['db-name'] + ';\n\n';
 
     if (fileName.indexOf('-database') !== -1) {
       var ope = fileName.substring(0, fileName.lastIndexOf('-database'));
 
       if (ope === 'insert-into') {
-        for (let key of Object.keys(this.results[ope])) {
+        for (let key of Object.keys(this.results[ope]).reverse()) {
           content += this.results[ope][key].join('\n') + '\n\n';
         }
       }
@@ -285,6 +308,7 @@ export default class SQLiteGenerator extends AbstractGenerator {
       }
     }
     else {
+      console.log('2');
       var ope = fileName.substring(0, fileName.lastIndexOf('-table'));
       var ent = fileName.substring(fileName.lastIndexOf('-') + 1);
 
@@ -307,8 +331,8 @@ export default class SQLiteGenerator extends AbstractGenerator {
     var operation;
     var context;
 
-    for (var opt in this.options) {
-      if (allowedOptions.indexOf(opt) === -1) {
+    for (var opt of allowedOptions) {
+      if (!this.options[opt]) {
         console.log('Unsupported argument "' + opt + '"');
         continue;
       }
