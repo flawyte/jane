@@ -83,10 +83,12 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         if (attr.type !== 'String')
           if (attr.defaultValueIsRaw && attr.defaultValue.match(/.*\(\)/))
             str += self.toSQLValue(attr.defaultValue, true);
+          else if (attr.type !== 'String')
+            str += attr.defaultValue;
           else
-            str += '"' + attr.defaultValue + '"';
+            str += self.escapeColumnValue(attr.defaultValue);
         else
-          str += '"' + attr.defaultValue + '"';
+          str += self.escapeColumnValue(attr.defaultValue);
       }
 
       if (!attr.primaryKey && attr.unique)
