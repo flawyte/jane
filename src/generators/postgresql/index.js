@@ -2,18 +2,30 @@ import AbstractSQLGenerator from './../AbstractSQLGenerator';
 import InsertIntoStatement from './../InsertIntoStatement';
 import Random from './../../Random';
 
-export default class MySQLGenerator extends AbstractSQLGenerator {
+export default class PostgreSQLGenerator extends AbstractSQLGenerator {
 
   constructor(options) {
     super(options);
-    this.name = 'mysql';
+    this.name = 'postgresql';
+  }
+
+  escapeColumnName(name) {
+    if (name === 'user')
+      return '"user"';
+    else
+      return super.escapeColumnName(name);
+  }
+
+  escapeColumnValue(name) {
+    if ((typeof name === 'string') && !name.match(/CURRENT_/i))
+      return "'" + name + "'";
+    else
+      return name;
   }
 
   generate() {
     if (!this.options['db-name'])
       throw 'You must specify a database name using the --db-name argument.';
-    else if (this.options['db-name'].match(/.*-.*/))
-      throw 'Mysql does not allow dashes in databases names.';
 
     super.generate();
   }
@@ -26,29 +38,37 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
     return opts;
   }
 
-  getAutoIncrementString() {
-    return 'AUTO_INCREMENT';
-  }
-
   getContent(fileName) {
-    return 'CREATE DATABASE IF NOT EXISTS ' + this.options['db-name'] + ';\n'
-      + 'USE ' + this.options['db-name'] + ';\n\n'
-      + super.getContent(fileName);
+    if (~fileName.indexOf('create-database'))
+      return 'CREATE DATABASE ' + this.options['db-name'].toLowerCase() + ';\n'
+        + '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
+        + super.getContent(fileName);
+    else if (~fileName.indexOf('drop-database'))
+      return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
+        + super.getContent(fileName)
+        + '\\connect postgres;\n'
+        + 'DROP DATABASE ' + this.options['db-name'].toLowerCase();
+    else
+      return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
+        + super.getContent(fileName);
   }
 
   toSQLType(attr) {
     var res = null;
 
+    if (attr.primaryKey)
+      return 'SERIAL';
+
     switch (attr.type) {
-      case 'Integer': {
-        res = 'INT';
+      case 'DateTime': {
+        res = 'TIMESTAMP';
       }
       break;
       case 'String': {
         if (attr.maxLength)
           res = 'VARCHAR(' + attr.maxLength + ')';
         else
-          res = 'VARCHAR(255)';
+          res = 'TEXT';
       }
       break;
       default: {

@@ -23,6 +23,23 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
       this.results['insert-into'][entity.plural.toLowerCase()] = [];
   }
 
+  /**
+   * Used in rare cases like when `name === 'user'` which is not allowed in PostgreSQL unless quoted (e.g. "user"). Its the responsibility of this method to do so.
+   */
+  escapeColumnName(name) {
+    return name;
+  }
+
+  /**
+   * Used in the PostgreSQL generator to replace double quotes by simple quotes;
+   */
+  escapeColumnValue(name) {
+    if ((typeof name === 'string') && name.match(/CURRENT_/i))
+      return name;
+    else
+      return JSON.stringify(name);
+  }
+
   /*
    * Should generate code based on the 'entities' array.
    */
@@ -52,8 +69,12 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     e.attributes.forEach(function(attr, i) {
       str += self.indent() + attr.name + ' ' + self.toSQLType(attr).toUpperCase();
 
-      if (attr.primaryKey)
-        str += ' PRIMARY KEY ' + self.getAutoIncrementString();
+      if (attr.primaryKey) {
+        str += ' PRIMARY KEY';
+
+        if (self.getAutoIncrementString())
+          str += ' ' + self.getAutoIncrementString();
+      }
       else if (attr.required)
         str += ' NOT NULL';
       else {
@@ -79,7 +100,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
       str += ',\n';
 
     e.references.forEach(function(ref, i) {
-      str += self.indent() + ref.alias + ' ' + self.toSQLType({ type: 'Integer' });
+      str += self.indent() + self.escapeColumnName(ref.alias) + ' ' + self.toSQLType({ type: 'Integer' });
 
       if (ref.nullable)
         str += ' DEFAULT NULL';
@@ -142,7 +163,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
 
     this.indentation++;
     e.references.forEach(function(ref, i) {
-      str += self.indent() + 'FOREIGN KEY (' + ref.alias + ') REFERENCES ' + ref.entity.plural + ' (' + ref.attribute + ')';
+      str += self.indent() + 'FOREIGN KEY (' + self.escapeColumnName(ref.alias) + ') REFERENCES ' + ref.entity.plural + ' (' + ref.attribute + ')';
 
       if (i < (e.references.length - 1)) {
         str += ',\n';
@@ -163,11 +184,11 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
 
         e.attributes.forEach(function(attr) {
           if (attr.primaryKey)
-            values[attr.name] = null;
+            return;
           else if (attr.defaultValueIsRaw)
-            values[attr.name] = self.toSQLValue(attr.defaultValue);
+            values[attr.name] = self.escapeColumnValue(self.toSQLValue(attr.defaultValue));
           else
-            values[attr.name] = self.toSQLValue(Random.value(attr));
+            values[attr.name] = self.escapeColumnValue(self.toSQLValue(Random.value(attr)));
         });
         e.references.forEach(function(ref) {
           var otherRefs = [];
@@ -218,7 +239,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           }
         });
 
-        var stmt = new InsertIntoStatement(e, values);
+        var stmt = new InsertIntoStatement(self, e, values);
         self.results['insert-into'][e.plural.toLowerCase()].push(stmt);
       }
     });
@@ -230,6 +251,10 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
       'drop': 'For each entity, will generate the SQL query to drop the related database table.',
       'insert-into <rows-count>': 'For each entity, will generate <rows-count> SQL queries to insert randomly generated data in the related database table.'
     };
+  }
+
+  getAutoIncrementString() {
+    return '';
   }
 
   getContent(fileName) {
