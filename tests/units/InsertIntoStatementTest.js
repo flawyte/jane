@@ -7,13 +7,17 @@ var InsertIntoStatement = require('./../../src/generators/InsertIntoStatement').
 
 module.exports = {
   'toString': function(assert) {
-    var stmt = new InsertIntoStatement(new Entity('Foobar', 'Foobars'), {
+    var stmt = new InsertIntoStatement({
+      escapeColumnName: function(val) {
+        return val;
+      }
+    }, new Entity('Foobar', 'Foobars'), {
       count: 1234,
-      body: "Lorem lipsum pirouette.",
+      body: JSON.stringify("Lorem lipsum pirouette."),
       done: false,
-      title: "Awesome Thing"
+      title: JSON.stringify("Awesome Thing")
     });
-    var res = 'INSERT INTO Foobars VALUES (\n  1234, /* count */\n  "Lorem lipsum pirouette.", /* body */\n  false, /* done */\n  "Awesome Thing" /* title */\n);';
+    var res = 'INSERT INTO Foobars (count, body, done, title) VALUES (\n  1234, /* count */\n  "Lorem lipsum pirouette.", /* body */\n  false, /* done */\n  "Awesome Thing" /* title */\n);';
 
     assert.equal(res, stmt.toString());
     assert.done();
