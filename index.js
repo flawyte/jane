@@ -8,6 +8,7 @@
  * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])
  * ✗ XML: Consider adding 'Float|Real' attribute types support (with default value support)
  * ✗ XML: Add 'length' attribute support for attributes
+ * ✗ XML: Add 'min-length' attribute support for attributes
  * ✗ XML: Rename 'maxLength' attribute in 'max-length'
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters

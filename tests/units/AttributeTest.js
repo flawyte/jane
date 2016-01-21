@@ -59,7 +59,7 @@ module.exports = {
         name: 'name',
         type: 'String',
         default: 'null',
-        maxLength: '255'
+        'max-length': '255'
       }
     };
     attr = Attribute.fromXMLObject(obj);

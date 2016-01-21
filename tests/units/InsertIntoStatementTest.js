@@ -2,8 +2,8 @@ require('traceur').require.makeDefault(function(filename) {
   return filename.indexOf('node_modules') === -1;
 });
 
-var Entity = require('./../../../src/Entity').default;
-var InsertIntoStatement = require('./../../../src/generators/sqlite/InsertIntoStatement').default;
+var Entity = require('./../../src/Entity').default;
+var InsertIntoStatement = require('./../../src/generators/InsertIntoStatement').default;
 
 module.exports = {
   'toString': function(assert) {
