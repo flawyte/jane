@@ -33,11 +33,11 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
   /**
    * Used in the PostgreSQL generator to replace double quotes by simple quotes;
    */
-  escapeColumnValue(name) {
-    if ((typeof name === 'string') && name.match(/CURRENT_/i))
-      return name;
+  escapeColumnValue(value) {
+    if ((typeof value === 'string') && value.match(/^CURRENT_.*/gi))
+      return value;
     else
-      return JSON.stringify(name);
+      return JSON.stringify(value);
   }
 
   /*
@@ -80,15 +80,12 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
       else {
         str += ' DEFAULT ';
 
-        if (attr.type !== 'String')
-          if (attr.defaultValueIsRaw && attr.defaultValue.match(/.*\(\)/))
-            str += self.toSQLValue(attr.defaultValue, true);
-          else if (attr.type !== 'String')
-            str += attr.defaultValue;
-          else
-            str += self.escapeColumnValue(attr.defaultValue);
-        else
+        if (attr.defaultValueIsFunction)
+          str += self.toSQLValue(attr.defaultValue, true);
+        else if (attr.type === 'String')
           str += self.escapeColumnValue(attr.defaultValue);
+        else
+          str += attr.defaultValue;
       }
 
       if (!attr.primaryKey && attr.unique)
