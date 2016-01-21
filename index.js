@@ -4,7 +4,6 @@
  *
  * ✗ Attribute: add a 'isValid(value)' function that would check is given value matches all of the attribute's constraints and use it when generating dummy date in SQL generators
  * ✗ Generators: add a 'setOptions(opts)' function with generator-specific triming to avoid 'Unsupported argument <...>' due to yarg's args duplication for args containing a dash
- * ✗ Generators: Refactor SQL generators and place common code in a shared SQLGenerator parent class
  * ✗ XML: Add Jane-specific functions support for default values (validation regex would be 'default="(func:)?DATE()"') and add support for DATE(), DATETIME() and TIME() functions
  * ✗ SQLite: Add bash script generation that could be executed to execute generated SQL queries (via its own --create/--drop/--insert-into args)
  * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])

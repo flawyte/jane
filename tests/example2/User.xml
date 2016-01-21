@@ -3,11 +3,11 @@
     <attribute name="id" type="Integer" primary-key="true" />
     <attribute name="first_name" type="String" regex="[A-Z]{1}[a-z]{1,14}" />
     <attribute name="last_name" type="String" regex="[A-Z]{1}[a-z]{1,14}" />
-    <attribute name="email" type="String" regex="[a-z0-9._+-]{1,20}@[a-z0-9]{3,15}\.[a-z]{2,4}" />
+    <attribute name="email" type="String" regex="[a-z]+[a-z0-9]*@[a-z0-9]{3,15}\.[a-z]{2,4}" />
     <attribute name="password" type="String" minLength="8" />
     <attribute name="country" type="String" regex="[A-Z]{2}" />
     <attribute name="city" type="String" regex="[a-zA-Z ]{25}" />
-    <attribute name="address" type="String" regex="[0-9]{2} (Rue|Avenue|Boulevard|Impasse) [A-Z]{1}[a-z]{1,14} [A-Z]{1}[a-z]{1,14}" />
+    <attribute name="address" type="String" regex="[0-9]{2,3} (Rue|Avenue|Boulevard|Impasse) [A-Z]{1}[a-z]{1,14} [A-Z]{1}[a-z]{1,14}" />
     <attribute name="postal_code" type="String" regex="[0-9]{5}" />
     <attribute name="phone" type="String" regex="\+33[0-9]{9}" />
     <attribute name="signup_date" type="DateTime" default="raw:DATETIME()" />
