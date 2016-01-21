@@ -38,7 +38,6 @@ module.exports = {
     obj = {
       '$': {
         name: 'id',
-        nullable: 'true',
         type: 'Integer',
         'primary-key': 'true'
       }
@@ -59,19 +58,101 @@ module.exports = {
         name: 'name',
         type: 'String',
         default: 'null',
-        'max-length': '255'
+        'max-length': '3'
       }
     };
     attr = Attribute.fromXMLObject(obj);
 
     assert.equal(null, attr.defaultValue);
-    assert.equal(255, attr.maxLength);
+    assert.equal(3, attr.maxLength);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
     assert.equal(true, attr.optional);
     assert.equal(false, attr.primaryKey);
     assert.equal(false, attr.required);
     assert.equal('String', attr.type);
+
+    assert.done();
+  },
+  'isValueValid': function(assert) {
+    var attr = null;
+    var obj = null;
+
+    assert.equal(true, new Attribute().isValueValid instanceof Function);
+
+    attr = new Attribute('completed', 'Boolean');
+    assert.equal(true, attr.isValueValid(false));
+    assert.equal(true, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(false, attr.isValueValid(123));
+    assert.equal(false, attr.isValueValid(123.456));
+    assert.equal(false, attr.isValueValid(123.456789));
+    assert.equal(false, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
+    attr = new Attribute('signup_date', 'Date');
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(false, attr.isValueValid(123));
+    assert.equal(false, attr.isValueValid(123.456));
+    assert.equal(false, attr.isValueValid(123.456789));
+    assert.equal(true, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
+    attr = new Attribute('completed', 'DateTime');
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(false, attr.isValueValid(123));
+    assert.equal(false, attr.isValueValid(123.456));
+    assert.equal(false, attr.isValueValid(123.456789));
+    assert.equal(true, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
+    attr = new Attribute('completed', 'Decimal');
+    attr.precision = 6;
+    attr.scale = 3;
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(true, attr.isValueValid(123));
+    assert.equal(true, attr.isValueValid(123.456));
+    assert.equal(false, attr.isValueValid(123.456789));
+    assert.equal(false, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
+    attr = new Attribute('completed', 'Integer');
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(true, attr.isValueValid(123));
+    assert.equal(false, attr.isValueValid(123.456));
+    assert.equal(false, attr.isValueValid(123.456789));
+    assert.equal(false, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
+    attr = new Attribute('completed', 'String');
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(true, attr.isValueValid('true'));
+    assert.equal(false, attr.isValueValid(123));
+    assert.equal(false, attr.isValueValid(123.456));
+    assert.equal(false, attr.isValueValid(123.456789));
+    assert.equal(false, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
 
     assert.done();
   }

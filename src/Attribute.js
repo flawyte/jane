@@ -64,4 +64,55 @@ export default class Attribute {
   get required() {
     return !this.nullable;
   }
+
+  isValueValid(val) {
+    if (val === undefined)
+      return false;
+    if (val === null)
+      return this.nullable;
+
+    var self = this;
+    var valid = true;
+
+    var checkDecimal = function(val) {
+      return ((new String(val).length - 1) <= self.precision);
+    };
+    var checkInteger = function(val) {
+      return (new String(val).indexOf('.') === -1);
+    };
+    var checkMaxLength = function(val) {
+      return (self.maxLength === undefined) || (new String(val).length <= self.maxLength);
+    };
+    var checkRegex = function(val) {
+      return (self.regex === undefined) || (new String(val).match(self.regex));
+    };
+
+    switch (this.type) {
+      case 'Boolean':
+        valid = valid && (Toolkit.typeOf(val) === 'Boolean');
+        break;
+      case 'Date':
+        valid = valid && (Toolkit.typeOf(val) === 'Date');
+        break;
+      case 'DateTime':
+        valid = valid && (Toolkit.typeOf(val) === 'Date');
+        break;
+      case 'Decimal':
+        valid = valid && (Toolkit.typeOf(val) === 'Number');
+        valid = valid && checkDecimal(val);
+        break;
+      case 'Integer':
+        valid = valid && (Toolkit.typeOf(val) === 'Number');
+        valid = valid && checkInteger(val);
+        break;
+      case 'String':
+        valid = valid && (Toolkit.typeOf(val) === 'String');
+        break;
+    }
+
+    valid = valid && checkMaxLength(val);
+    valid = valid && checkRegex(val);
+
+    return valid;
+  }
 }

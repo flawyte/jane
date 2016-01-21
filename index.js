@@ -2,7 +2,6 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Attribute: add a 'isValid(value)' function that would check is given value matches all of the attribute's constraints and use it when generating dummy date in SQL generators
  * ✗ XML: Add Jane-specific functions support for default values (validation regex would be 'default="(func:)?DATE()"') and add support for DATE(), DATETIME() and TIME() functions
  * ✗ SQLite: Add bash script generation that could be executed to execute generated SQL queries (via its own --create/--drop/--insert-into args ; would execute all three operations if executed without args)
  * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])
@@ -12,6 +11,7 @@
  * ✗ XML: Rename 'maxLength' attribute in 'max-length'
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
+ * ✗ Update Wiki at next release (see commits history for changes)
  */
 
 /*
