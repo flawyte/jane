@@ -47,19 +47,6 @@ export default class Toolkit {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
   }
 
-  static getGeneratorOptions(args) {
-    var arr = JSON.parse(JSON.stringify(args));
-
-    delete arr['_'];
-    delete arr['$0'];
-    delete arr['from'];
-    delete arr['insertInto'];
-    delete arr['src'];
-    delete arr['to'];
-
-    return arr;
-  }
-
   static readXMLFile(path) {
     if (!Toolkit.ready)
       throw "You must call Jane.init(<params>) first";

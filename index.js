@@ -3,12 +3,12 @@
  * ====
  *
  * ✗ Attribute: add a 'isValid(value)' function that would check is given value matches all of the attribute's constraints and use it when generating dummy date in SQL generators
- * ✗ Generators: add a 'setOptions(opts)' function with generator-specific triming to avoid 'Unsupported argument <...>' due to yarg's args duplication for args containing a dash
  * ✗ XML: Add Jane-specific functions support for default values (validation regex would be 'default="(func:)?DATE()"') and add support for DATE(), DATETIME() and TIME() functions
  * ✗ SQLite: Add bash script generation that could be executed to execute generated SQL queries (via its own --create/--drop/--insert-into args)
  * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])
  * ✗ XML: Consider adding 'Float|Real' attribute types support (with default value support)
  * ✗ XML: Add 'length' attribute support for attributes
+ * ✗ XML: Rename 'maxLength' attribute in 'max-length'
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
  */
@@ -61,7 +61,6 @@ else
 function init() {
   args.src = __dirname + '/' + args.from;
   var Generator = require('./src/generators/' + generatorName).default;
-  var options = Toolkit.getGeneratorOptions(args);
 
-  Jane.init(fs, new Generator(options), glob, path, randexp, xml2js);
+  Jane.init(fs, new Generator(args), glob, path, randexp, xml2js);
 }
