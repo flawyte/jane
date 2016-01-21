@@ -45,7 +45,9 @@ module.exports = {
     attr = Attribute.fromXMLObject(obj);
 
     assert.equal(undefined, attr.defaultValue);
-    assert.equal(undefined, attr.maxLength);
+    assert.equal(false, attr.defaultValueIsFunction);
+    assert.equal(false, attr.defaultValueIsRaw);
+    assert.equal(null, attr.maxLength);
     assert.equal('id', attr.name);
     assert.equal(false, attr.nullable);
     assert.equal(false, attr.optional);
@@ -64,11 +66,56 @@ module.exports = {
     attr = Attribute.fromXMLObject(obj);
 
     assert.equal(null, attr.defaultValue);
+    assert.equal(false, attr.defaultValueIsFunction);
+    assert.equal(false, attr.defaultValueIsRaw);
     assert.equal(3, attr.maxLength);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
     assert.equal(true, attr.optional);
     assert.equal(false, attr.primaryKey);
+    assert.equal(null, attr.regex);
+    assert.equal(false, attr.required);
+    assert.equal('String', attr.type);
+
+    obj = {
+      '$': {
+        name: 'name',
+        type: 'String',
+        default: 'raw:2012-11-13'
+      }
+    };
+    attr = Attribute.fromXMLObject(obj);
+
+    assert.equal('2012-11-13', attr.defaultValue);
+    assert.equal(false, attr.defaultValueIsFunction);
+    assert.equal(true, attr.defaultValueIsRaw);
+    assert.equal(null, attr.maxLength);
+    assert.equal('name', attr.name);
+    assert.equal(true, attr.nullable);
+    assert.equal(true, attr.optional);
+    assert.equal(false, attr.primaryKey);
+    assert.equal(null, attr.regex);
+    assert.equal(false, attr.required);
+    assert.equal('String', attr.type);
+
+    obj = {
+      '$': {
+        name: 'name',
+        type: 'String',
+        default: 'DATE()'
+      }
+    };
+    attr = Attribute.fromXMLObject(obj);
+
+    assert.equal('DATE()', attr.defaultValue);
+    assert.equal(true, attr.defaultValueIsFunction);
+    assert.equal(false, attr.defaultValueIsRaw);
+    assert.equal(null, attr.maxLength);
+    assert.equal('name', attr.name);
+    assert.equal(true, attr.nullable);
+    assert.equal(true, attr.optional);
+    assert.equal(false, attr.primaryKey);
+    assert.equal(null, attr.regex);
     assert.equal(false, attr.required);
     assert.equal('String', attr.type);
 

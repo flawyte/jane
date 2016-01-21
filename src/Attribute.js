@@ -4,12 +4,14 @@ export default class Attribute {
 
   static fromXMLObject(obj) {
     var defaultValue;
-    var nullable;
     var primaryKey = Toolkit.cast(obj.$['primary-key']) || false;
 
     if (obj.$['default'] !== undefined) {
       if (obj.$['default'].startsWith('raw:')) {
         defaultValue = obj.$['default'].split(':')[1];
+      }
+      else if (obj.$['default'].match(/.*\(\)/)) {
+        defaultValue = obj.$['default'];
       }
       else {
         if (obj.$['default'].length > 0)
@@ -19,19 +21,16 @@ export default class Attribute {
       }
     }
 
-    if (obj.$.nullable !== undefined) {
-      nullable = Toolkit.cast(obj.$.nullable);
-    }
-
     var attr = new Attribute(obj.$.name,
       obj.$.type,
       primaryKey,
-      Boolean(obj.$.unique === 'true'),
-      nullable,
+      (obj.$.unique === 'true'),
+      (obj.$.nullable === 'true'),
       defaultValue
     );
 
-    attr.defaultValueIsRaw = (obj.$['default'] && obj.$['default'].startsWith('raw:'));
+    attr.defaultValueIsFunction = ((obj.$['default'] !== undefined) && obj.$['default'].match(/^.*\(\)$/) !== null);
+    attr.defaultValueIsRaw = ((obj.$['default'] !== undefined) && obj.$['default'].startsWith('raw:'));
     attr.regex = obj.$.regex;
     attr.maxLength = Toolkit.cast(obj.$['max-length'], attr.type);
 
@@ -47,9 +46,11 @@ export default class Attribute {
 
   constructor(name, type, primaryKey = false, unique = false, nullable = false, defaultValue = undefined) {
     this.defaultValue = defaultValue;
+    this.maxLength = null;
     this.name = name;
     this.nullable = primaryKey ? false : ((defaultValue !== undefined) || nullable);
     this.primaryKey = primaryKey;
+    this.regex = null;
     this.type = type;
     this.unique = primaryKey || unique;
 
@@ -81,10 +82,10 @@ export default class Attribute {
       return (new String(val).indexOf('.') === -1);
     };
     var checkMaxLength = function(val) {
-      return (self.maxLength === undefined) || (new String(val).length <= self.maxLength);
+      return (self.maxLength === null) || (new String(val).length <= self.maxLength);
     };
     var checkRegex = function(val) {
-      return (self.regex === undefined) || (new String(val).match(self.regex));
+      return (self.regex === null) || (new String(val).match(self.regex));
     };
 
     switch (this.type) {

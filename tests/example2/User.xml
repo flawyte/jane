@@ -10,6 +10,6 @@
     <attribute name="address" type="String" regex="[0-9]{2,3} (Rue|Avenue|Boulevard|Impasse) [A-Z]{1}[a-z]{1,14} [A-Z]{1}[a-z]{1,14}" />
     <attribute name="postal_code" type="String" regex="[0-9]{5}" />
     <attribute name="phone" type="String" regex="\+33[0-9]{9}" />
-    <attribute name="signup_date" type="DateTime" default="raw:DATETIME()" />
+    <attribute name="signup_date" type="DateTime" default="DATETIME()" />
   </attributes>
 </entity>
