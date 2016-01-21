@@ -187,8 +187,17 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
             return;
           else if (attr.defaultValueIsRaw)
             values[attr.name] = self.escapeColumnValue(self.toSQLValue(attr.defaultValue));
-          else
-            values[attr.name] = self.escapeColumnValue(self.toSQLValue(Random.value(attr)));
+          else {
+            var val;
+            var valid = false;
+
+            while (!valid) {
+              val = Random.value(attr);
+              valid = attr.isValueValid(val);
+            }
+
+            values[attr.name] = self.escapeColumnValue(self.toSQLValue(val));
+          }
         });
         e.references.forEach(function(ref) {
           var otherRefs = [];
