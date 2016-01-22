@@ -1,5 +1,5 @@
+import Cast from './Cast';
 import Entity from './Entity';
-import Toolkit from './Toolkit';
 
 export default class Reference {
 
@@ -15,8 +15,8 @@ export default class Reference {
       Entity.default.get(obj.$.entity),
       obj.$.attribute,
       obj.$.as,
-      Toolkit.cast(obj.$.default),
-      Boolean(obj.$.nullable === 'true'));
+      Cast.value(obj.$.default, 'Integer') || undefined,
+      (obj.$.nullable === 'true'));
 
     return attr;
   }

@@ -80,14 +80,14 @@ module.exports = {
       '$': {
         name: 'name',
         type: 'String',
-        default: 'raw:2012-11-13'
+        default: '2012-11-13'
       }
     };
     attr = Attribute.fromXMLObject(obj);
 
     assert.equal('2012-11-13', attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
-    assert.equal(true, attr.defaultValueIsRaw);
+    assert.equal(false, attr.defaultValueIsRaw);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
     assert.equal(true, attr.optional);
@@ -127,6 +127,7 @@ module.exports = {
 
     assert.equal(8, attr.minLength);
     assert.equal(undefined, attr.maxLength);
+    assert.equal(8, attr.minLength);
     assert.equal('name', attr.name);
     assert.equal(false, attr.nullable);
     assert.equal(false, attr.optional);

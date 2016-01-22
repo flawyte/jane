@@ -1,40 +1,29 @@
-import Toolkit from './Toolkit';
+import Cast from './Cast';
 import Valid from './Valid';
 
 export default class Attribute {
 
   static fromXMLObject(obj) {
-    var defaultValue;
-    var primaryKey = Toolkit.cast(obj.$['primary-key']) || false;
+    var defaultValue = undefined;
 
-    if (obj.$['default'] !== undefined) {
-      if (obj.$['default'].startsWith('raw:')) {
-        defaultValue = obj.$['default'].split(':')[1];
-      }
-      else if (obj.$['default'].match(/.*\(\)/)) {
-        defaultValue = obj.$['default'];
-      }
-      else {
-        if (obj.$['default'].length > 0)
-          defaultValue = Toolkit.cast(obj.$['default']);
-        else
-          defaultValue = '';
-      }
-    }
+    if (obj.$['default'] !== undefined)
+      defaultValue = Cast.value(obj.$['default'], obj.$.type);
 
     var attr = new Attribute(obj.$.name,
       obj.$.type,
-      primaryKey,
-      (obj.$.unique === 'true'),
-      (obj.$.nullable === 'true'),
+      (obj.$['primary-key'] === 'true'),
+      (obj.$['unique'] === 'true'),
+      (obj.$['nullable'] === 'true'),
       defaultValue
     );
 
     attr.defaultValueIsFunction = ((obj.$['default'] !== undefined) && obj.$['default'].match(/^.*\(\)$/) !== null);
     attr.defaultValueIsRaw = ((obj.$['default'] !== undefined) && obj.$['default'].startsWith('raw:'));
+    if (obj.$['max-length'] !== undefined)
+      attr.maxLength = Cast.integer(obj.$['max-length']);
+    if (obj.$['min-length'] !== undefined)
+      attr.minLength = Cast.integer(obj.$['min-length']);
     attr.regex = obj.$.regex;
-    attr.maxLength = Toolkit.cast(obj.$['max-length'], 'Integer');
-    attr.minLength = Toolkit.cast(obj.$['min-length'], 'Integer');
 
     var matches;
     if ((matches = attr.type.match(/Decimal\(([0-9]+),([0-9]+)\)/))) {

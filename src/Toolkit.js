@@ -2,24 +2,12 @@ import Jane from './Jane';
 
 export default class Toolkit {
 
-  static cast(val, type) {
-    if ((type === 'Date') || (type === 'DateTime'))
-      return new Date(val);
-    else if (Toolkit.typeOf(val) === 'String')
-      return JSON.parse(val);
-    else
-      return val;
-  }
-
   static createDirectory(dir) {
-
     try {
       Jane.default.fs.mkdirSync(dir);
     } catch (e) { // One of the parent directory doesn't exist
-      // Create all the parents recursively
-      Toolkit.createDirectory(Jane.default.path.dirname(dir));
-      // And then the directory
-      Toolkit.createDirectory(dir);
+      Toolkit.createDirectory(Jane.default.path.dirname(dir)); // Create all the parents recursively
+      Toolkit.createDirectory(dir); // And then the director
     }
   }
 
@@ -32,7 +20,9 @@ export default class Toolkit {
   }
 
   static get ready() {
-    return Jane.default.fs && Jane.default.path && Jane.default.xml2js;
+    return Jane.default.fs
+      && Jane.default.path
+      && Jane.default.xml2js;
   }
 
   static getDirectoryPath(filePath) {
