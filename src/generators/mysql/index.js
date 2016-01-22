@@ -31,9 +31,17 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
   }
 
   getContent(fileName) {
-    return 'CREATE DATABASE IF NOT EXISTS ' + this.options['db-name'] + ';\n'
-      + 'USE ' + this.options['db-name'] + ';\n\n'
-      + super.getContent(fileName);
+    if (~fileName.indexOf('create-database'))
+      return 'CREATE DATABASE IF NOT EXISTS ' + this.options['db-name'] + ';\n'
+        + 'USE ' + this.options['db-name'] + ';\n\n'
+        + super.getContent(fileName);
+    else if (~fileName.indexOf('drop-database'))
+      return 'USE ' + this.options['db-name'] + ';\n\n'
+        + super.getContent(fileName)
+        + 'DROP DATABASE ' + this.options['db-name'] + ';\n';
+    else
+      return 'USE ' + this.options['db-name'] + ';\n\n'
+        + super.getContent(fileName);
   }
 
   toSQLType(attr) {
