@@ -253,12 +253,15 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     if (fileName === 'execute.sh')
       return this.getExecuteScriptContent();
 
-    if (fileName.indexOf('-database') !== -1) {
+    if (~fileName.indexOf('-database')) {
       var ope = fileName.substring(0, fileName.lastIndexOf('-database'));
 
       if (ope === 'insert-into') {
-        for (let key of Object.keys(this.results[ope]).reverse()) {
-          content += this.results[ope][key].join('\n') + '\n\n';
+
+        this.sortEntities();
+
+        for (let entity of this.entities) {
+          content += this.results[ope][entity.plural.toLowerCase()].join('\n') + '\n\n';
         }
       }
       else {
