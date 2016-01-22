@@ -39,9 +39,18 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
       return 'USE ' + this.options['db-name'] + ';\n\n'
         + super.getContent(fileName)
         + 'DROP DATABASE ' + this.options['db-name'] + ';\n';
-    else
+    else if (~fileName.indexOf('.sql'))
       return 'USE ' + this.options['db-name'] + ';\n\n'
         + super.getContent(fileName);
+    else
+      return super.getContent(fileName);
+  }
+
+  getExecuteScriptContent() {
+    return '#!/bin/bash\n\n'
+      + 'mysql -h localhost -u\'root\' -p < `pwd`/`dirname $0`/drop-database.sql\n'
+      + 'mysql -h localhost -u\'root\' -p < `pwd`/`dirname $0`/create-database.sql\n'
+      + 'mysql -h localhost -u\'root\' -p < `pwd`/`dirname $0`/insert-into-database.sql\n';
   }
 
   toSQLType(attr) {

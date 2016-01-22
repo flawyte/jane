@@ -19,6 +19,8 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   generate() {
     if (!this.options['db-name'])
       throw 'You must specify a database name using the --db-name argument.';
+    if (!this.options['user'])
+      throw 'You must specify a database user using the --user argument.';
 
     super.generate();
   }
@@ -27,6 +29,7 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
     var opts = super.getAllowedOptions();
 
     opts['db-name'] = 'The database name.';
+    opts['user'] = 'The database user.';
 
     return opts;
   }
@@ -41,9 +44,18 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
         + super.getContent(fileName)
         + '\\connect postgres;\n'
         + 'DROP DATABASE ' + this.options['db-name'].toLowerCase() + ';\n';
-    else
+    else if (~fileName.indexOf('.sql'))
       return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
         + super.getContent(fileName);
+    else
+      return super.getContent(fileName);
+  }
+
+  getExecuteScriptContent() {
+    return '#!/bin/bash\n\n'
+      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/drop-database.sql\n'
+      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/create-database.sql\n'
+      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-database.sql\n';
   }
 
   toSQLType(attr) {

@@ -250,6 +250,9 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
   getContent(fileName) {
     var content = '';
 
+    if (fileName === 'execute.sh')
+      return this.getExecuteScriptContent();
+
     if (fileName.indexOf('-database') !== -1) {
       var ope = fileName.substring(0, fileName.lastIndexOf('-database'));
 
@@ -277,6 +280,15 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     return content;
   }
 
+  /*
+   * Should return the content of the 'execute.sh' file placed in every output directory after generation to execute generated SQL files.
+   *
+   * Must be overrided by sub-classes.
+   */
+  getExecuteScriptContent() {
+    return null;
+  }
+
   getOutputFilesNames() {
     var allowedOptions = [ 'create', 'drop', 'insert-into' ];
     var names = [];
@@ -290,6 +302,8 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         names.push(opt + '-database.sql');
       }
     }
+
+    names.push('execute.sh');
 
     return names;
   }

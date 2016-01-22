@@ -13,6 +13,13 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
     return 'AUTOINCREMENT';
   }
 
+  getExecuteScriptContent() {
+    return '#!/bin/bash\n\n'
+      + 'sqlite3 `pwd`/`dirname $0`/data.db < `pwd`/`dirname $0`/drop-database.sql\n'
+      + 'sqlite3 `pwd`/`dirname $0`/data.db < `pwd`/`dirname $0`/create-database.sql\n'
+      + 'sqlite3 `pwd`/`dirname $0`/data.db < `pwd`/`dirname $0`/insert-into-database.sql\n';
+  }
+
   toSQLType(attr) {
     var res = null;
 

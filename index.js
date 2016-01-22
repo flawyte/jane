@@ -4,7 +4,6 @@
  *
  * ✗ AbstractSQLGenerator: fix inserts order (for foreign keys constraints)
  * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too
- * ✗ SQLite: Add bash script generation that could be executed to execute generated SQL queries (via its own --create/--drop/--insert-into args ; would execute all three operations if executed without args)
  * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])
  * ✗ XML: Consider adding 'Float|Real' attribute types support (with default value support)
  * ✗ XML: Add 'length' attribute support for attributes
