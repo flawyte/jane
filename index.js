@@ -4,8 +4,8 @@
  *
  * ✗ AbstractSQLGenerator: fix inserts order (for foreign keys constraints)
  * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too
- * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])
- * ✗ XML: Consider adding 'Float|Real' attribute types support (with default value support)
+ * ✗ XML: Consider adding 'Time' attribute type support (with default value support [ISO-8601])
+ * ✗ XML: Consider adding 'Float' attribute type support (with default value support)
  * ✗ XML: Add 'length' attribute support for attributes
  * ✗ XML: Add 'min-length' attribute support for attributes
  * ✗ JS: add support for references
