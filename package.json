@@ -1,10 +1,10 @@
 {
   "name": "jane",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/nodeunit/bin/nodeunit tests/units/AttributeTest.js && node_modules/nodeunit/bin/nodeunit tests/units/EntityTest.js && node_modules/nodeunit/bin/nodeunit tests/units/RandomTest.js && node_modules/nodeunit/bin/nodeunit tests/units/sqlite/InsertIntoStatementTest.js"
+    "test": "node_modules/nodeunit/bin/nodeunit tests/units/AttributeTest.js && node_modules/nodeunit/bin/nodeunit tests/units/CastTest.js && node_modules/nodeunit/bin/nodeunit tests/units/EntityTest.js && node_modules/nodeunit/bin/nodeunit tests/units/RandomTest.js && node_modules/nodeunit/bin/nodeunit tests/units/ValidTest.js && node_modules/nodeunit/bin/nodeunit tests/units/InsertIntoStatementTest.js"
   },
   "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "license": "MIT",

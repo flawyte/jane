@@ -2,24 +2,12 @@ import Jane from './Jane';
 
 export default class Toolkit {
 
-  static cast(val, type) {
-    if ((type === 'Date') || (type === 'DateTime'))
-      return new Date(val);
-    else if (Toolkit.typeOf(val) === 'String')
-      return JSON.parse(val);
-    else
-      return val;
-  }
-
   static createDirectory(dir) {
-
     try {
       Jane.default.fs.mkdirSync(dir);
     } catch (e) { // One of the parent directory doesn't exist
-      // Create all the parents recursively
-      Toolkit.createDirectory(Jane.default.path.dirname(dir));
-      // And then the directory
-      Toolkit.createDirectory(dir);
+      Toolkit.createDirectory(Jane.default.path.dirname(dir)); // Create all the parents recursively
+      Toolkit.createDirectory(dir); // And then the director
     }
   }
 
@@ -32,7 +20,9 @@ export default class Toolkit {
   }
 
   static get ready() {
-    return Jane.default.fs && Jane.default.path && Jane.default.xml2js;
+    return Jane.default.fs
+      && Jane.default.path
+      && Jane.default.xml2js;
   }
 
   static getDirectoryPath(filePath) {
@@ -45,19 +35,6 @@ export default class Toolkit {
 
   static getFileName(filePath) {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
-  }
-
-  static getGeneratorOptions(args) {
-    var arr = JSON.parse(JSON.stringify(args));
-
-    delete arr['_'];
-    delete arr['$0'];
-    delete arr['from'];
-    delete arr['insertInto'];
-    delete arr['src'];
-    delete arr['to'];
-
-    return arr;
   }
 
   static readXMLFile(path) {
@@ -79,5 +56,14 @@ export default class Toolkit {
 
   static typeOf(val) {
     return Object.prototype.toString.call(val).match(/\[object (.*)\]/)[1];
+  }
+
+  static values(object) {
+    var values = [];
+
+    for (let key in object)
+      values.push(object[key]);
+
+    return values;
   }
 }

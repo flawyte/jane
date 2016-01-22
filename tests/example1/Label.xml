@@ -1,8 +1,8 @@
 <entity name="Label" plural="Labels">
   <attributes>
-    <attribute name="id" type="Integer" primary-key="true" /> <!-- required (implicit) because is primary-key -->
-    <attribute name="name" type="String" />
+    <attribute name="id" type="Integer" primary-key="true" /> <!-- non-nullable (implicit) because is primary-key -->
+    <attribute name="name" type="String" min-length="5" max-length="25" />
     <!-- Color in hexadecimal e.g. #AARRGGBB -->
-    <attribute name="color" type="String" length="8" /> <!-- optional (implicit) -->
+    <attribute name="color" type="String" length="8" regex="[0-9A-F]{8}" /> <!-- non-nullable (implicit) -->
   </attributes>
 </entity>

@@ -13,7 +13,7 @@ export default class Jane {
   }
 
   static logHelp() {
-    console.log('Jane version 0.5.0');
+    console.log('Jane version 0.6.0');
     console.log('Usage: node index.js <generator-name> --from <XML file/directory> [--to <output directory>] [<generator-specific arguments>]');
     console.log('');
     console.log('Arguments');
@@ -95,7 +95,7 @@ export default class Jane {
       gen.generate();
       gen.getOutputFilesNames().forEach(function(fileName) {
         Jane.saveCode(gen.getContent(fileName),
-          fileName + '.' + gen.getOutputFilesExtension(),
+          fileName,
           args.to || ('generated/' + Jane.generator.name));
       });
 
@@ -117,7 +117,7 @@ export default class Jane {
     gen.generate();
     gen.getOutputFilesNames().forEach(function(fileName) {
         Jane.saveCode(gen.getContent(fileName),
-          fileName + '.' + gen.getOutputFilesExtension(),
+          fileName,
           args.to || ('generated/' + Jane.generator.name));
     });
 
