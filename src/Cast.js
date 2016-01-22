@@ -1,3 +1,5 @@
+import Toolkit from './Toolkit';
+
 export default class Cast {
 
   static boolean(val) {
@@ -52,6 +54,8 @@ export default class Cast {
 
     if (val === 'null')
       return null;
+    else if ((Toolkit.typeOf(val) === 'String') && /.*()$/.test(val)) // Jane function e.g. ends with '()'
+      return val;
 
     switch (type) {
       case 'Boolean': {
