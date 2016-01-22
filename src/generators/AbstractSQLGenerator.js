@@ -174,16 +174,8 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           if (attr.defaultValueIsFunction || attr.defaultValueIsRaw)
             values[attr.name] = self.toSQLValue(attr);
           else {
-            var val;
-            var valid = false;
-
-            while (!valid) {
-              val = Random.value(attr);
-              valid = attr.isValueValid(val);
-            }
-
             values[attr.name] = self.toSQLValue({
-              defaultValue: val,
+              defaultValue: Random.value(attr),
               type: attr.type
             });
           }

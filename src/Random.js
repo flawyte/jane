@@ -72,6 +72,9 @@ export default class Random {
       break;
     }
 
-    return val;
+    if (attr.isValueValid(val))
+      return val;
+    else
+      return Random.value(attr);
   }
 }
