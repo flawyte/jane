@@ -32,7 +32,8 @@ export default class Attribute {
     attr.defaultValueIsFunction = ((obj.$['default'] !== undefined) && obj.$['default'].match(/^.*\(\)$/) !== null);
     attr.defaultValueIsRaw = ((obj.$['default'] !== undefined) && obj.$['default'].startsWith('raw:'));
     attr.regex = obj.$.regex;
-    attr.maxLength = Toolkit.cast(obj.$['max-length'], attr.type);
+    attr.maxLength = Toolkit.cast(obj.$['max-length'], 'Integer');
+    attr.minLength = Toolkit.cast(obj.$['min-length'], 'Integer');
 
     var matches;
     if ((matches = attr.type.match(/Decimal\(([0-9]+),([0-9]+)\)/))) {
@@ -82,6 +83,9 @@ export default class Attribute {
     var checkMaxLength = function(val) {
       return (self.maxLength === undefined) || (new String(val).length <= self.maxLength);
     };
+    var checkMinLength = function(val) {
+      return (self.minLength === undefined) || (new String(val).length >= self.minLength);
+    };
     var checkRegex = function(val) {
       return (self.regex === undefined) || (new String(val).match(self.regex) !== null);
     };
@@ -109,6 +113,7 @@ export default class Attribute {
         break;
     }
 
+    valid = valid && checkMinLength(val);
     valid = valid && checkMaxLength(val);
     valid = valid && checkRegex(val);
 

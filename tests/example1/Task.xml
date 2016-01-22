@@ -1,9 +1,9 @@
 <entity name="Task" plural="Tasks">
   <attributes>
-    <attribute name="id" type="Integer" primary-key="true" /> <!-- required (implicit) because is primary-key -->
-    <attribute name="number" type="Integer" default="800" nullable="true" /> <!-- optional (explicit) -->
-    <attribute name="description" type="String" default="" /> <!-- optional (implicit) because default value -->
-    <attribute name="completed" type="Boolean" default="false" /> <!-- optional (implicit) because default value -->
+    <attribute name="id" type="Integer" primary-key="true" /> <!-- non-nullable (implicit) because is primary-key -->
+    <attribute name="number" type="Integer" default="800" nullable="true" /> <!-- nullable (explicit) -->
+    <attribute name="description" type="String" default="" /> <!-- nullable (implicit) because default value -->
+    <attribute name="completed" type="Boolean" default="false" /> <!-- nullable (implicit) because default value -->
   </attributes>
   <!-- Foreign keys -->
   <references>

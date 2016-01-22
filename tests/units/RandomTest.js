@@ -83,11 +83,26 @@ module.exports = {
     var val;
 
     assert.equal(true, Random.value instanceof Function);
-    val = Random.value({ type: 'Boolean' });
+    val = Random.value({
+      type: 'Boolean',
+      isValueValid: function() {
+          return true;
+      }
+    });
     assert.equal("boolean", typeof val);
-    val = Random.value({ type: 'Integer' });
+    val = Random.value({
+      type: 'Integer',
+      isValueValid: function() {
+          return true;
+      }
+    });
     assert.equal("number", typeof val);
-    val = Random.value({ type: 'String' });
+    val = Random.value({
+      type: 'String',
+      isValueValid: function() {
+          return true;
+      }
+    });
     assert.equal("string", typeof val);
 
     assert.done();
