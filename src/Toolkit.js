@@ -67,4 +67,13 @@ export default class Toolkit {
   static typeOf(val) {
     return Object.prototype.toString.call(val).match(/\[object (.*)\]/)[1];
   }
+
+  static values(object) {
+    var values = [];
+
+    for (let key in object)
+      values.push(object[key]);
+
+    return values;
+  }
 }
