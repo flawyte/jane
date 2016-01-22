@@ -21,7 +21,32 @@ In short, it allows you to turn this:
 </entity>
 ```
 
-into this (for SQLite) :
+into this (for MySQL) :
+
+```sql
+CREATE DATABASE IF NOT EXISTS MyDatabaseName;
+USE MyDatabaseName;
+
+CREATE TABLE Labels (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(25) NOT NULL,
+  color VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Tasks (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  number INT DEFAULT 800,
+  description VARCHAR(255) DEFAULT "",
+  completed BOOLEAN DEFAULT FALSE,
+  label INT NOT NULL,
+  parent INT DEFAULT NULL,
+
+  FOREIGN KEY (label) REFERENCES Labels (id),
+  FOREIGN KEY (parent) REFERENCES Tasks (id)
+);
+```
+
+or this (for SQLite) :
 
 ```sql
 CREATE TABLE Products (
