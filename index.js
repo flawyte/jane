@@ -6,10 +6,8 @@
  * ✗ XML: Consider adding 'Time' attribute type support (with default value support [ISO-8601])
  * ✗ XML: Consider adding 'Float' attribute type support (with default value support)
  * ✗ XML: Add 'length' attribute support for attributes
- * ✗ XML: Add 'min-length' attribute support for attributes
  * ✗ JS: add support for references
  * ✗ JS: add partial set(object) and all setters
- * ✗ Update Wiki at next release (see commits history for changes)
  */
 
 /*

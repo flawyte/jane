@@ -10,9 +10,9 @@ In short, it allows you to turn this:
 <entity name="Product" plural="Products">
   <attributes>
     <attribute name="id" type="Integer" primary-key="true" />
-    <attribute name="name" type="String" maxLength="63" />
+    <attribute name="name" type="String" max-length="63" />
     <attribute name="price" type="Decimal(5,2)" />
-    <attribute name="description" type="String" maxLength="1023" />
+    <attribute name="description" type="String" max-length="1023" />
     <attribute name="stock" type="Integer" />
   </attributes>
   <references>
@@ -69,7 +69,9 @@ And see the output files in `tests/example1/generated/sqlite/`.
 
 ## Supported generators
 
-Currently supported generators [by default](https://github.com/flawyte/jane/tree/master/src/generators) include :
+Currently supported generators [by default](https://github.com/flawyte/jane/tree/master/src/generators) :
 
+- MySQL
+- PostgreSQL
 - SQLite
 - JS/ES6 (work in progress, very basic support)
