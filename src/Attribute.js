@@ -1,4 +1,5 @@
 import Toolkit from './Toolkit';
+import Valid from './Valid';
 
 export default class Attribute {
 
@@ -74,12 +75,6 @@ export default class Attribute {
     var self = this;
     var valid = true;
 
-    var checkDecimal = function(val) {
-      return ((new String(val).length - 1) <= self.precision);
-    };
-    var checkInteger = function(val) {
-      return (new String(val).indexOf('.') === -1);
-    };
     var checkMaxLength = function(val) {
       return (self.maxLength === undefined) || (new String(val).length <= self.maxLength);
     };
@@ -92,24 +87,22 @@ export default class Attribute {
 
     switch (this.type) {
       case 'Boolean':
-        valid = valid && (Toolkit.typeOf(val) === 'Boolean');
+        valid = valid && Valid.boolean(val);
         break;
       case 'Date':
-        valid = valid && (Toolkit.typeOf(val) === 'Date');
+        valid = valid && Valid.date(val);
         break;
       case 'DateTime':
-        valid = valid && (Toolkit.typeOf(val) === 'Date');
+        valid = valid && Valid.datetime(val);
         break;
       case 'Decimal':
-        valid = valid && (Toolkit.typeOf(val) === 'Number');
-        valid = valid && checkDecimal(val);
+        valid = valid && Valid.decimal(val, this.precision, this.scale);
         break;
       case 'Integer':
-        valid = valid && (Toolkit.typeOf(val) === 'Number');
-        valid = valid && checkInteger(val);
+        valid = valid && Valid.integer(val);
         break;
       case 'String':
-        valid = valid && (Toolkit.typeOf(val) === 'String');
+        valid = valid && Valid.string(val);
         break;
     }
 
