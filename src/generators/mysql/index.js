@@ -22,6 +22,7 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
     var opts = super.getAllowedOptions();
 
     opts['db-name'] = 'The database name.';
+    opts['user'] = 'Optional. The database user. Default is "root".';
 
     return opts;
   }
@@ -47,10 +48,15 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
   }
 
   getExecuteScriptContent() {
+    var userName = 'root';
+
+    if (typeof this.options['user'] === 'string')
+      userName = this.options['user'];
+
     return '#!/bin/bash\n\n'
-      + 'mysql -h localhost -u\'root\' -p < `pwd`/`dirname $0`/drop-database.sql\n'
-      + 'mysql -h localhost -u\'root\' -p < `pwd`/`dirname $0`/create-database.sql\n'
-      + 'mysql -h localhost -u\'root\' -p < `pwd`/`dirname $0`/insert-into-database.sql\n';
+      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/drop-database.sql\n'
+      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/create-database.sql\n'
+      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/insert-into-database.sql\n';
   }
 
   toSQLType(attr) {
