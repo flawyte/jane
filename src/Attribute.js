@@ -46,11 +46,9 @@ export default class Attribute {
 
   constructor(name, type, primaryKey = false, unique = false, nullable = false, defaultValue = undefined) {
     this.defaultValue = defaultValue;
-    this.maxLength = null;
     this.name = name;
     this.nullable = primaryKey ? false : ((defaultValue !== undefined) || nullable);
     this.primaryKey = primaryKey;
-    this.regex = null;
     this.type = type;
     this.unique = primaryKey || unique;
 
@@ -82,10 +80,10 @@ export default class Attribute {
       return (new String(val).indexOf('.') === -1);
     };
     var checkMaxLength = function(val) {
-      return (self.maxLength === null) || (new String(val).length <= self.maxLength);
+      return (self.maxLength === undefined) || (new String(val).length <= self.maxLength);
     };
     var checkRegex = function(val) {
-      return (self.regex === null) || (new String(val).match(self.regex));
+      return (self.regex === undefined) || (new String(val).match(self.regex) !== null);
     };
 
     switch (this.type) {

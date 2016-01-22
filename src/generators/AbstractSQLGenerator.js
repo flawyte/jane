@@ -34,7 +34,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
    * Used in the PostgreSQL generator to replace double quotes by simple quotes;
    */
   escapeColumnValue(value) {
-    if ((typeof value === 'string') && value.match(/^CURRENT_.*/gi))
+    if ((typeof value === 'string') && value.match(/CURRENT_/i))
       return value;
     else
       return JSON.stringify(value);
@@ -85,7 +85,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         else if (attr.type === 'String')
           str += self.escapeColumnValue(attr.defaultValue);
         else
-          str += attr.defaultValue;
+          str += self.toSQLValue(attr.defaultValue);
       }
 
       if (!attr.primaryKey && attr.unique)
@@ -184,8 +184,11 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         e.attributes.forEach(function(attr) {
           if (attr.primaryKey)
             return;
+
+          if (attr.defaultValueIsFunction)
+            values[attr.name] = self.toSQLValue(attr.defaultValue);
           else if (attr.defaultValueIsRaw)
-            values[attr.name] = self.escapeColumnValue(self.toSQLValue(attr.defaultValue));
+            values[attr.name] = self.escapeColumnValue(attr.defaultValue);
           else {
             var val;
             var valid = false;
@@ -195,7 +198,10 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
               valid = attr.isValueValid(val);
             }
 
-            values[attr.name] = self.escapeColumnValue(self.toSQLValue(val));
+            if (attr.type === 'String')
+              values[attr.name] = self.escapeColumnValue(self.toSQLValue(val));
+            else
+              values[attr.name] = self.toSQLValue(val);
           }
         });
         e.references.forEach(function(ref) {

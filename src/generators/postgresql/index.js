@@ -47,7 +47,7 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
       return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
         + super.getContent(fileName)
         + '\\connect postgres;\n'
-        + 'DROP DATABASE ' + this.options['db-name'].toLowerCase();
+        + 'DROP DATABASE ' + this.options['db-name'].toLowerCase() + ';';
     else
       return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
         + super.getContent(fileName);
