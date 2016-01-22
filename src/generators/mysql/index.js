@@ -60,28 +60,36 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
     return res;
   }
 
-  toSQLValue(value) {
+  toSQLValue(attr, createStatement = false) {
     var res = null;
 
-    switch (value) {
-      case 'DATE()': {
-        res = 'CURRENT_DATE'; // sql value == js value
+    if (attr.defaultValueIsFunction) {
+      return super.toSQLValue(attr, createStatement);
+    }
+
+    switch (attr.type) {
+      case 'Boolean': {
+        res = String(attr.defaultValue).toUpperCase();
       }
       break;
-      case 'DATETIME()': {
-        res = 'CURRENT_TIMESTAMP'; // sql value == js value
+      case 'Date': {
+        res = attr.defaultValue;
       }
       break;
-      case 'TIME()': {
-        res = 'CURRENT_TIME'; // sql value == js value
+      case 'DateTime': {
+        res = attr.defaultValue;
       }
       break;
-      case true:
-      case false:
-        res = String(value).toUpperCase();
+      case 'Decimal': {
+        res = attr.defaultValue;
+      }
       break;
-      default: {
-        res = value;
+      case 'Integer': {
+        res = attr.defaultValue;
+      }
+      break;
+      case 'String': {
+        res = JSON.stringify(attr.defaultValue);
       }
       break;
     }

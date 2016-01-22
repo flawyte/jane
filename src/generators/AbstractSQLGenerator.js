@@ -30,16 +30,6 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     return name;
   }
 
-  /**
-   * Used in the PostgreSQL generator to replace double quotes by simple quotes;
-   */
-  escapeColumnValue(value) {
-    if ((typeof value === 'string') && value.match(/CURRENT_/i))
-      return value;
-    else
-      return JSON.stringify(value);
-  }
-
   /*
    * Should generate code based on the 'entities' array.
    */
@@ -78,14 +68,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
       else if (attr.required)
         str += ' NOT NULL';
       else {
-        str += ' DEFAULT ';
-
-        if (attr.defaultValueIsFunction)
-          str += self.toSQLValue(attr.defaultValue, true);
-        else if (attr.type === 'String')
-          str += self.escapeColumnValue(attr.defaultValue);
-        else
-          str += self.toSQLValue(attr.defaultValue);
+        str += ' DEFAULT ' + self.toSQLValue(attr, true);
       }
 
       if (!attr.primaryKey && attr.unique)
@@ -107,7 +90,10 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         str += ' NOT NULL';
 
         if (ref.defaultValue !== undefined)
-          str += ' DEFAULT ' + self.toSQLValue(ref.defaultValue);
+          str += ' DEFAULT ' + self.toSQLValue({
+            defaultValue: ref.defaultValue,
+            type: 'Integer'
+          });
       }
 
       if (i < (e.references.length - 1))
@@ -185,10 +171,8 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           if (attr.primaryKey)
             return;
 
-          if (attr.defaultValueIsFunction)
-            values[attr.name] = self.toSQLValue(attr.defaultValue);
-          else if (attr.defaultValueIsRaw)
-            values[attr.name] = self.escapeColumnValue(attr.defaultValue);
+          if (attr.defaultValueIsFunction || attr.defaultValueIsRaw)
+            values[attr.name] = self.toSQLValue(attr);
           else {
             var val;
             var valid = false;
@@ -198,10 +182,10 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
               valid = attr.isValueValid(val);
             }
 
-            if (attr.type === 'String')
-              values[attr.name] = self.escapeColumnValue(self.toSQLValue(val));
-            else
-              values[attr.name] = self.toSQLValue(val);
+            values[attr.name] = self.toSQLValue({
+              defaultValue: val,
+              type: attr.type
+            });
           }
         });
         e.references.forEach(function(ref) {
@@ -365,9 +349,33 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
   /**
    * Returns the SQL value corresponding to the given JS value (e.g. for 'false' should return 0 for SQLite, and FALSE for MySQL etc.)
    *
-   * Should be overrided by sub-classes.
+   * Should be overrided by sub-classes only if needed.
    */
-  toSQLValue(value, isDefault = false) {
-    return null;
+  toSQLValue(attr, createStatement = false) {
+    var res = null;
+
+    if (attr.defaultValueIsFunction && (this.name !== 'sqlite')) {
+      switch (attr.defaultValue) {
+        case 'DATE()': {
+          res = 'CURRENT_DATE'; // sql value == js value
+        }
+        break;
+        case 'DATETIME()': {
+          res = 'CURRENT_TIMESTAMP'; // sql value == js value
+        }
+        break;
+        case 'TIME()': {
+          res = 'CURRENT_TIME'; // sql value == js value
+        }
+        break;
+        default: {
+          console.log('Unknown function ' + attr.defaultValue);
+        }
+      }
+    }
+    else if ((this.name === 'sqlite') && createStatement)
+      res = '(' + res + ')';
+
+    return res;
   }
 }

@@ -16,13 +16,6 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
       return super.escapeColumnName(name);
   }
 
-  escapeColumnValue(name) {
-    if ((typeof name === 'string') && !name.match(/CURRENT_/i))
-      return "'" + name + "'";
-    else
-      return name;
-  }
-
   generate() {
     if (!this.options['db-name'])
       throw 'You must specify a database name using the --db-name argument.';
@@ -47,7 +40,7 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
       return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
         + super.getContent(fileName)
         + '\\connect postgres;\n'
-        + 'DROP DATABASE ' + this.options['db-name'].toLowerCase() + ';';
+        + 'DROP DATABASE ' + this.options['db-name'].toLowerCase() + ';\n';
     else
       return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
         + super.getContent(fileName);
@@ -80,28 +73,36 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
     return res;
   }
 
-  toSQLValue(value) {
+  toSQLValue(attr, createStatement = false) {
     var res = null;
 
-    switch (value) {
-      case 'DATE()': {
-        res = 'CURRENT_DATE'; // sql value == js value
+    if (attr.defaultValueIsFunction) {
+      return super.toSQLValue(attr, createStatement);
+    }
+
+    switch (attr.type) {
+      case 'Boolean': {
+        res = String(attr.defaultValue).toUpperCase();
       }
       break;
-      case 'DATETIME()': {
-        res = 'CURRENT_TIMESTAMP'; // sql value == js value
+      case 'Date': {
+        res = attr.defaultValue;
       }
       break;
-      case 'TIME()': {
-        res = 'CURRENT_TIME'; // sql value == js value
+      case 'DateTime': {
+        res = attr.defaultValue;
       }
       break;
-      case true:
-      case false:
-        res = String(value).toUpperCase();
+      case 'Decimal': {
+        res = attr.defaultValue;
+      }
       break;
-      default: {
-        res = value;
+      case 'Integer': {
+        res = attr.defaultValue;
+      }
+      break;
+      case 'String': {
+        res = "'" + attr.defaultValue + "'";
       }
       break;
     }

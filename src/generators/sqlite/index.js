@@ -13,14 +13,6 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
     return 'AUTOINCREMENT';
   }
 
-  getAllowedOptions() {
-    return {
-      'create': 'For each entity, will generate the SQL query to create the related database table.',
-      'drop': 'For each entity, will generate the SQL query to drop the related database table.',
-      'insert-into <rows-count>': 'For each entity, will generate <rows-count> SQL queries to insert randomly generated data in the related database table.'
-    };
-  }
-
   toSQLType(attr) {
     var res = null;
 
@@ -38,25 +30,39 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
     return res;
   }
 
-  toSQLValue(value, isDefault = false) {
+  toSQLValue(attr, createStatement = false) {
     var res = null;
 
-    switch (value) {
-      case true:
-      case false:
-        res = Number(value);
+    if (attr.defaultValueIsFunction) {
+      return super.toSQLValue(attr, createStatement);
+    }
+
+    switch (attr.type) {
+      case 'Boolean': {
+        res = Number(attr.defaultValue);
+      }
       break;
-      case 'DATE()':
-      case 'DATETIME()':
-      case 'TIME()':
-      default: {
-        res = value;
+      case 'Date': {
+        res = attr.defaultValue;
+      }
+      break;
+      case 'DateTime': {
+        res = attr.defaultValue;
+      }
+      break;
+      case 'Decimal': {
+        res = attr.defaultValue;
+      }
+      break;
+      case 'Integer': {
+        res = attr.defaultValue;
+      }
+      break;
+      case 'String': {
+        res = JSON.stringify(attr.defaultValue);
       }
       break;
     }
-
-    if (isDefault)
-      res = '(' + res + ')';
 
     return res;
   }

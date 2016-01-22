@@ -2,7 +2,9 @@
  * TODO ✓✗
  * ====
  *
+ * ✗ AbstractSQLGenerator: move Attribute#isValueValid check to Random.value(attr) function
  * ✗ AbstractSQLGenerator: fix inserts order (for foreign keys constraints)
+ * ✗ MySQLGenerator: remove CREATE DATABASE IF NOT EXISTS in drop & insert-into files
  * ✗ XML: Add Jane-specific functions support for default values (validation regex would be 'default="(func:)?DATE()"') and add support for DATE(), DATETIME() and TIME() functions
  * ✗ SQLite: Add bash script generation that could be executed to execute generated SQL queries (via its own --create/--drop/--insert-into args ; would execute all three operations if executed without args)
  * ✗ XML: Consider adding 'Time' attribute types support (with default value support [ISO-8601])
