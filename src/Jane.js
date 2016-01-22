@@ -95,7 +95,7 @@ export default class Jane {
       gen.generate();
       gen.getOutputFilesNames().forEach(function(fileName) {
         Jane.saveCode(gen.getContent(fileName),
-          fileName + '.' + gen.getOutputFilesExtension(),
+          fileName,
           args.to || ('generated/' + Jane.generator.name));
       });
 
@@ -117,7 +117,7 @@ export default class Jane {
     gen.generate();
     gen.getOutputFilesNames().forEach(function(fileName) {
         Jane.saveCode(gen.getContent(fileName),
-          fileName + '.' + gen.getOutputFilesExtension(),
+          fileName,
           args.to || ('generated/' + Jane.generator.name));
     });
 

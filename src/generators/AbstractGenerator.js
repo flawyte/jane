@@ -34,14 +34,7 @@ export default class AbstractGenerator {
   }
 
   /*
-   * The output file(s) extension without leading dot e.g. 'js', 'sql', 'java'...
-   */
-  getOutputFilesExtension() {
-    return null;
-  }
-
-  /*
-   * Should return an array containing the output file(s) name(s) (specific to almost each generator).
+   * Should return an array containing the output file(s) name(s) (specific to almost each generator) with the extension (e.g. 'file.sql').
    */
   getOutputFilesNames() {
     return null;

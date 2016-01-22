@@ -277,10 +277,6 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     return content;
   }
 
-  getOutputFilesExtension() {
-    return 'sql';
-  }
-
   getOutputFilesNames() {
     var allowedOptions = [ 'create', 'drop', 'insert-into' ];
     var names = [];
@@ -289,9 +285,9 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
 
     for (var opt of allowedOptions) {
       if (this.entities.length === 1)
-        names.push(opt + '-table-' + this.entities[0].plural.toLowerCase());
+        names.push(opt + '-table-' + this.entities[0].plural.toLowerCase() + '.sql');
       else {
-        names.push(opt + '-database');
+        names.push(opt + '-database.sql');
       }
     }
 
