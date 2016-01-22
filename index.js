@@ -2,6 +2,7 @@
  * TODO ✓✗
  * ====
  *
+ * ✗ BUG: Can't generate SQL for only one entity
  * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too
  * ✗ XML: Consider adding 'Time' attribute type support (with default value support [ISO-8601])
  * ✗ XML: Consider adding 'Float' attribute type support (with default value support)
