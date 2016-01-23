@@ -32,31 +32,32 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
   }
 
   getContent(fileName) {
+    var str = '';
+
     if (~fileName.indexOf('create-database'))
-      return 'CREATE DATABASE IF NOT EXISTS ' + this.options['db-name'] + ';\n'
-        + 'USE ' + this.options['db-name'] + ';\n\n'
-        + super.getContent(fileName);
-    else if (~fileName.indexOf('drop-database'))
-      return 'USE ' + this.options['db-name'] + ';\n\n'
-        + super.getContent(fileName)
-        + 'DROP DATABASE ' + this.options['db-name'] + ';\n';
-    else if (~fileName.indexOf('.sql'))
-      return 'USE ' + this.options['db-name'] + ';\n\n'
-        + super.getContent(fileName);
-    else
-      return super.getContent(fileName);
+      str += 'CREATE DATABASE IF NOT EXISTS ' + this.options['db-name'] + ';\n';
+    if (~fileName.indexOf('.sql'))
+      str += 'USE ' + this.options['db-name'] + ';\n\n';
+
+    str += super.getContent(fileName);
+
+    if (~fileName.indexOf('drop-database'))
+      str += 'DROP DATABASE ' + this.options['db-name'] + ';\n';
+
+    return str;
   }
 
   getExecuteScriptContent() {
+    var fileName = (this.entities.length === 1) ? 'table-' + this.entities[0].plural.toLowerCase() : 'database';
     var userName = 'root';
 
     if (typeof this.options['user'] === 'string')
       userName = this.options['user'];
 
     return '#!/bin/bash\n\n'
-      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/drop-database.sql\n'
-      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/create-database.sql\n'
-      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/insert-into-database.sql\n';
+      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/drop-' + fileName +'.sql\n'
+      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/create-' + fileName +'.sql\n'
+      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/insert-into-' + fileName +'.sql\n';
   }
 
   toSQLType(attr) {

@@ -23,14 +23,15 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
 
   getExecuteScriptContent() {
     var dbName = 'data.db';
+    var fileName = (this.entities.length === 1) ? 'table-' + this.entities[0].plural.toLowerCase() : 'database';
 
     if (typeof this.options['db-name'] === 'string')
       dbName = this.options['db-name'];
 
     return '#!/bin/bash\n\n'
-      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/drop-database.sql\n'
-      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/create-database.sql\n'
-      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/insert-into-database.sql\n';
+      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/drop-' + fileName + '.sql\n'
+      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/create-' + fileName + '.sql\n'
+      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/insert-into-' + fileName + '.sql\n';
   }
 
   toSQLType(attr) {

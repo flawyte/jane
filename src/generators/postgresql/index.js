@@ -35,6 +35,22 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   }
 
   getContent(fileName) {
+    var str = '';
+
+    if (~fileName.indexOf('create-database'))
+      str += 'CREATE DATABASE ' + this.options['db-name'].toLowerCase() + ';\n'
+    if (~fileName.indexOf('.sql'))
+      str += '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
+
+    str += super.getContent(fileName);
+
+    if (~fileName.indexOf('drop-database')) {
+      str += '\\connect postgres;\n';
+      str += 'DROP DATABASE ' + this.options['db-name'].toLowerCase() + ';\n';
+    }
+
+    return str;
+
     if (~fileName.indexOf('create-database'))
       return 'CREATE DATABASE ' + this.options['db-name'].toLowerCase() + ';\n'
         + '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
@@ -52,10 +68,12 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   }
 
   getExecuteScriptContent() {
+    var fileName = (this.entities.length === 1) ? 'table-' + this.entities[0].plural.toLowerCase() : 'database';
+
     return '#!/bin/bash\n\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/drop-database.sql\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/create-database.sql\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-database.sql\n';
+      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/drop-' + fileName + '.sql\n'
+      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/create-' + fileName + '.sql\n'
+      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-' + fileName + '.sql\n';
   }
 
   toSQLType(attr) {
