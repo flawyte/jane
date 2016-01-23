@@ -378,8 +378,12 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         }
       }
     }
-    else if ((this.name === 'sqlite') && createStatement)
-      res = '(' + res + ')';
+    else if (this.name === 'sqlite') {
+      if (createStatement)
+        res = '(' + attr.defaultValue + ')';
+      else
+        res = attr.defaultValue;
+    }
 
     return res;
   }
