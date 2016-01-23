@@ -1,7 +1,8 @@
 <entity name="Order" plural="Orders">
   <attributes>
     <attribute name="id" type="Integer" primary-key="true" />
-    <attribute name="datetime" type="DateTime" default="DATETIME()" />
+    <attribute name="date" type="Date" default="DATE()" />
+    <attribute name="time" type="Time" default="TIME()" />
   </attributes>
   <references>
     <reference entity="Product" attribute="id" as="product" />

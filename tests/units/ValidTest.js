@@ -35,9 +35,9 @@ module.exports = {
     assert.equal(false, Valid.datetime(false));
     assert.equal(false, Valid.datetime(true));
     assert.equal(true, Valid.datetime(new Date()));
-    assert.equal(true, Valid.date(new Date(132456789)));
-    assert.equal(true, Valid.date(new Date('2012-11-13')));
-    assert.equal(false, Valid.date(new Date('abcdef')));
+    assert.equal(true, Valid.datetime(new Date(132456789)));
+    assert.equal(true, Valid.datetime(new Date('2012-11-13')));
+    assert.equal(false, Valid.datetime(new Date('abcdef')));
     assert.equal(false, Valid.datetime(1.6));
     assert.equal(false, Valid.datetime(1));
     assert.equal(false, Valid.datetime('abcdef'));
@@ -89,6 +89,20 @@ module.exports = {
     assert.equal(false, Valid.string(1.6));
     assert.equal(false, Valid.string(1));
     assert.equal(true, Valid.string('abcdef'));
+
+    assert.done();
+  },
+  'static time': function(assert) {
+    assert.equal(true, Valid.time instanceof Function);
+    assert.equal(false, Valid.time(false));
+    assert.equal(false, Valid.time(true));
+    assert.equal(true, Valid.time(new Date()));
+    assert.equal(true, Valid.time(new Date(132456789)));
+    assert.equal(true, Valid.time(new Date('2012-11-13')));
+    assert.equal(false, Valid.time(new Date('abcdef')));
+    assert.equal(false, Valid.time(1.6));
+    assert.equal(false, Valid.time(1));
+    assert.equal(false, Valid.time('abcdef'));
 
     assert.done();
   }

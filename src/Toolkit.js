@@ -25,6 +25,13 @@ export default class Toolkit {
       && Jane.default.xml2js;
   }
 
+  static getLocale() {
+    if (process.env.LANG)
+      return process.env.LANG.split('.')[0].replace('_', '-');
+    else
+      return 'en-US';
+  }
+
   static getDirectoryPath(filePath) {
     return filePath.substring(0, filePath.lastIndexOf('/') + 1);
   }

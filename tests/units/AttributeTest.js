@@ -168,7 +168,7 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
-    attr = new Attribute('completed', 'DateTime');
+    attr = new Attribute('signup_datetime', 'DateTime');
     assert.equal(false, attr.isValueValid(false));
     assert.equal(false, attr.isValueValid(true));
     assert.equal(false, attr.isValueValid('true'));
@@ -180,7 +180,7 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
-    attr = new Attribute('completed', 'Decimal');
+    attr = new Attribute('number', 'Decimal');
     attr.precision = 6;
     attr.scale = 3;
     assert.equal(false, attr.isValueValid(false));
@@ -194,7 +194,7 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
-    attr = new Attribute('completed', 'Integer');
+    attr = new Attribute('number', 'Integer');
     assert.equal(false, attr.isValueValid(false));
     assert.equal(false, attr.isValueValid(true));
     assert.equal(false, attr.isValueValid('true'));
@@ -206,7 +206,7 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
-    attr = new Attribute('completed', 'String');
+    attr = new Attribute('name', 'String');
     assert.equal(false, attr.isValueValid(false));
     assert.equal(false, attr.isValueValid(true));
     assert.equal(true, attr.isValueValid('true'));
@@ -214,6 +214,18 @@ module.exports = {
     assert.equal(false, attr.isValueValid(123.456));
     assert.equal(false, attr.isValueValid(123.456789));
     assert.equal(false, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
+    attr = new Attribute('updated_at', 'Time');
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(false, attr.isValueValid(123));
+    assert.equal(false, attr.isValueValid(123.456));
+    assert.equal(false, attr.isValueValid(123.456789));
+    assert.equal(true, attr.isValueValid(new Date()));
     assert.equal(false, attr.isValueValid(null));
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));

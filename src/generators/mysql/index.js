@@ -1,6 +1,7 @@
 import AbstractSQLGenerator from './../AbstractSQLGenerator';
 import InsertIntoStatement from './../InsertIntoStatement';
 import Random from './../../Random';
+import Toolkit from './../../Toolkit';
 
 export default class MySQLGenerator extends AbstractSQLGenerator {
 
@@ -114,6 +115,10 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
       break;
       case 'String': {
         res = JSON.stringify(attr.defaultValue);
+      }
+      break;
+      case 'Time': {
+        res = '"' + new Date(attr.defaultValue).toLocaleTimeString(Toolkit.getLocale(), { hour12: false }) + '"';
       }
       break;
     }

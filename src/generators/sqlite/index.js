@@ -1,6 +1,7 @@
 import AbstractSQLGenerator from './../AbstractSQLGenerator';
 import InsertIntoStatement from './../InsertIntoStatement';
 import Random from './../../Random';
+import Toolkit from './../../Toolkit';
 
 export default class SQLiteGenerator extends AbstractSQLGenerator {
 
@@ -39,6 +40,10 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
 
     switch (attr.type) {
       case 'String': {
+        res = 'VARCHAR';
+      }
+      break;
+      case 'Time': {
         res = 'VARCHAR';
       }
       break;
@@ -81,6 +86,10 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
       break;
       case 'String': {
         res = JSON.stringify(attr.defaultValue);
+      }
+      break;
+      case 'Time': {
+        res = '"' + new Date(attr.defaultValue).toLocaleTimeString(Toolkit.getLocale(), { hour12: false }) + '"';
       }
       break;
     }

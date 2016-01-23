@@ -49,13 +49,21 @@ export default class Cast {
     return new String(val);
   }
 
+  static time(val) {
+    var parts = val.split(':');
+
+    return new Date(0, 0, 0, parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+  }
+
   static value(val, type) {
     var res;
 
-    if (val === 'null')
+    if (val === 'null') {
       return null;
-    else if ((Toolkit.typeOf(val) === 'String') && /.*()$/.test(val)) // Jane function e.g. ends with '()'
+    }
+    else if ((Toolkit.typeOf(val) === 'String') && /.*\(\)/.test(val)) { // Jane function e.g. ends with '()'
       return val;
+    }
 
     switch (type) {
       case 'Boolean': {
@@ -80,6 +88,10 @@ export default class Cast {
       break;
       case 'String': {
         res = Cast.string(val);
+      }
+      break;
+      case 'Time': {
+        res = Cast.time(val);
       }
       break;
       default: {

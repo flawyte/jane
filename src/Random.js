@@ -32,6 +32,10 @@ export default class Random {
     return (Math.random() + 1).toString(36).slice(2);
   }
 
+  static time() {
+    return new Date(0, 0, 0, Random.integer(0, 23), Random.integer(0, 59), Random.integer(0, 59));
+  }
+
   static value(attr) {
     var val;
 
@@ -64,6 +68,10 @@ export default class Random {
       break;
       case 'String': {
         val = Random.string();
+      }
+      break;
+      case 'Time': {
+        val = Random.time();
       }
       break;
       default: {

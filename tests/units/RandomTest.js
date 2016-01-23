@@ -24,10 +24,29 @@ module.exports = {
     assert.equal(true, Random.date instanceof Function);
     val = Random.date();
     assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
     val = Random.date();
     assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
     val = Random.date();
     assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
+
+    assert.done();
+  },
+  'static datetime': function(assert) {
+    var val;
+
+    assert.equal(true, Random.datetime instanceof Function);
+    val = Random.datetime();
+    assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
+    val = Random.datetime();
+    assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
+    val = Random.datetime();
+    assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
 
     assert.done();
   },
@@ -76,6 +95,22 @@ module.exports = {
     assert.equal("string", typeof val);
     val = Random.string();
     assert.equal("string", typeof val);
+
+    assert.done();
+  },
+  'static time': function(assert) {
+    var val;
+
+    assert.equal(true, Random.time instanceof Function);
+    val = Random.time();
+    assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
+    val = Random.time();
+    assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
+    val = Random.time();
+    assert.equal(true, (val instanceof Date));
+    assert.equal(false, isNaN(val.getTime()));
 
     assert.done();
   },

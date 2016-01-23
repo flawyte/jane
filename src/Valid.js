@@ -56,4 +56,9 @@ export default class Valid {
   static string(val) {
     return (Toolkit.typeOf(val) === 'String');
   }
+
+  static time(val) {
+    return (Toolkit.typeOf(val) === 'Date')
+      && !isNaN(val.getTime());
+  }
 }

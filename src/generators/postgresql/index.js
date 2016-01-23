@@ -1,6 +1,7 @@
 import AbstractSQLGenerator from './../AbstractSQLGenerator';
 import InsertIntoStatement from './../InsertIntoStatement';
 import Random from './../../Random';
+import Toolkit from './../../Toolkit';
 
 export default class PostgreSQLGenerator extends AbstractSQLGenerator {
 
@@ -133,6 +134,10 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
       break;
       case 'String': {
         res = "'" + attr.defaultValue + "'";
+      }
+      break;
+      case 'Time': {
+        res = "'" + new Date(attr.defaultValue).toLocaleTimeString(Toolkit.getLocale(), { hour12: false }) + "'";
       }
       break;
     }

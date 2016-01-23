@@ -6,8 +6,9 @@ export default class Attribute {
   static fromXMLObject(obj) {
     var defaultValue = undefined;
 
-    if (obj.$['default'] !== undefined)
+    if (obj.$['default'] !== undefined) {
       defaultValue = Cast.value(obj.$['default'], obj.$.type);
+    }
 
     var attr = new Attribute(obj.$.name,
       obj.$.type,
@@ -92,6 +93,9 @@ export default class Attribute {
         break;
       case 'String':
         valid = valid && Valid.string(val);
+        break;
+      case 'Time':
+        valid = valid && Valid.time(val);
         break;
     }
 
