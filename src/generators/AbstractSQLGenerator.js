@@ -272,7 +272,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     }
     else {
       var ope = fileName.substring(0, fileName.lastIndexOf('-table'));
-      var ent = fileName.substring(fileName.lastIndexOf('-') + 1);
+      var ent = fileName.substring(fileName.lastIndexOf('-') + 1, fileName.lastIndexOf('.'));
 
       if (ope === 'insert-into')
         content = this.results[ope][ent].join('\n') + '\n';
