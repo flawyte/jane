@@ -2,11 +2,24 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too
- * ✗ XML: Consider adding 'Float' attribute type support (with default value support)
+ * ✗ npm test: added bash script to execute all units tests at once
+ * ✗ Make 'jane' go global so one can use 'jane ...' instead of 'node index.js ...'
+ * ✗ Refactor AbstractSQLGenerator (add a method for each SQL query type supported)
+ * ✗ SQL generators: add UNIQUE attribute support
+ * ✗ Add regex guessing based on the attribute's name
  * ✗ XML: Add 'length' attribute support for attributes
- * ✗ JS: add support for references
- * ✗ JS: add partial set(object) and all setters
+ * ✗ XML: Consider adding 'Float' attribute type support (with default value support)
+ * ✗ Add default records support: allow to specify default inserts to execute on the table(s) using a 'data' CLI arg
+ * ✗ Add genres: a genre would be a kind of sub-type, e.g. of type "String" and genre "email" or "paragraph", if specified generated data would thus be different, based on each attribute's genre (fallback on regex, validation checks)
+      - 'Boolean' genres: /
+      - 'Date/DateTime' genres: birthdate, create_at, updated_at
+      - 'Decimal' genres: price
+      - 'Integer' genres: age
+      - 'String' genres: paragraph (Lorem ipsum), email, sha1, md5, first_name, last_name, address, postal code, city, country, country code
+      - 'Time' genres: /
+ * ✗ Add genre guessing based on the attribute's name (if name is a genre, set the attribute to this genre)
+ * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too
+ * ✗ Add doc support: allow to specify entity's doc
  */
 
 /*
