@@ -2,10 +2,11 @@
  * TODO ✓✗
  * ====
  *
+ * ✗ SQL generators: add REGEX support
+ * ✗ SQL generators: add MIN/MAX LENGTH support
  * ✗ Add regex guessing based on the attribute's name
  * ✗ XML: Add 'length' attribute support for attributes
  * ✗ XML: Consider adding 'Float' attribute type support (with default value support)
- * ✗ Add default records support: allow to specify default inserts to execute on the table(s) using a 'data' CLI arg
  * ✗ Add genres: a genre would be a kind of sub-type, e.g. of type "String" and genre "email" or "paragraph", if specified generated data would thus be different, based on each attribute's genre (fallback on regex, validation checks)
       - 'Boolean' genres: /
       - 'Date/DateTime' genres: birthdate, create_at, updated_at
