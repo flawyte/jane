@@ -2,6 +2,7 @@
  * TODO ✓✗
  * ====
  *
+ * ✗ Jane: set base path relative to execution path, not relative to index.js path
  * ✗ SQL generators: add REGEX support
  * ✗ SQL generators: add MIN/MAX LENGTH support
  * ✗ Add regex guessing based on the attribute's name
@@ -29,14 +30,8 @@ require('traceur').require.makeDefault(function(filename) {
 });
 
 var args = require('yargs').argv;
-var fs = require('fs');
-var glob = require('glob');
 var Jane = require('./src/Jane').default;
-var path = require('path');
-var randexp = require('randexp');
 var Toolkit = require('./src/Toolkit').default;
-var util = require('util');
-var xml2js = require('xml2js');
 
 /*
  * Command line parsing
@@ -68,5 +63,5 @@ function init() {
   args.src = __dirname + '/' + args.from;
   var Generator = require('./src/generators/' + generatorName).default;
 
-  Jane.init(fs, new Generator(args), glob, path, randexp, xml2js);
+  Jane.init(require, new Generator(args));
 }
