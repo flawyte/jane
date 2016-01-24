@@ -2,7 +2,6 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Attribute: added 'entity' field
  * ✗ Make 'jane' go global so one can use 'jane ...' instead of 'node index.js ...'
  * ✗ SQL generators: add UNIQUE attribute support
  * ✗ Add regex guessing based on the attribute's name

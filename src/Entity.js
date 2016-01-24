@@ -59,6 +59,7 @@ export default class Entity {
   }
 
   addAttribute(attr) {
+    attr.entity = this;
     this.attributes.push(attr);
   }
 

@@ -38,6 +38,7 @@ export default class Attribute {
 
   constructor(name, type, primaryKey = false, unique = false, nullable = false, defaultValue = undefined) {
     this.defaultValue = defaultValue;
+    this.entity = null;
     this.name = name;
     this.nullable = primaryKey ? false : ((defaultValue !== undefined) || nullable);
     this.primaryKey = primaryKey;
