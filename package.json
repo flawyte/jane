@@ -3,6 +3,9 @@
   "version": "0.6.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "jane": "bin/jane.js"
+  },
   "scripts": {
     "test": "bash scripts/npm-test.sh"
   },
