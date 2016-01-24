@@ -19,7 +19,6 @@ export default class Attribute {
     );
 
     attr.defaultValueIsFunction = ((obj.$['default'] !== undefined) && obj.$['default'].match(/^.*\(\)$/) !== null);
-    attr.defaultValueIsRaw = ((obj.$['default'] !== undefined) && obj.$['default'].startsWith('raw:'));
     if (obj.$['max-length'] !== undefined)
       attr.maxLength = Cast.integer(obj.$['max-length']);
     if (obj.$['min-length'] !== undefined)

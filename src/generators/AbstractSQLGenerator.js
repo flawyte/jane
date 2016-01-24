@@ -219,7 +219,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           if (attr.primaryKey)
             return;
 
-          if (attr.defaultValueIsFunction || attr.defaultValueIsRaw)
+          if (attr.defaultValueIsFunction)
             values[attr.name] = self.toSQLValue(attr);
           else {
             values[attr.name] = self.toSQLValue({
