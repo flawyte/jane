@@ -2,7 +2,6 @@
  * TODO ✓✗
  * ====
  *
- * ✗ npm test: added bash script to execute all units tests at once
  * ✗ Make 'jane' go global so one can use 'jane ...' instead of 'node index.js ...'
  * ✗ Refactor AbstractSQLGenerator (add a method for each SQL query type supported)
  * ✗ SQL generators: add UNIQUE attribute support
