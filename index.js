@@ -2,8 +2,8 @@
  * TODO ✓✗
  * ====
  *
+ * ✗ Attribute: added 'entity' field
  * ✗ Make 'jane' go global so one can use 'jane ...' instead of 'node index.js ...'
- * ✗ Refactor AbstractSQLGenerator (add a method for each SQL query type supported)
  * ✗ SQL generators: add UNIQUE attribute support
  * ✗ Add regex guessing based on the attribute's name
  * ✗ XML: Add 'length' attribute support for attributes
@@ -14,7 +14,7 @@
       - 'Date/DateTime' genres: birthdate, create_at, updated_at
       - 'Decimal' genres: price
       - 'Integer' genres: age
-      - 'String' genres: paragraph (Lorem ipsum), email, sha1, md5, first_name, last_name, address, postal code, city, country, country code
+      - 'String' genres: paragraph (Lorem ipsum), email, sha1, md5, first_name, last_name, phone, address, postal code, city, country, country code
       - 'Time' genres: /
  * ✗ Add genre guessing based on the attribute's name (if name is a genre, set the attribute to this genre)
  * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too

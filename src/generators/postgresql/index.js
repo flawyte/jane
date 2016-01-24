@@ -1,6 +1,4 @@
 import AbstractSQLGenerator from './../AbstractSQLGenerator';
-import InsertIntoStatement from './../InsertIntoStatement';
-import Random from './../../Random';
 import Toolkit from './../../Toolkit';
 
 export default class PostgreSQLGenerator extends AbstractSQLGenerator {
@@ -8,6 +6,22 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   constructor(options) {
     super(options);
     this.name = 'postgresql';
+  }
+
+  connectDatabase(name) {
+    return '\\connect ' + name + ';';
+  }
+
+  createColumnPrimaryKey(name) {
+    return name + ' SERIAL PRIMARY KEY';
+  }
+
+  createDatabase(name) {
+    return 'CREATE DATABASE ' + name + ';';
+  }
+
+  dropDatabase(name) {
+    return '\\connect postgres;\nDROP DATABASE ' + name + ';';
   }
 
   escapeColumnName(name) {
@@ -38,34 +52,19 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   getContent(fileName) {
     var str = '';
 
+    this.options['db-name'] = this.options['db-name'].toLowerCase();
+
     if (~fileName.indexOf('create-database'))
-      str += 'CREATE DATABASE ' + this.options['db-name'].toLowerCase() + ';\n'
+      str += this.createDatabase(this.options['db-name']) + '\n';
     if (~fileName.indexOf('.sql'))
-      str += '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
+      str += this.connectDatabase(this.options['db-name']) + '\n\n';
 
     str += super.getContent(fileName);
 
-    if (~fileName.indexOf('drop-database')) {
-      str += '\\connect postgres;\n';
-      str += 'DROP DATABASE ' + this.options['db-name'].toLowerCase() + ';\n';
-    }
+    if (~fileName.indexOf('drop-database'))
+      str += this.dropDatabase(this.options['db-name']) + '\n';
 
     return str;
-
-    if (~fileName.indexOf('create-database'))
-      return 'CREATE DATABASE ' + this.options['db-name'].toLowerCase() + ';\n'
-        + '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
-        + super.getContent(fileName);
-    else if (~fileName.indexOf('drop-database'))
-      return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
-        + super.getContent(fileName)
-        + '\\connect postgres;\n'
-        + 'DROP DATABASE ' + this.options['db-name'].toLowerCase() + ';\n';
-    else if (~fileName.indexOf('.sql'))
-      return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
-        + super.getContent(fileName);
-    else
-      return super.getContent(fileName);
   }
 
   getExecuteScriptContent() {

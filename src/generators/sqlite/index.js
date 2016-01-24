@@ -10,6 +10,10 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
     this.name = 'sqlite';
   }
 
+  createColumnPrimaryKey(name) {
+    return name + ' INTEGER PRIMARY KEY AUTOINCREMENT';
+  }
+
   getAllowedOptions() {
     var opts = super.getAllowedOptions();
 

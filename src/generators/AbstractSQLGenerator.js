@@ -23,8 +23,79 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
       this.results['insert-into'][entity.plural.toLowerCase()] = [];
   }
 
+  /*
+   * Must be overrided by sub-classes.
+   */
+  connectDatabase(name) {
+    return null;
+  }
+
+  createColumn(attr) {
+    if (attr.primaryKey)
+      return this.createColumnPrimaryKey(attr.name);
+
+    var str = this.escapeColumnName(attr.name) + ' ' + this.toSQLType(attr);
+
+    if (!attr.nullable)
+      str += ' NOT NULL';
+    if (attr.defaultValue !== undefined)
+      str += ' DEFAULT ' + this.toSQLValue(attr, true);
+    else if (attr.nullable)
+      str += ' DEFAULT NULL';
+
+    return str;
+  }
+
+  createColumnForeignKey(ref) {
+    var str = '';
+
+    str += this.escapeColumnName(ref.alias) + ' ' + this.toSQLType({ type: 'Integer' });
+
+    if (!ref.nullable)
+      str += ' NOT NULL';
+    if (ref.defaultValue !== undefined)
+      str += ' DEFAULT ' + this.toSQLValue({
+        defaultValue: ref.defaultValue,
+        type: 'Integer'
+      }, true);
+    else if (ref.nullable)
+      str += ' DEFAULT NULL';
+
+    return str;
+  }
+
+  /*
+   * Must be overrided by sub-classes.
+   */
+  createDatabase(name) {
+    return null;
+  }
+
+  createForeignKey(name, tableName, columnName) {
+    return 'FOREIGN KEY (' + this.escapeColumnName(name) + ') REFERENCES ' + tableName + ' (' + columnName + ')';
+  }
+
+  createTable(name) {
+    return 'CREATE TABLE ' + name;
+  }
+
+  /*
+   * Must be overrided by sub-classes.
+   */
+  dropDatabase(name) {
+    return null;
+  }
+
+  dropTable(name) {
+    return 'DROP TABLE IF EXISTS ' + name + ';';
+  }
+
+  insertInto(entity, values) {
+    return new InsertIntoStatement(this, entity, values);
+  }
+
   /**
-   * Used in rare cases like when `name === 'user'` which is not allowed in PostgreSQL unless quoted (e.g. "user"). Its the responsibility of this method to do so.
+   * Used in rare cases, for example when `name === 'user'` which is not allowed in PostgreSQL unless quoted (e.g. "user"). It's the responsibility of this method to do so.
    */
   escapeColumnName(name) {
     return name;
@@ -57,22 +128,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
 
     this.indentation++;
     e.attributes.forEach(function(attr, i) {
-      str += self.indent() + attr.name + ' ' + self.toSQLType(attr).toUpperCase();
-
-      if (attr.primaryKey) {
-        str += ' PRIMARY KEY';
-
-        if (self.getAutoIncrementString())
-          str += ' ' + self.getAutoIncrementString();
-      }
-      else if (attr.required)
-        str += ' NOT NULL';
-      else {
-        str += ' DEFAULT ' + self.toSQLValue(attr, true);
-      }
-
-      if (!attr.primaryKey && attr.unique)
-        str += ' UNIQUE';
+      str += self.indent() + self.createColumn(attr);
 
       if (i != (e.attributes.length - 1))
         str += ',\n';
@@ -82,19 +138,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
       str += ',\n';
 
     e.references.forEach(function(ref, i) {
-      str += self.indent() + self.escapeColumnName(ref.alias) + ' ' + self.toSQLType({ type: 'Integer' });
-
-      if (ref.nullable)
-        str += ' DEFAULT NULL';
-      else {
-        str += ' NOT NULL';
-
-        if (ref.defaultValue !== undefined)
-          str += ' DEFAULT ' + self.toSQLValue({
-            defaultValue: ref.defaultValue,
-            type: 'Integer'
-          });
-      }
+      str += self.indent() + self.createColumnForeignKey(ref);
 
       if (i < (e.references.length - 1))
         str += ',\n';
@@ -111,7 +155,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     this.entities.forEach(function(e, i) {
       var str = '';
 
-      str += 'CREATE TABLE ' + e.plural + ' (\n';
+      str += self.createTable(e.plural) + ' (\n';
       str += self.generateAttributes(e);
 
       if (e.references.length > 0) {
@@ -135,7 +179,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     this.entities.forEach(function(e, i) {
       var str = '';
 
-      str += 'DROP TABLE IF EXISTS ' + e.plural + ';';
+      str += self.dropTable(e.plural);
 
       self.results['drop'][e.plural.toLowerCase()] = str;
     });
@@ -148,7 +192,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
 
     this.indentation++;
     e.references.forEach(function(ref, i) {
-      str += self.indent() + 'FOREIGN KEY (' + self.escapeColumnName(ref.alias) + ') REFERENCES ' + ref.entity.plural + ' (' + ref.attribute + ')';
+      str += self.indent() + self.createForeignKey(ref.alias, ref.entity.plural, ref.attribute);
 
       if (i < (e.references.length - 1)) {
         str += ',\n';
@@ -229,8 +273,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           }
         });
 
-        var stmt = new InsertIntoStatement(self, e, values);
-        self.results['insert-into'][e.plural.toLowerCase()].push(stmt);
+        self.results['insert-into'][e.plural.toLowerCase()].push(self.insertInto(e, values));
       }
     });
   }

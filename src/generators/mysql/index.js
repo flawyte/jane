@@ -1,13 +1,27 @@
 import AbstractSQLGenerator from './../AbstractSQLGenerator';
-import InsertIntoStatement from './../InsertIntoStatement';
-import Random from './../../Random';
 import Toolkit from './../../Toolkit';
 
 export default class MySQLGenerator extends AbstractSQLGenerator {
 
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     this.name = 'mysql';
+  }
+
+  connectDatabase(name) {
+    return 'USE ' + name + ';';
+  }
+
+  createColumnPrimaryKey(name) {
+    return name + ' INT PRIMARY KEY AUTO_INCREMENT';
+  }
+
+  createDatabase(name) {
+    return 'CREATE DATABASE IF NOT EXISTS ' + name + ';';
+  }
+
+  dropDatabase(name) {
+    return 'DROP DATABASE ' + name + ';';
   }
 
   generate() {
@@ -36,14 +50,14 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
     var str = '';
 
     if (~fileName.indexOf('create-database'))
-      str += 'CREATE DATABASE IF NOT EXISTS ' + this.options['db-name'] + ';\n';
+      str += this.createDatabase(this.options['db-name']) + '\n';
     if (~fileName.indexOf('.sql'))
-      str += 'USE ' + this.options['db-name'] + ';\n\n';
+      str += this.connectDatabase(this.options['db-name']) + '\n\n';
 
     str += super.getContent(fileName);
 
     if (~fileName.indexOf('drop-database'))
-      str += 'DROP DATABASE ' + this.options['db-name'] + ';\n';
+      str += this.dropDatabase(this.options['db-name']) + '\n';
 
     return str;
   }
@@ -63,6 +77,12 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
 
   toSQLType(attr) {
     var res = null;
+
+    if (attr.defaultValueIsFunction) {
+      if (attr.defaultValue === 'DATE()' || attr.defaultValue === 'TIME()')
+        console.log('Warning: MySQL does not allow functions as a default values for columns except CURRENT_TIMESTAMP for TIMESTAMP (and DATETIME since MySQL 5.6.5) columns. Therefore, attributes of type ' + attr.type + ' are converted to DATETIME columns.');
+        return 'DATETIME';
+    }
 
     switch (attr.type) {
       case 'Integer': {
@@ -89,7 +109,10 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
     var res = null;
 
     if (attr.defaultValueIsFunction) {
-      return super.toSQLValue(attr, createStatement);
+      if (attr.defaultValue !== 'DATE()' && attr.defaultValue !== 'TIME()')
+        return super.toSQLValue(attr, createStatement);
+      else
+        return 'CURRENT_TIMESTAMP';
     }
 
     switch (attr.type) {
