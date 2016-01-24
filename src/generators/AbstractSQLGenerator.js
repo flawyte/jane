@@ -38,10 +38,14 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
 
     if (!attr.nullable)
       str += ' NOT NULL';
+
     if (attr.defaultValue !== undefined)
       str += ' DEFAULT ' + this.toSQLValue(attr, true);
     else if (attr.nullable)
       str += ' DEFAULT NULL';
+
+    if (attr.unique)
+      str += ' UNIQUE';
 
     return str;
   }

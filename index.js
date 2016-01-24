@@ -3,7 +3,6 @@
  * ====
  *
  * ✗ Make 'jane' go global so one can use 'jane ...' instead of 'node index.js ...'
- * ✗ SQL generators: add UNIQUE attribute support
  * ✗ Add regex guessing based on the attribute's name
  * ✗ XML: Add 'length' attribute support for attributes
  * ✗ XML: Consider adding 'Float' attribute type support (with default value support)
