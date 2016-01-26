@@ -1,3 +1,4 @@
+import Entity from './Entity';
 import InsertIntoStatement from './generators/InsertIntoStatement';
 
 export default class DataRecord {
@@ -18,6 +19,20 @@ export default class DataRecord {
   }
 
   toSQLStatement(generator) {
+    if (generator.toSQLValue) {
+      var keys = Object.keys(this.values);
+
+      for (let key of keys) {
+        var attr = this.entity.getAttributeByName(key);
+        var type = attr ? attr.type : 'Integer'; // Attribute or Reference (then type is always 'Integer')
+
+        this.values[key] = generator.toSQLValue({
+          defaultValue: this.values[key],
+          type: type
+        });
+      }
+    }
+
     return new InsertIntoStatement(generator, this.entity, this.values);
   }
 }
