@@ -68,12 +68,30 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   }
 
   getExecuteScriptContent() {
+    var content = '#!/bin/bash\n\n';
     var fileName = (this.entities.length === 1) ? 'table-' + this.entities[0].plural.toLowerCase() : 'database';
+    var userName = 'root';
 
-    return '#!/bin/bash\n\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/drop-' + fileName + '.sql\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/create-' + fileName + '.sql\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-' + fileName + '.sql\n';
+    if (typeof this.options['user'] === 'string')
+      userName = this.options['user'];
+
+    if (this.options.data)
+        content += 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-' + fileName +'-default-data.sql';
+    else {
+      if (this.options.drop) {
+        content += 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/drop-' + fileName + '.sql';
+      }
+      if (this.options.create) {
+        content += '\n';
+        content += 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/create-' + fileName + '.sql';
+      }
+      if (this.options['insert-into']) {
+        content += '\n';
+        content += 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-' + fileName + '.sql';
+      }
+    }
+
+    return content + '\n';
   }
 
   toSQLType(attr) {

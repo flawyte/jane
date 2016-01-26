@@ -27,16 +27,31 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
   }
 
   getExecuteScriptContent() {
+    var content = '#!/bin/bash\n\n';
     var dbName = 'data.db';
     var fileName = (this.entities.length === 1) ? 'table-' + this.entities[0].plural.toLowerCase() : 'database';
+    var userName = 'root';
 
     if (typeof this.options['db-name'] === 'string')
       dbName = this.options['db-name'];
 
-    return '#!/bin/bash\n\n'
-      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/drop-' + fileName + '.sql\n'
-      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/create-' + fileName + '.sql\n'
-      + 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/insert-into-' + fileName + '.sql\n';
+    if (this.options.data)
+        content += 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/insert-into-' + fileName +'-default-data.sql';
+    else {
+      if (this.options.drop) {
+        content += 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/drop-' + fileName + '.sql';
+      }
+      if (this.options.create) {
+        content += '\n';
+        content += 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/create-' + fileName + '.sql';
+      }
+      if (this.options['insert-into']) {
+        content += '\n';
+        content += 'sqlite3 `pwd`/`dirname $0`/' + dbName + ' < `pwd`/`dirname $0`/insert-into-' + fileName + '.sql';
+      }
+    }
+
+    return content + '\n';
   }
 
   toSQLType(attr) {

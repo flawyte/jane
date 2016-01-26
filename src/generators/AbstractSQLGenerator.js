@@ -447,9 +447,9 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           names.push(opt + '-database.sql');
         }
       }
-
-      names.push('execute.sh');
     }
+
+    names.push('execute.sh');
 
     return names;
   }
