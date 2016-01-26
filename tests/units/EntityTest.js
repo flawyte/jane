@@ -6,8 +6,11 @@ traceur.require.makeDefault(function(filename) {
 
 var Entity = require('./../../src/Entity').default;
 
+new Entity('Product', 'Products');
+new Entity('User', 'Users');
+
 module.exports = {
-  class: function(assert) {
+  'class': function(assert) {
     var ent = new Entity();
 
     assert.equal(true, ent instanceof Entity);
@@ -34,6 +37,23 @@ module.exports = {
 
     assert.equal('Screen', ent.name);
     assert.equal('Screens', ent.plural);
+
+    assert.done();
+  },
+  'static add': function(assert) {
+    var ent = null;
+
+    assert.equal(true, Entity.add instanceof Function);
+
+    assert.throws(function() {
+      Entity.add(null);
+    });
+    assert.throws(function() {
+      Entity.add();
+    });
+    assert.doesNotThrow(function() {
+      Entity.add(new Entity('Foo', 'Bar'));
+    });
 
     assert.done();
   },
@@ -89,6 +109,78 @@ module.exports = {
     assert.equal('Task', ent.name);
     assert.equal('Tasks', ent.plural);
     assert.equal(5, ent.attributes.length);
+
+    assert.done();
+  },
+  'static get': function(assert) {
+    var ent = null;
+
+    assert.equal(true, Entity.get instanceof Function);
+
+    ent = Entity.get('User');
+    assert.equal(true, ent instanceof Entity);
+    assert.equal('User', ent.name);
+    assert.equal('Users', ent.plural);
+    assert.equal(0, ent.attributes.length);
+
+    ent = Entity.get('Users');
+    assert.equal(false, ent instanceof Entity);
+    assert.equal(undefined, ent);
+
+    assert.done();
+  },
+  'static getByPlural': function(assert) {
+    var ent = null;
+
+    assert.equal(true, Entity.getByPlural instanceof Function);
+
+    ent = Entity.getByPlural('Users');
+    assert.equal(true, ent instanceof Entity);
+    assert.equal('User', ent.name);
+    assert.equal('Users', ent.plural);
+    assert.equal(0, ent.attributes.length);
+
+    ent = Entity.getByPlural('User');
+    assert.equal(false, ent instanceof Entity);
+    assert.equal(undefined, ent);
+
+    assert.done();
+  },
+  'addAttribute': function(assert) {
+    var ent = new Entity('Account', 'Accounts');
+
+    assert.equal(true, ent.addAttribute instanceof Function);
+
+    assert.throws(function() {
+      ent.addAttribute(null);
+    });
+    assert.throws(function() {
+      ent.addAttribute();
+    });
+    assert.equal(0, ent.attributes.length);
+    assert.doesNotThrow(function() {
+      ent.addAttribute({});
+    });
+    assert.equal(1, ent.attributes.length);
+
+    assert.done();
+  },
+  'addReference': function(assert) {
+    var ent = new Entity('Account', 'Accounts');
+
+    assert.equal(true, ent.addReference instanceof Function);
+
+    assert.throws(function() {
+      ent.addReference(null);
+    });
+    assert.throws(function() {
+      ent.addReference();
+    });
+    assert.equal(0, ent.references.length);
+    assert.doesNotThrow(function() {
+      ent.addReference({});
+    });
+    assert.equal(1, ent.references.length);
 
     assert.done();
   }
