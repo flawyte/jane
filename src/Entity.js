@@ -6,6 +6,9 @@ import Toolkit from './Toolkit';
 export default class Entity {
 
   static add(entity) {
+    if (!entity)
+      throw 'Given entity can not be null or undefined';
+
     if (!Entity.instances)
       Entity.instances = {};
 
@@ -66,11 +69,17 @@ export default class Entity {
   }
 
   addAttribute(attr) {
+    if (!attr)
+      throw 'Given attr can not be null or undefined';
+
     attr.entity = this;
     this.attributes.push(attr);
   }
 
   addReference(ref) {
+    if (!ref)
+      throw 'Given ref can not be null or undefined';
+
     ref.source = this;
     this.references.push(ref);
   }

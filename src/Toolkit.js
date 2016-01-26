@@ -1,3 +1,4 @@
+import Entity from './Entity';
 import Jane from './Jane';
 
 export default class Toolkit {
@@ -20,7 +21,8 @@ export default class Toolkit {
   }
 
   static get ready() {
-    return Jane.default.fs
+    return Jane.default
+      && Jane.default.fs
       && Jane.default.path
       && Jane.default.xml2js;
   }
@@ -42,6 +44,20 @@ export default class Toolkit {
 
   static getFileName(filePath) {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
+  }
+
+  static loadEntities(path) {
+    console.log('Toolkit.loadEntities(' + path + ')');
+    Toolkit.readXMLDirectory(path).forEach(function(xmlFile) {
+      Entity.default.fromXMLFile(xmlFile);
+    });
+  }
+
+  static readXMLDirectory(path) {
+    if (!Toolkit.ready)
+      throw "You must call Jane.init(<params>) first";
+
+    return Jane.default.glob.sync(path + '*.xml');
   }
 
   static readXMLFile(path) {

@@ -1,5 +1,5 @@
 /*
- * Abstract output class. Should be inherited by all classes whose goal is to generate code from an Entity object.
+ * Abstract output class. Can be inherited by all classes whose goal is to generate code from one or multiple Entity objects.
  */
 export default class AbstractGenerator {
 

@@ -1,3 +1,4 @@
+import DataRecord from './DataRecord';
 import Entity from './Entity';
 import Toolkit from './Toolkit';
 
@@ -48,27 +49,97 @@ export default class Jane {
   static process(args) {
     var src = args.src;
 
+    Jane.basePath = Jane.path.normalize(src + '/');
+
+    if (args.data) {
+      Toolkit.loadEntities(src);
+      Jane.generator.data = Jane.processData(Jane.path.normalize(src + '/data/'));
+    }
+    else {
+      if (Toolkit.directoryExists(src)) { // Source is a directory
+        Jane.processDirectory(args, function(success) {
+          if (success)
+            console.log('✓ Done !');
+          else
+            console.log('Error while processing directory' + src + '.');
+        });
+      }
+      else { // Source is an XML file
+        Jane.processFile(args, function(success) {
+          if (success)
+            console.log('✓ Done !');
+          else
+            console.log('Error while processing file' + src + '.');
+        });
+      }
+    }
+  }
+
+  static processData(src) {
+    console.log('Jane.processData(' + src + ')');
     if (Toolkit.directoryExists(src)) { // Source is a directory
-      Jane.processDirectory(args, function(success) {
-        if (success)
-          console.log('✓ Done !');
-        else
-          console.log('Error while processing directory' + src + '.');
+      return Jane.processDataDirectory(src, function(records) {
+        Jane.generator.data = records;
+        console.log('OKAY CALLBACK !!');
+        // Jane.generator.generate();
       });
     }
     else { // Source is an XML file
-      Jane.processFile(args, function(success) {
-        if (success)
-          console.log('✓ Done !');
-        else
-          console.log('Error while processing file' + src + '.');
+      return Jane.processDataFile(src, function(records) {
+        Jane.generator.data = records;
+        console.log('OKAY CALLBACK !!');
+        // Jane.generator.generate();
       });
     }
   }
 
+  static processDataDirectory(src, callback) {
+    var gen = Jane.generator;
+    var path;
+
+    if (src.startsWith('/') || src.startsWith('~'))
+      path = Jane.path.normalize(src + '/');
+    else
+      path = Jane.path.normalize(Jane.basePath + '/' + src + '/');
+
+    if (!Toolkit.directoryExists(path))
+      throw path + ' is not a directory';
+
+    Jane.glob(path + '*.xml', function(err, files) {
+      if (err)
+        throw err;
+
+      var records = [];
+
+      console.log('Start loop');
+      files.forEach(function(file) {
+        var res = Jane.processDataFile(file);
+
+        records.push(res);
+      });
+      console.log('End loop');
+
+      callback && callback(records);
+    });
+  }
+
+  static processDataFile(src) {
+    console.log('Jane.processDataFile(' + src + ')');
+
+    var obj = Toolkit.readXMLFile(src).data;
+    console.log(obj);
+    var entity = Entity.getByPlural(obj.$.for);
+    var res;
+
+    if (!entity)
+      throw 'There is no entity whose name in plural form is "' + obj.$.for + '"';
+
+    return res;
+  }
+
   static processDirectory(args, callback) {
     if (!Jane.ready)
-      throw "You must call Jane.init(<params>) first";
+      throw "You must call Jane.init() first";
 
     var gen = Jane.generator;
     var path = Jane.path.normalize(args.src + '/');
