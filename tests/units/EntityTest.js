@@ -214,5 +214,36 @@ module.exports = {
     assert.equal('String', attr.type);
 
     assert.done();
+  },
+  'getReferenceByAlias': function(assert) {
+    var ref;
+    var ent = new Entity('Account', 'Accounts');
+
+    ent.addReference(new Reference(ent, null, 'id', 'foreign_key'));
+
+    assert.equal(true, ent.getReferenceByAlias instanceof Function);
+
+    assert.throws(function() {
+      ent.getReferenceByAlias(null);
+    });
+    assert.throws(function() {
+      ent.getReferenceByAlias();
+    });
+    assert.doesNotThrow(function() {
+      ref = ent.getReferenceByAlias('foobar');
+    });
+    assert.equal(null, ref);
+
+    assert.doesNotThrow(function() {
+      ref = ent.getReferenceByAlias('foreign_key');
+    });
+    assert.equal(false, (ref === null));
+    assert.equal(false, (ref === undefined));
+    assert.equal('foreign_key', ref.alias);
+    assert.equal('id', ref.attribute);
+    assert.equal(null, ref.entity);
+    assert.equal(ent, ref.source);
+
+    assert.done();
   }
 };

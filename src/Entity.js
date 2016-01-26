@@ -92,4 +92,13 @@ export default class Entity {
       return (attr.name === name);
     });
   }
+
+  getReferenceByAlias(alias) {
+    if (!alias)
+      throw 'Given alias can not be null or undefined';
+
+    return this.references.find(function(ref) {
+      return (ref.alias === alias);
+    });
+  }
 }
