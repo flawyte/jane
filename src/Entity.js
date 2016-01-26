@@ -42,11 +42,18 @@ export default class Entity {
       if (Toolkit.ready) {
         Entity.instances[name] = Entity.fromXMLFile(Jane.default.basePath + name + '.xml');
       }
-      else
-        return name;
     }
 
     return Entity.instances[name];
+  }
+
+  static getByPlural(val) {
+    var name = Object.keys(Entity.instances).find(function(name) {
+      return (Entity.instances[name].plural === val);
+    });
+
+    if (name)
+      return Entity.get(name);
   }
 
   constructor(name, plural = null) {
