@@ -55,37 +55,35 @@ export default class Jane {
 
     if (args.data) {
       Toolkit.loadEntities(src);
-      gen.data = Jane.processData(Jane.path.normalize(src + '/data/'));
-      gen.generate();
-      gen.getOutputFilesNames().forEach(function(fileName) {
-        Jane.saveCode(gen.getContent(fileName),
-          fileName,
-          args.to || ('generated/' + Jane.generator.name));
-      });
-      console.log('✓ Done !');
+      gen.data = Jane.processDataDirectory(Jane.path.normalize(src + '/data/'));
     }
     else {
       if (Toolkit.directoryExists(src)) { // Source is a directory
-        Jane.processDirectory(args, function(success) {
-          if (success)
-            console.log('✓ Done !');
-          else
-            console.log('Error while processing directory' + src + '.');
-        });
+        var entities = Jane.processEntitiesDirectory(src);
+
+        if (!entities || entities.length === 0)
+          console.log('Error while processing directory : ' + src);
+
+        for (let entity of entities)
+          gen.addEntity(entity);
       }
       else { // Source is an XML file
-        Jane.processFile(args, function(success) {
-          if (success)
-            console.log('✓ Done !');
-          else
-            console.log('Error while processing file' + src + '.');
-        });
+        var entity = Jane.processEntityFile(src);
+
+        if (!entity)
+          console.log('Error while processing file : ' + src);
+
+        gen.addEntity(entity);
       }
     }
-  }
 
-  static processData(src) {
-    return Jane.processDataDirectory(src);
+    gen.generate();
+    gen.getOutputFilesNames().forEach(function(fileName) {
+      Jane.saveCode(gen.getContent(fileName),
+        fileName,
+        args.to || ('generated/' + Jane.generator.name));
+    });
+    console.log('✓ Done !');
   }
 
   static processDataDirectory(path) {
@@ -114,63 +112,24 @@ export default class Jane {
     });
   }
 
-  static processDirectory(args, callback) {
+  static processEntitiesDirectory(path) {
     if (!Jane.ready)
       throw "You must call Jane.init() first";
-
-    var gen = Jane.generator;
-    var path = Jane.path.normalize(args.src + '/');
-
     if (!Toolkit.directoryExists(path))
       throw path + ' is not a directory';
 
-    Jane.basePath = path;
+    var entities = [];
+    var files = Jane.glob.sync(path + '*.xml');
 
-    Jane.glob(path + '*.xml', function(err, files) {
-      if (err)
-        throw err;
-
-      files.forEach(function(file) {
-        if (Entity.instances !== undefined)
-          if (Entity.instances[Toolkit.getEntityName(file)] !== undefined)
-            gen.addEntity(Entity.instances[Toolkit.getEntityName(file)]);
-          else
-            gen.addEntity(Entity.fromXMLFile(file));
-        else
-          gen.addEntity(Entity.fromXMLFile(file));
-      });
-
-      gen.generate();
-      gen.getOutputFilesNames().forEach(function(fileName) {
-        Jane.saveCode(gen.getContent(fileName),
-          fileName,
-          args.to || ('generated/' + Jane.generator.name));
-      });
-
-      if (callback instanceof Function)
-        callback(true);
+    files.forEach(function(file) {
+      entities.push(Jane.processEntityFile(file));
     });
+
+    return entities;
   }
 
-  static processFile(args, callback) {
-    if (!Jane.ready)
-      throw "You must call Jane.init(<params>) first";
-
-    var gen = Jane.generator;
-    var path = args.src;
-
-    Jane.basePath = Toolkit.getDirectoryPath(path);
-
-    gen.addEntity(Entity.fromXMLFile(path));
-    gen.generate();
-    gen.getOutputFilesNames().forEach(function(fileName) {
-        Jane.saveCode(gen.getContent(fileName),
-          fileName,
-          args.to || ('generated/' + Jane.generator.name));
-    });
-
-    if (callback instanceof Function)
-      callback(true);
+  static processEntityFile(path) {
+    return Entity.fromXMLFile(path);
   }
 
   static get ready() {

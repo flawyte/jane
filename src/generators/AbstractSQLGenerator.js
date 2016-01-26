@@ -11,20 +11,20 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
   constructor(options = {}) {
     super(options);
     this.data = []; // Will contain default data to insert into the database if any
-    this.filesContent = {}; // Will contain the final content of all output files
-    // Will contain pre-final generated strings or objects, ready to be processed for output (final result is placed in the 'filesContent' field)
+    this.filesContent = {}; // Will contain the final content for all output files (key = fileName, value = content)
+    // Will contain pre-final generated strings (whose concatenation gives the final output)
     this.schemas = {
       'create': {},
-      'drop': {},
-      'insert-into': {}
+      'drop': {}
     };
+    this.inserts = {};
   }
 
   addEntity(entity) {
     super.addEntity(entity);
 
     if (this.options['insert-into']) {
-      this.schemas['insert-into'][entity.plural.toLowerCase()] = [];
+      this.inserts[entity.plural.toLowerCase()] = [];
     }
   }
 
@@ -110,7 +110,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           fileName = 'insert-into-database.sql';
 
           for (let i = 0; i < this.entities.length; i++) {
-            content += this.schemas['insert-into'][this.entities[i].plural.toLowerCase()].join('\n\n');
+            content += this.inserts[this.entities[i].plural.toLowerCase()].join('\n\n');
 
             if (i < (l - 1))
               content += '\n\n';
@@ -219,7 +219,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
 
     if (this.options.data) {
       if (this.options.create || this.options.drop || this.options['insert-into'])
-        console.log('Warning: You can not use arguments --create, --drop & --insert-into when using the --data arg, as the XML source file(s) will be parsed for data and not for entities. Using one of them along with --data has no effect.');
+        console.log('Warning: You can not use arguments --create, --drop and --insert-into when using the --data arg. Using one of them along with --data has no effect.\n');
 
       this.generateData();
     }
@@ -290,7 +290,9 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     });
   }
 
-  generateData() {}
+  generateData() {
+    // Does nothing, output file's content is generated in buildOutputFileContent()
+  }
 
   generateDrop() {
     this.sortEntities();
@@ -369,7 +371,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
 
             otherRefs.forEach(function(ref3) {
               var referencedEntityName = ref3.source.plural.toLowerCase();
-              var referencedEntityInserts = self.schemas['insert-into'][referencedEntityName];
+              var referencedEntityInserts = self.inserts[referencedEntityName];
 
               if (referencedEntityInserts === undefined)
                 return; // No inserts for this entity
@@ -394,7 +396,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           }
         });
 
-        self.schemas['insert-into'][e.plural.toLowerCase()].push(self.insertInto(e, values));
+        self.inserts[e.plural.toLowerCase()].push(self.insertInto(e, values));
       }
     });
   }
@@ -402,7 +404,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
   getAllowedOptions() {
     return {
       'create': 'For each entity, will generate the SQL query to create the related database table.',
-      'data': 'Can not be used along with any other option. If used, the XML source file(s) (given using the --from arg) will be parsed for data and not for entities! If so, INSERT INTO statements will be generated for each data record found.',
+      'data': 'If used, Jane will look for a "data/" sub-directory for default data to generate INSERT INTO statements for.',
       'drop': 'For each entity, will generate the SQL query to drop the related database table.',
       'insert-into <rows-count>': 'For each entity, will generate <rows-count> SQL queries to insert randomly generated data in the related database table.'
     };
@@ -473,7 +475,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     this.options = val;
 
     for (let e of this.entities) {
-      this.schemas['insert-into'][e.plural.toLowerCase()] = [];
+      this.inserts[e.plural.toLowerCase()] = [];
     }
   }
 
