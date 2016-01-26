@@ -5,6 +5,8 @@ traceur.require.makeDefault(function(filename) {
 });
 
 var Entity = require('./../../src/Entity').default;
+var Attribute = require('./../../src/Attribute').default;
+var Reference = require('./../../src/Reference').default;
 
 new Entity('Product', 'Products');
 new Entity('User', 'Users');
@@ -159,7 +161,7 @@ module.exports = {
     });
     assert.equal(0, ent.attributes.length);
     assert.doesNotThrow(function() {
-      ent.addAttribute({});
+      ent.addAttribute(new Attribute());
     });
     assert.equal(1, ent.attributes.length);
 
@@ -178,9 +180,38 @@ module.exports = {
     });
     assert.equal(0, ent.references.length);
     assert.doesNotThrow(function() {
-      ent.addReference({});
+      ent.addReference(new Reference());
     });
     assert.equal(1, ent.references.length);
+
+    assert.done();
+  },
+  'getAttributeByName': function(assert) {
+    var attr;
+    var ent = new Entity('Account', 'Accounts');
+
+    ent.addAttribute(new Attribute('name', 'String'));
+
+    assert.equal(true, ent.getAttributeByName instanceof Function);
+
+    assert.throws(function() {
+      ent.getAttributeByName(null);
+    });
+    assert.throws(function() {
+      ent.getAttributeByName();
+    });
+    assert.doesNotThrow(function() {
+      attr = ent.getAttributeByName('foobar');
+    });
+    assert.equal(null, attr);
+
+    assert.doesNotThrow(function() {
+      attr = ent.getAttributeByName('name');
+    });
+    assert.equal(false, (attr === null));
+    assert.equal(false, (attr === undefined));
+    assert.equal('name', attr.name);
+    assert.equal('String', attr.type);
 
     assert.done();
   }

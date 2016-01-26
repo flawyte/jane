@@ -83,4 +83,13 @@ export default class Entity {
     ref.source = this;
     this.references.push(ref);
   }
+
+  getAttributeByName(name) {
+    if (!name)
+      throw 'Given name can not be null or undefined';
+
+    return this.attributes.find(function(attr) {
+      return (attr.name === name);
+    });
+  }
 }
