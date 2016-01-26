@@ -46,7 +46,6 @@ module.exports = {
 
     assert.equal(undefined, attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
-    assert.equal(false, attr.defaultValueIsRaw);
     assert.equal('id', attr.name);
     assert.equal(false, attr.nullable);
     assert.equal(false, attr.optional);
@@ -66,7 +65,6 @@ module.exports = {
 
     assert.equal(null, attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
-    assert.equal(false, attr.defaultValueIsRaw);
     assert.equal(3, attr.maxLength);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
@@ -87,7 +85,6 @@ module.exports = {
 
     assert.equal('2012-11-13', attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
-    assert.equal(false, attr.defaultValueIsRaw);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
     assert.equal(true, attr.optional);
@@ -107,7 +104,6 @@ module.exports = {
 
     assert.equal('DATE()', attr.defaultValue);
     assert.equal(true, attr.defaultValueIsFunction);
-    assert.equal(false, attr.defaultValueIsRaw);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
     assert.equal(true, attr.optional);

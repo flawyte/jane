@@ -3,6 +3,7 @@
  * ====
  *
  * ✗ Jane: set base path relative to execution path, not relative to index.js path
+ * ✗ Bash script generation: fix content based on generator's options
  * ✗ SQL generators: add REGEX support
  * ✗ SQL generators: add MIN/MAX LENGTH support
  * ✗ Add regex guessing based on the attribute's name

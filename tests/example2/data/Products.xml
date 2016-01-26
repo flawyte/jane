@@ -1,7 +1,7 @@
-<records for="Products">
+<data for="Products">
   <record name="Cheap Laptop" price="499.99" description="blablabla" stock="10" category="2"></record>
-  <record name="Powerful but expensive Laptop" price="999.99" description="blabliblo" stock="7" category="id:2"></record>
-  <record name="Cool Urban Headphones" price="89" description="foobar" stock="146" category="name:Headphones"></record>
-  <record name="Curved Smartphone 2016" price="499.90" description="okayy" stock="5" category="name:Smartphones"></record>
-  <record name="Super Big TV" price="1099.99" description="Enjoy this lorem ipsum as a description." stock="0" category="name:TVs"></record>
-</records>
+  <record name="Powerful but expensive Laptop" price="999.99" description="blabliblo" stock="7" category="2"></record>
+  <record name="Cool Urban Headphones" price="89" description="foobar" stock="146" category="1"></record>
+  <record name="Curved Smartphone 2016" price="499.90" description="okayy" stock="5" category="3"></record>
+  <record name="Super Big TV" price="1099.99" description="Enjoy this lorem ipsum as a description." stock="0" category="4"></record>
+</data>

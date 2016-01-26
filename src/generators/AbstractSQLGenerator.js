@@ -33,11 +33,15 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     var fileName;
     var self = this;
 
+    this.filesContent['execute.sh'] = this.getExecuteScriptContent();
+
     if (this.options.data) {
       if (this.entities.length === 1) {
         fileName = 'insert-into-table-' + this.entities[0].plural.toLowerCase() + '-default-data.sql';
       }
       else {
+        this.sortData();
+
         fileName = 'insert-into-database-default-data.sql';
       }
 
@@ -104,8 +108,6 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
           var l = this.entities.length;
 
           fileName = 'insert-into-database.sql';
-
-          this.sortEntities();
 
           for (let i = 0; i < this.entities.length; i++) {
             content += this.schemas['insert-into'][this.entities[i].plural.toLowerCase()].join('\n\n');
@@ -424,23 +426,28 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
   }
 
   getOutputFilesNames() {
-    var allowedOptions = [ 'create', 'drop', 'insert-into' ];
     var names = [];
-    var operation;
-    var context;
 
-    for (var opt of allowedOptions) {
-      if (!this.options[opt])
-        continue;
-
+    if (this.options.data) {
       if (this.entities.length === 1)
-        names.push(opt + '-table-' + this.entities[0].plural.toLowerCase() + '.sql');
-      else {
-        names.push(opt + '-database.sql');
-      }
+        names.push('insert-into-table-' + this.entities[0].plural.toLowerCase() + '-default-data.sql');
+      else
+        names.push('insert-into-database-default-data.sql');
     }
+    else {
+      for (var opt of [ 'create', 'drop', 'insert-into' ]) {
+        if (!this.options[opt])
+          continue;
 
-    names.push('execute.sh');
+        if (this.entities.length === 1)
+          names.push(opt + '-table-' + this.entities[0].plural.toLowerCase() + '.sql');
+        else {
+          names.push(opt + '-database.sql');
+        }
+      }
+
+      names.push('execute.sh');
+    }
 
     return names;
   }
@@ -468,6 +475,12 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
     for (let e of this.entities) {
       this.schemas['insert-into'][e.plural.toLowerCase()] = [];
     }
+  }
+
+  sortData() {
+    this.data.sort(function(a, b) {
+      return a.entity.references.length - b.entity.references.length;
+    });
   }
 
   sortEntities() {

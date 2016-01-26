@@ -47,13 +47,22 @@ export default class Jane {
   }
 
   static process(args) {
+    var gen = Jane.generator;
     var src = args.src;
 
     Jane.basePath = Jane.path.normalize(src + '/');
+    gen.setOptions(args);
 
     if (args.data) {
       Toolkit.loadEntities(src);
-      Jane.generator.data = Jane.processData(Jane.path.normalize(src + '/data/'));
+      gen.data = Jane.processData(Jane.path.normalize(src + '/data/'));
+      gen.generate();
+      gen.getOutputFilesNames().forEach(function(fileName) {
+        Jane.saveCode(gen.getContent(fileName),
+          fileName,
+          args.to || ('generated/' + Jane.generator.name));
+      });
+      console.log('✓ Done !');
     }
     else {
       if (Toolkit.directoryExists(src)) { // Source is a directory
@@ -76,65 +85,33 @@ export default class Jane {
   }
 
   static processData(src) {
-    console.log('Jane.processData(' + src + ')');
-    if (Toolkit.directoryExists(src)) { // Source is a directory
-      return Jane.processDataDirectory(src, function(records) {
-        Jane.generator.data = records;
-        console.log('OKAY CALLBACK !!');
-        // Jane.generator.generate();
-      });
-    }
-    else { // Source is an XML file
-      return Jane.processDataFile(src, function(records) {
-        Jane.generator.data = records;
-        console.log('OKAY CALLBACK !!');
-        // Jane.generator.generate();
-      });
-    }
+    return Jane.processDataDirectory(src);
   }
 
-  static processDataDirectory(src, callback) {
-    var gen = Jane.generator;
-    var path;
-
-    if (src.startsWith('/') || src.startsWith('~'))
-      path = Jane.path.normalize(src + '/');
-    else
-      path = Jane.path.normalize(Jane.basePath + '/' + src + '/');
-
+  static processDataDirectory(path) {
     if (!Toolkit.directoryExists(path))
       throw path + ' is not a directory';
 
-    Jane.glob(path + '*.xml', function(err, files) {
-      if (err)
-        throw err;
+    var files = Jane.glob.sync(path + '*.xml');
+    var records = [];
 
-      var records = [];
-
-      console.log('Start loop');
-      files.forEach(function(file) {
-        var res = Jane.processDataFile(file);
-
-        records.push(res);
-      });
-      console.log('End loop');
-
-      callback && callback(records);
+    files.forEach(function(file) {
+      records = records.concat(Jane.processDataFile(file));
     });
+
+    return records;
   }
 
-  static processDataFile(src) {
-    console.log('Jane.processDataFile(' + src + ')');
-
-    var obj = Toolkit.readXMLFile(src).data;
-    console.log(obj);
+  static processDataFile(path) {
+    var obj = Toolkit.readXMLFile(path).data;
     var entity = Entity.getByPlural(obj.$.for);
-    var res;
 
     if (!entity)
       throw 'There is no entity whose name in plural form is "' + obj.$.for + '"';
 
-    return res;
+    return obj.record.map(function(xmlRecord) {
+      return DataRecord.fromXMLObject(entity, xmlRecord);
+    });
   }
 
   static processDirectory(args, callback) {

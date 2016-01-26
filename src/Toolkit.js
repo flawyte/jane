@@ -47,7 +47,6 @@ export default class Toolkit {
   }
 
   static loadEntities(path) {
-    console.log('Toolkit.loadEntities(' + path + ')');
     Toolkit.readXMLDirectory(path).forEach(function(xmlFile) {
       Entity.default.fromXMLFile(xmlFile);
     });
