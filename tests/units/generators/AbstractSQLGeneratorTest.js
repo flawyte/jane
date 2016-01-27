@@ -6,9 +6,12 @@ traceur.require.makeDefault(function(filename) {
 
 var AbstractSQLGenerator = require('./../../../src/generators/AbstractSQLGenerator').default;
 var Attribute = require('./../../../src/Attribute').default;
+var Jane = require('./../../../src/Jane').default;
 var DataRecord = require('./../../../src/DataRecord').default;
 var Entity = require('./../../../src/Entity').default;
 var Toolkit = require('./../../../src/Toolkit').default;
+
+Jane.init(require);
 
 var entities = [
   new Entity('Product', 'Products'),

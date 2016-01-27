@@ -9,6 +9,7 @@ export default class Jane {
     Jane.generator = generator;
     Jane.glob = require('glob');
     Jane.path = require('path');
+    Jane.randomstring = require('randomstring');
     Jane.randexp = require('randexp');
     Jane.xml2js = require('xml2js');
 

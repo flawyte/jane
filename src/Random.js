@@ -32,8 +32,8 @@ export default class Random {
     return (Math.floor(Math.random() * (max - min + 1)) + min);
   }
 
-  static string() {
-    return (Math.random() + 1).toString(36).slice(2);
+  static string(length) {
+    return Jane.randomstring.generate(length);
   }
 
   static time() {

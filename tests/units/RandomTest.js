@@ -3,6 +3,9 @@ require('traceur').require.makeDefault(function(filename) {
 });
 
 var Random = require('./../../src/Random').default;
+var Jane = require('./../../src/Jane').default;
+
+Jane.init(require);
 
 module.exports = {
   'static boolean': function(assert) {
@@ -108,10 +111,12 @@ module.exports = {
     assert.equal(true, Random.string instanceof Function);
     val = Random.string();
     assert.equal("string", typeof val);
-    val = Random.string();
+    val = Random.string(3);
     assert.equal("string", typeof val);
-    val = Random.string();
+    assert.equal(3, val.length);
+    val = Random.string(16);
     assert.equal("string", typeof val);
+    assert.equal(16, val.length);
 
     assert.done();
   },
