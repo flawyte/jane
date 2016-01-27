@@ -2,7 +2,6 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Jane: set base path relative to execution path, not relative to index.js path
  * ✗ SQL generators: add REGEX support
  * ✗ SQL generators: add MIN/MAX LENGTH support
  * ✗ Add regex guessing based on the attribute's name
@@ -60,8 +59,7 @@ else
  */
 
 function init() {
-  args.src = __dirname + '/' + args.from;
   var Generator = require('./src/generators/' + generatorName).default;
 
-  Jane.init(require, new Generator(args));
+  Jane.init(require, new Generator(args), process.cwd() + '/');
 }

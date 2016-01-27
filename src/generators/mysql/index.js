@@ -21,7 +21,7 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
   }
 
   dropDatabase(name) {
-    return 'DROP DATABASE ' + name + ';';
+    return '\nDROP DATABASE ' + name + ';';
   }
 
   generate() {

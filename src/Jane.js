@@ -4,13 +4,15 @@ import Toolkit from './Toolkit';
 
 export default class Jane {
 
-  static init(require, generator) {
+  static init(require, generator, workingDir) {
     Jane.fs = require('fs');
     Jane.generator = generator;
     Jane.glob = require('glob');
     Jane.path = require('path');
     Jane.randexp = require('randexp');
     Jane.xml2js = require('xml2js');
+
+    Jane.workingDir = Jane.path.normalize(workingDir + '/');
   }
 
   static logHelp() {
@@ -20,10 +22,10 @@ export default class Jane {
     console.log('Arguments');
     console.log('=========');
     console.log('');
-    console.log('* generator-name : Supported values by default => sqlite');
-    console.log('* from : A Jane-compliant XML source file or a whole directory (each XML file it contains will be processed). See the XML files in one of the tests/example*/ directories for an example');
-    console.log('* to : Relative path (to the "from" argument) to a directory to write the output file(s) in. Default is "generated/<generator-name>/"');
-    console.log('* generator-specific arguments : Type "node index.js <generator-name> --help" for a list of additional arguments supported by a generator if any');
+    console.log('* generator-name: Supported values by default => mysql, postgresql, sqlite');
+    console.log('* from: A Jane-compliant XML source file or a whole directory (each XML file it contains will be processed). See the XML files in one of the tests/example*/ directories for an example');
+    console.log('* [to]: Relative path (to the "from" argument) to a directory to write the output file(s) in. Default is "generated/<generator-name>/"');
+    console.log('* [generator-specific arguments]: Type "node index.js <generator-name> --help" for a list of additional arguments supported by a generator if any');
   }
 
   static logHelpGenerator() {
@@ -47,16 +49,34 @@ export default class Jane {
   }
 
   static process(args) {
+    if (!args.from) {
+      Jane.logHelp();
+      return;
+    }
+
     var gen = Jane.generator;
-    var src = args.src;
+    var src = Jane.workingDir + args.from;
+    // var src = Jane.workingDir + (args.from.match(/.*\.xml$/) ? Jane.path.dirname(args.from) : args.from);
 
     gen.setOptions(args);
 
     if (args.data) {
+      var dataSrc;
+
+      if (~src.match(/.*\.xml$/))
+        dataSrc = Jane.path.normalize(Jane.path.dirname(src) + '/data/');
+      else
+        dataSrc = Jane.path.normalize(src + '/data/');
+
+      if (!Toolkit.directoryExists(dataSrc)) {
+        console.log(dataSrc + ' does not exist... Aborting.');
+        return;
+      }
+
       if (Toolkit.directoryExists(src)) { // Source is a directory
         Jane.baseDir = Jane.path.normalize(src + '/');
 
-        Toolkit.loadEntities(src);
+        Toolkit.loadEntities(Jane.baseDir);
         gen.data = Jane.processDataDirectory(Jane.baseDir + 'data/');
       }
       else if (Toolkit.fileExists(src)) { // Source is an XML file
@@ -80,7 +100,7 @@ export default class Jane {
       if (Toolkit.directoryExists(src)) { // Source is a directory
         Jane.baseDir = Jane.path.normalize(src + '/');
 
-        var entities = Jane.processEntitiesDirectory(src);
+        var entities = Jane.processEntitiesDirectory(Jane.baseDir);
 
         if (!entities || entities.length === 0)
           console.log('Error while processing directory : ' + src);
@@ -104,11 +124,20 @@ export default class Jane {
       }
     }
 
+    var outputDir;
+
+    if (args.to)
+      outputDir = Jane.workingDir + args.to;
+    else
+      outputDir = Jane.baseDir + 'generated/' + Jane.generator.name;
+
     gen.generate();
     gen.getOutputFilesNames().forEach(function(fileName) {
-      Jane.saveCode(gen.getContent(fileName),
+      Jane.saveCode(
+        gen.getContent(fileName),
         fileName,
-        args.to || ('generated/' + Jane.generator.name));
+        outputDir
+      );
     });
     console.log('✓ Done !');
   }

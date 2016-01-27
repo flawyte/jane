@@ -21,7 +21,7 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   }
 
   dropDatabase(name) {
-    return '\\connect postgres;\nDROP DATABASE ' + name + ';';
+    return '\n\\connect postgres;\nDROP DATABASE ' + name + ';';
   }
 
   escapeColumnName(name) {
