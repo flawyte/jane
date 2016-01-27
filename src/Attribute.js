@@ -29,6 +29,8 @@ export default class Attribute {
       if (obj.$['min-length'] !== undefined)
         attr.minLength = Cast.integer(obj.$['min-length']);
     }
+    if (obj.$['genre'] !== undefined)
+      attr.genre = obj.$['genre'];
     attr.regex = obj.$.regex;
 
     var matches;
@@ -45,6 +47,7 @@ export default class Attribute {
     this.defaultValue = defaultValue;
     this.doc = null;
     this.entity = null;
+    this.genre = null;
     this.name = name;
     this.nullable = primaryKey ? false : ((defaultValue !== undefined) || nullable);
     this.primaryKey = primaryKey;
