@@ -33,6 +33,9 @@ export default class Random {
   }
 
   static string(options = {}) {
+    if (options.nullable && Random.boolean())
+      return null;
+
     if (!options.genre) {
       if (options.exactLength)
         return Jane.randomstring.generate(options.exactLength)
@@ -48,17 +51,14 @@ export default class Random {
           )
         );
       else
-        return Jane.randomstring.generate();
+        return Jane.chance.string();
     }
 
     var res = null;
 
-    if (options.nullable && Random.boolean())
-      return null;
-
     switch (options.genre) {
       case 'address':
-        res = Jane.chance.country();
+        res = Jane.chance.address();
       break;
       case 'city':
         res = Jane.chance.city();
@@ -136,21 +136,7 @@ export default class Random {
         val = Random.integer();
       break;
       case 'String':
-        if (attr.exactLength)
-          val = Random.string(attr.exactLength)
-        else if (attr.minLength && attr.maxLength)
-          val = Random.string(Random.integer(attr.minLength, attr.maxLength));
-        else if (attr.maxLength)
-          val = Random.string(Random.integer(0, attr.maxLength));
-        else if (attr.minLength)
-          val = Random.string(
-            Random.integer(
-              attr.minLength,
-              attr.minLength + Math.pow(Random.integer(), Random.integer())
-            )
-          );
-        else
-          val = Random.string();
+        val = Random.string(attr);
       break;
       case 'Time':
         val = Random.time();

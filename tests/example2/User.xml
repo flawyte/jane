@@ -1,19 +1,21 @@
 <entity name="User" plural="Users">
   <attributes>
     <attribute name="id" type="Integer" primary-key="true"></attribute>
-    <attribute name="first_name" type="String" regex="[A-Z]{1}[a-z]{1,14}"></attribute>
-    <attribute name="last_name" type="String" regex="[A-Z]{1}[a-z]{1,14}"></attribute>
-    <attribute name="email" type="String" regex="[a-z]+[a-z0-9]*@[a-z0-9]{3,15}\.[a-z]{2,4}" unique="true"></attribute>
-    <attribute name="password" type="String" min-length="8">
+    <attribute name="first_name" type="String"></attribute>
+    <attribute name="last_name" type="String"></attribute>
+    <attribute name="email" type="String" unique="true"></attribute>
+    <attribute name="password" type="String" genre="sha1" min-length="8">
       <doc>The user's password in SHA1 format.</doc>
     </attribute>
     <attribute name="country_code" type="String">
       <doc>The user's country code e.g. FR, UK...</doc>
     </attribute>
-    <attribute name="city" type="String" regex="[a-zA-Z ]{25}"></attribute>
+    <attribute name="city" type="String"></attribute>
     <attribute name="address" type="String" regex="[0-9]{2,3} (Rue|Avenue|Boulevard|Impasse) [A-Z]{1}[a-z]{1,14} [A-Z]{1}[a-z]{1,14}"></attribute>
-    <attribute name="postal_code" type="String" regex="[0-9]{5}"></attribute>
-    <attribute name="phone" type="String" regex="\+33[0-9]{9}"></attribute>
+    <attribute name="postal_code" type="String"></attribute>
+    <attribute name="phone" type="String" regex="\+33[0-9]{9}">
+      <doc>The user's [French] phone number.</doc>
+    </attribute>
     <attribute name="signup_date" type="DateTime" default="DATETIME()"></attribute>
   </attributes>
 </entity>
