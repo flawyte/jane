@@ -32,8 +32,75 @@ export default class Random {
     return (Math.floor(Math.random() * (max - min + 1)) + min);
   }
 
-  static string(length) {
-    return Jane.randomstring.generate(length);
+  static string(options = {}) {
+    if (!options.genre) {
+      if (options.exactLength)
+        return Jane.randomstring.generate(options.exactLength)
+      else if (options.maxLength && options.minLength)
+        return Jane.randomstring.generate(Random.integer(options.minLength, options.maxLength));
+      else if (options.maxLength)
+        return Jane.randomstring.generate(Random.integer(0, options.maxLength));
+      else if (options.minLength)
+        return Jane.randomstring.generate(
+          Random.integer(
+            options.minLength,
+            options.minLength + Math.pow(Random.integer(), Random.integer())
+          )
+        );
+      else
+        return Jane.randomstring.generate();
+    }
+
+    var res = null;
+
+    if (options.nullable && Random.boolean())
+      return null;
+
+    switch (options.genre) {
+      case 'address':
+        res = Jane.chance.country();
+      break;
+      case 'city':
+        res = Jane.chance.city();
+      break;
+      case 'country_code':
+        res = Jane.chance.country();
+      break;
+      case 'country':
+        res = Jane.chance.country({ full: true });
+      break;
+      case 'email':
+        res = Jane.chance.email();
+      break;
+      case 'first_name':
+        res = Jane.chance.first();
+      break;
+      case 'last_name':
+        res = Jane.chance.last();
+      break;
+      case 'md5':
+        res = Jane.chance.md5();
+      break;
+      case 'paragraph':
+        res = Jane.chance.paragraph();
+      break;
+      case 'postal_code':
+        res = Jane.chance.string({
+          pool: '0123456789'
+        });
+      break;
+      case 'phone':
+        res = Jane.chance.paragraph();
+      break;
+      case 'sha1':
+        res = Jane.crypto.randomBytes(20).toString('hex');
+      break;
+      case 'word':
+        res = Jane.chance.word();
+      break;
+    }
+
+    return res;
   }
 
   static time() {

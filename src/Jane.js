@@ -5,6 +5,9 @@ import Toolkit from './Toolkit';
 export default class Jane {
 
   static init(require, generator, workingDir) {
+    Jane.chance = new require('chance')();
+    Jane.countries = require('country-list');
+    Jane.crypto = require('crypto');
     Jane.fs = require('fs');
     Jane.generator = generator;
     Jane.glob = require('glob');
