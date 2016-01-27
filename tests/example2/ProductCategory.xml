@@ -1,6 +1,6 @@
 <entity name="ProductCategory" plural="ProductsCategories">
   <attributes>
     <attribute name="id" type="Integer" primary-key="true"></attribute>
-    <attribute name="name" type="String" regex="[a-zA-Z]{3,31}" unique="true"></attribute>
+    <attribute name="name" type="String" genre="word" regex="[a-zA-Z]{3,31}" unique="true"></attribute>
   </attributes>
 </entity>

@@ -7,7 +7,7 @@
     <attribute name="password" type="String" min-length="8">
       <doc>The user's password in SHA1 format.</doc>
     </attribute>
-    <attribute name="country" type="String" regex="[A-Z]{2}">
+    <attribute name="country_code" type="String">
       <doc>The user's country code e.g. FR, UK...</doc>
     </attribute>
     <attribute name="city" type="String" regex="[a-zA-Z ]{25}"></attribute>
