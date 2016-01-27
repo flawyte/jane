@@ -50,15 +50,36 @@ export default class Jane {
     var gen = Jane.generator;
     var src = args.src;
 
-    Jane.basePath = Jane.path.normalize(src + '/');
     gen.setOptions(args);
 
     if (args.data) {
-      Toolkit.loadEntities(src);
-      gen.data = Jane.processDataDirectory(Jane.path.normalize(src + '/data/'));
+      if (Toolkit.directoryExists(src)) { // Source is a directory
+        Jane.baseDir = Jane.path.normalize(src + '/');
+
+        Toolkit.loadEntities(src);
+        gen.data = Jane.processDataDirectory(Jane.baseDir + 'data/');
+      }
+      else if (Toolkit.fileExists(src)) { // Source is an XML file
+        Jane.baseDir = Jane.path.normalize(Jane.path.dirname(src) + '/');
+        var entity = Entity.fromXMLFile(src);
+
+        try {
+          gen.addEntity(entity);
+          gen.data = Jane.processDataFile(Jane.baseDir + 'data/' + entity.plural + '.xml');
+        } catch (e) {
+          console.log('No data for the entity named ' + entity.name + ' (corresponding to the table ' + entity.plural + ')... Aborting.');
+          return;
+        }
+      }
+      else {
+        console.log(src + ' does not exist');
+        return;
+      }
     }
     else {
       if (Toolkit.directoryExists(src)) { // Source is a directory
+        Jane.baseDir = Jane.path.normalize(src + '/');
+
         var entities = Jane.processEntitiesDirectory(src);
 
         if (!entities || entities.length === 0)
@@ -67,13 +88,19 @@ export default class Jane {
         for (let entity of entities)
           gen.addEntity(entity);
       }
-      else { // Source is an XML file
+      else if (Toolkit.fileExists(src)) { // Source is an XML file
+        Jane.baseDir = Jane.path.normalize(Jane.path.dirname(src) + '/');
+
         var entity = Jane.processEntityFile(src);
 
         if (!entity)
           console.log('Error while processing file : ' + src);
 
         gen.addEntity(entity);
+      }
+      else {
+        console.log(src + ' does not exist');
+        return;
       }
     }
 
@@ -147,7 +174,7 @@ export default class Jane {
     if (dir.startsWith('/')) // Absolute path
       dirPath = dir;
     else
-      dirPath = Jane.basePath + dir; // Relative path (to source(s) file(s)'s parent directory)
+      dirPath = Jane.baseDir + dir; // Relative path (to source(s) file(s)'s parent directory)
 
     dirPath = Jane.path.normalize(dirPath + '/'); // Normalize to avoid '..' and '//' parts
     fullPath = dirPath + fileName;

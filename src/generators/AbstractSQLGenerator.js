@@ -54,7 +54,10 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         var content = '';
 
         if (this.entities.length === 1) {
-          fileName = 'create-table' + this.entities[0].plural.toLowerCase() + '.sql';
+          var key = this.entities[0].plural.toLowerCase();
+
+          fileName = 'create-table-' + key + '.sql';
+          content = this.schemas.create[key] + '\n';
         }
         else {
           var keys = Object.keys(this.schemas.create);
@@ -78,7 +81,10 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         var content = '';
 
         if (this.entities.length === 1) {
-          fileName = 'drop-table' + this.entities[0].plural.toLowerCase() + '.sql';
+          var key = this.entities[0].plural.toLowerCase();
+
+          fileName = 'drop-table-' + key + '.sql';
+          content = this.schemas.drop[key] + '\n';
         }
         else {
           var keys = Object.keys(this.schemas.drop);
@@ -102,7 +108,10 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
         var content = '';
 
         if (this.entities.length === 1) {
-          fileName = 'insert-into-table' + this.entities[0].plural.toLowerCase() + '.sql';
+          var key = this.entities[0].plural.toLowerCase();
+
+          fileName = 'insert-into-table-' + key + '.sql';
+          content = this.inserts[key].join('\n\n') + '\n';
         }
         else {
           var l = this.entities.length;

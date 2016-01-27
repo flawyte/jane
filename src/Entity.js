@@ -43,7 +43,7 @@ export default class Entity {
   static get(name) {
     if (!Entity.instances[name]) {
       if (Toolkit.ready) {
-        Entity.instances[name] = Entity.fromXMLFile(Jane.default.basePath + name + '.xml');
+        Entity.instances[name] = Entity.fromXMLFile(Jane.default.baseDir + name + '.xml');
       }
     }
 

@@ -3,18 +3,26 @@ import Jane from './Jane';
 
 export default class Toolkit {
 
-  static createDirectory(dir) {
+  static createDirectory(path) {
     try {
-      Jane.default.fs.mkdirSync(dir);
+      Jane.default.fs.mkdirSync(path);
     } catch (e) { // One of the parent directory doesn't exist
-      Toolkit.createDirectory(Jane.default.path.dirname(dir)); // Create all the parents recursively
-      Toolkit.createDirectory(dir); // And then the director
+      Toolkit.createDirectory(Jane.default.path.dirname(path)); // Create all the parents recursively
+      Toolkit.createDirectory(path); // And then the director
     }
   }
 
-  static directoryExists(dir) {
+  static directoryExists(path) {
     try {
-      return Jane.default.fs.statSync(dir).isDirectory();
+      return Jane.default.fs.statSync(path).isDirectory();
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static fileExists(path) {
+    try {
+      return Jane.default.fs.statSync(path).isFile();
     } catch (e) {
       return false;
     }
