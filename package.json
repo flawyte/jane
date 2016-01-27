@@ -14,6 +14,8 @@
   "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "license": "MIT",
   "dependencies": {
+    "chance": "^0.8.0",
+    "country-list": "^0.0.3",
     "glob": "^6.0.1",
     "randexp": "^0.4.2",
     "randomstring": "^1.1.3",
