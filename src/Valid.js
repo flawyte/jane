@@ -53,6 +53,30 @@ export default class Valid {
     return Valid.integer(val) || Valid.decimal(val);
   }
 
+  static genre(val) {
+    var valid = false;
+
+    switch (val) {
+      case 'address':
+      case 'city':
+      case 'country_code':
+      case 'country':
+      case 'email':
+      case 'first_name':
+      case 'last_name':
+      case 'md5':
+      case 'paragraph':
+      case 'postal_code':
+      case 'phone':
+      case 'sha1':
+      case 'word':
+        valid = true;
+      break;
+    }
+
+    return valid;
+  }
+
   static integer(val) {
     return (Toolkit.typeOf(val) === 'Number') && (new String(val).indexOf('.') === -1);
   }

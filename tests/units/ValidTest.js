@@ -7,6 +7,7 @@ var Valid = require('./../../src/Valid').default;
 module.exports = {
   'static boolean': function(assert) {
     assert.equal(true, Valid.boolean instanceof Function);
+
     assert.equal(true, Valid.boolean(false));
     assert.equal(true, Valid.boolean(true));
     assert.equal(false, Valid.boolean(new Date()));
@@ -18,6 +19,7 @@ module.exports = {
   },
   'static date': function(assert) {
     assert.equal(true, Valid.date instanceof Function);
+
     assert.equal(false, Valid.date(false));
     assert.equal(false, Valid.date(true));
     assert.equal(true, Valid.date(new Date()));
@@ -32,6 +34,7 @@ module.exports = {
   },
   'static datetime': function(assert) {
     assert.equal(true, Valid.datetime instanceof Function);
+
     assert.equal(false, Valid.datetime(false));
     assert.equal(false, Valid.datetime(true));
     assert.equal(true, Valid.datetime(new Date()));
@@ -46,6 +49,7 @@ module.exports = {
   },
   'static decimal': function(assert) {
     assert.equal(true, Valid.decimal instanceof Function);
+
     assert.equal(false, Valid.decimal(false));
     assert.equal(false, Valid.decimal(true));
     assert.equal(false, Valid.decimal(new Date()));
@@ -72,6 +76,7 @@ module.exports = {
   },
   'static float': function(assert) {
     assert.equal(true, Valid.float instanceof Function);
+
     assert.equal(false, Valid.float(false));
     assert.equal(false, Valid.float(true));
     assert.equal(false, Valid.float(new Date()));
@@ -81,8 +86,32 @@ module.exports = {
 
     assert.done();
   },
+  'static genre': function(assert) {
+    assert.equal(true, Valid.genre instanceof Function);
+
+    assert.equal(false, Valid.genre());
+    assert.equal(false, Valid.genre(null));
+    assert.equal(false, Valid.genre('foobar'));
+
+    assert.equal(true, Valid.genre('address'));
+    assert.equal(true, Valid.genre('city'));
+    assert.equal(true, Valid.genre('country_code'));
+    assert.equal(true, Valid.genre('country'));
+    assert.equal(true, Valid.genre('email'));
+    assert.equal(true, Valid.genre('first_name'));
+    assert.equal(true, Valid.genre('last_name'));
+    assert.equal(true, Valid.genre('md5'));
+    assert.equal(true, Valid.genre('paragraph'));
+    assert.equal(true, Valid.genre('postal_code'));
+    assert.equal(true, Valid.genre('phone'));
+    assert.equal(true, Valid.genre('sha1'));
+    assert.equal(true, Valid.genre('word'));
+
+    assert.done();
+  },
   'static integer': function(assert) {
     assert.equal(true, Valid.integer instanceof Function);
+
     assert.equal(false, Valid.integer(false));
     assert.equal(false, Valid.integer(true));
     assert.equal(false, Valid.integer(new Date()));
@@ -94,6 +123,7 @@ module.exports = {
   },
   'static string': function(assert) {
     assert.equal(true, Valid.string instanceof Function);
+
     assert.equal(false, Valid.string(false));
     assert.equal(false, Valid.string(true));
     assert.equal(false, Valid.string(new Date()));
@@ -105,6 +135,7 @@ module.exports = {
   },
   'static time': function(assert) {
     assert.equal(true, Valid.time instanceof Function);
+
     assert.equal(false, Valid.time(false));
     assert.equal(false, Valid.time(true));
     assert.equal(true, Valid.time(new Date()));
