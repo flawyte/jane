@@ -21,7 +21,7 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   }
 
   dropDatabase(name) {
-    return '\n\\connect postgres;\nDROP DATABASE ' + name + ';';
+    return '\\connect postgres;\nDROP DATABASE ' + name + ';';
   }
 
   escapeColumnName(name) {
@@ -62,7 +62,7 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
     str += super.getContent(fileName);
 
     if (~fileName.indexOf('drop-database'))
-      str += this.dropDatabase(this.options['db-name']) + '\n';
+      str += '\n' + this.dropDatabase(this.options['db-name']) + '\n';
 
     return str;
   }
@@ -101,20 +101,17 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
       return 'SERIAL';
 
     switch (attr.type) {
-      case 'DateTime': {
+      case 'DateTime':
         res = 'TIMESTAMP';
-      }
       break;
-      case 'String': {
+      case 'String':
         if (attr.maxLength)
           res = 'VARCHAR(' + attr.maxLength + ')';
         else
           res = 'TEXT';
-      }
       break;
-      default: {
+      default:
         res = super.toSQLType(attr);
-      }
       break;
     }
 
@@ -129,33 +126,29 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
     }
 
     switch (attr.type) {
-      case 'Boolean': {
+      case 'Boolean':
         res = String(attr.defaultValue).toUpperCase();
-      }
       break;
-      case 'Date': {
+      case 'Date':
         res = attr.defaultValue;
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         res = attr.defaultValue;
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         res = attr.defaultValue;
-      }
       break;
-      case 'Integer': {
+      case 'Float':
         res = attr.defaultValue;
-      }
       break;
-      case 'String': {
+      case 'Integer':
+        res = attr.defaultValue;
+      break;
+      case 'String':
         res = "'" + attr.defaultValue + "'";
-      }
       break;
-      case 'Time': {
+      case 'Time':
         res = "'" + new Date(attr.defaultValue).toLocaleTimeString(Toolkit.getLocale(), { hour12: false }) + "'";
-      }
       break;
     }
 

@@ -21,7 +21,11 @@ export default class Random {
 
     var left = Random.integer(0, Math.pow(10, (precision - scale)) - 1);
     var right = Random.integer(0, Math.pow(10, scale) - 1);
-    return Number(left + '.' + right);
+    return parseFloat(left + '.' + right);
+  }
+
+  static float() {
+    return parseFloat(Random.integer(0, 999999) + '.' + Random.integer(0, 999999));
   }
 
   static integer(min = 1, max = 10) {
@@ -46,37 +50,32 @@ export default class Random {
     }
 
     switch (attr.type) {
-      case 'Boolean': {
+      case 'Boolean':
         val = Random.boolean();
-      }
       break;
-      case 'Date': {
+      case 'Date':
         val = Random.date();
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         val = Random.datetime();
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         val = Random.decimal(attr.precision, attr.scale);
-      }
       break;
-      case 'Integer': {
+      case 'Float':
+        val = Random.float();
+      break;
+      case 'Integer':
         val = Random.integer();
-      }
       break;
-      case 'String': {
+      case 'String':
         val = Random.string();
-      }
       break;
-      case 'Time': {
+      case 'Time':
         val = Random.time();
-      }
       break;
-      default: {
+      default:
         throw 'Unsupported attribute type "' + attr.type + '"';
-      }
       break;
     }
 

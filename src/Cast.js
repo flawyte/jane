@@ -41,6 +41,10 @@ export default class Cast {
     return parseFloat(val);
   }
 
+  static float(val) {
+    return parseFloat(val);
+  }
+
   static integer(val) {
     return parseInt(parseInt(val).toFixed(0)); // Removes any floating part
   }
@@ -66,37 +70,32 @@ export default class Cast {
     }
 
     switch (type) {
-      case 'Boolean': {
+      case 'Boolean':
         res = Cast.boolean(val);
-      }
       break;
-      case 'Date': {
+      case 'Date':
         res = Cast.date(val);
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         res = Cast.datetime(val);
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         res = Cast.decimal(val);
-      }
       break;
-      case 'Integer': {
+      case 'Float':
+        res = Cast.float(val);
+      break;
+      case 'Integer':
         res = Cast.integer(val);
-      }
       break;
-      case 'String': {
+      case 'String':
         res = Cast.string(val);
-      }
       break;
-      case 'Time': {
+      case 'Time':
         res = Cast.time(val);
-      }
       break;
-      default: {
+      default:
         throw 'Unsupported attribute type "' + attr.type + '"';
-      }
       break;
     }
 

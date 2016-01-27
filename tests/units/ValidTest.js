@@ -70,6 +70,17 @@ module.exports = {
 
     assert.done();
   },
+  'static float': function(assert) {
+    assert.equal(true, Valid.float instanceof Function);
+    assert.equal(false, Valid.float(false));
+    assert.equal(false, Valid.float(true));
+    assert.equal(false, Valid.float(new Date()));
+    assert.equal(true, Valid.float(1.6));
+    assert.equal(true, Valid.float(1));
+    assert.equal(false, Valid.float('abcdef'));
+
+    assert.done();
+  },
   'static integer': function(assert) {
     assert.equal(true, Valid.integer instanceof Function);
     assert.equal(false, Valid.integer(false));

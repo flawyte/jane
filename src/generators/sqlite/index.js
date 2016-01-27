@@ -58,17 +58,14 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
     var res = null;
 
     switch (attr.type) {
-      case 'String': {
+      case 'String':
         res = 'VARCHAR';
-      }
       break;
-      case 'Time': {
+      case 'Time':
         res = 'VARCHAR';
-      }
       break;
-      default: {
+      default:
         res = super.toSQLType(attr);
-      }
       break;
     }
 
@@ -83,33 +80,29 @@ export default class SQLiteGenerator extends AbstractSQLGenerator {
     }
 
     switch (attr.type) {
-      case 'Boolean': {
+      case 'Boolean':
         res = Number(attr.defaultValue);
-      }
       break;
-      case 'Date': {
+      case 'Date':
         res = attr.defaultValue;
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         res = attr.defaultValue;
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         res = attr.defaultValue;
-      }
       break;
-      case 'Integer': {
+      case 'Float':
         res = attr.defaultValue;
-      }
       break;
-      case 'String': {
+      case 'Integer':
+        res = attr.defaultValue;
+      break;
+      case 'String':
         res = JSON.stringify(attr.defaultValue);
-      }
       break;
-      case 'Time': {
+      case 'Time':
         res = '"' + new Date(attr.defaultValue).toLocaleTimeString(Toolkit.getLocale(), { hour12: false }) + '"';
-      }
       break;
     }
 

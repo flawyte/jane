@@ -190,6 +190,18 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
+    attr = new Attribute('number', 'Float');
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(true, attr.isValueValid(123));
+    assert.equal(true, attr.isValueValid(123.456));
+    assert.equal(true, attr.isValueValid(123.456789));
+    assert.equal(false, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
     attr = new Attribute('number', 'Integer');
     assert.equal(false, attr.isValueValid(false));
     assert.equal(false, attr.isValueValid(true));

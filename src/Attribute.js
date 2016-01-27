@@ -19,10 +19,14 @@ export default class Attribute {
     );
 
     attr.defaultValueIsFunction = ((obj.$['default'] !== undefined) && obj.$['default'].match(/^.*\(\)$/) !== null);
-    if (obj.$['max-length'] !== undefined)
-      attr.maxLength = Cast.integer(obj.$['max-length']);
-    if (obj.$['min-length'] !== undefined)
-      attr.minLength = Cast.integer(obj.$['min-length']);
+    if (obj.$['exact-length'] !== undefined)
+      attr.exactLength = Cast.integer(obj.$['exact-length']);
+    else {
+      if (obj.$['max-length'] !== undefined)
+        attr.maxLength = Cast.integer(obj.$['max-length']);
+      if (obj.$['min-length'] !== undefined)
+        attr.minLength = Cast.integer(obj.$['min-length']);
+    }
     attr.regex = obj.$.regex;
 
     var matches;
@@ -87,6 +91,9 @@ export default class Attribute {
         break;
       case 'Decimal':
         valid = valid && Valid.decimal(val, this.precision, this.scale);
+        break;
+      case 'Float':
+        valid = valid && Valid.float(val);
         break;
       case 'Integer':
         valid = valid && Valid.integer(val);

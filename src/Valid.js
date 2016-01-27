@@ -49,6 +49,10 @@ export default class Valid {
     }
   }
 
+  static float(val) {
+    return Valid.integer(val) || Valid.decimal(val);
+  }
+
   static integer(val) {
     return (Toolkit.typeOf(val) === 'Number') && (new String(val).indexOf('.') === -1);
   }

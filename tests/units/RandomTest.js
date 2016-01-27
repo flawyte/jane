@@ -72,6 +72,23 @@ module.exports = {
 
     assert.done();
   },
+  'static float': function(assert) {
+    var val;
+
+    assert.equal(true, Random.float instanceof Function);
+
+    val = Random.float();
+    assert.equal(true, (val >= 0) && (val < 1000000));
+    assert.equal(true, (typeof val === 'number'));
+    val = Random.float();
+    assert.equal(true, (val >= 0) && (val < 1000000));
+    assert.equal(true, (typeof val === 'number'));
+    val = Random.float();
+    assert.equal(true, (val >= 0) && (val < 1000000));
+    assert.equal(true, (typeof val === 'number'));
+
+    assert.done();
+  },
   'static integer': function(assert) {
     var val;
 

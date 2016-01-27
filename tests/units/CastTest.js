@@ -52,6 +52,18 @@ module.exports = {
 
     assert.done();
   },
+  'static float': function(assert) {
+    assert.equal(true, Cast.decimal instanceof Function);
+
+    val = Cast.decimal('123');
+    assert.equal('Number', Toolkit.typeOf(val));
+    assert.equal(123, val);
+    val = Cast.decimal('123.456');
+    assert.equal('Number', Toolkit.typeOf(val));
+    assert.equal(123.456, val);
+
+    assert.done();
+  },
   'static integer': function(assert) {
     assert.equal(true, Cast.integer instanceof Function);
 

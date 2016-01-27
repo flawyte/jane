@@ -21,7 +21,7 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
   }
 
   dropDatabase(name) {
-    return '\nDROP DATABASE ' + name + ';';
+    return 'DROP DATABASE ' + name + ';';
   }
 
   generate() {
@@ -57,7 +57,7 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
     str += super.getContent(fileName);
 
     if (~fileName.indexOf('drop-database'))
-      str += this.dropDatabase(this.options['db-name']) + '\n';
+      str += '\n' + this.dropDatabase(this.options['db-name']) + '\n';
 
     return str;
   }
@@ -94,25 +94,22 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
 
     if (attr.defaultValueIsFunction) {
       if (attr.defaultValue === 'DATE()' || attr.defaultValue === 'TIME()')
-        console.log('Warning: MySQL does not allow functions as a default values for columns except CURRENT_TIMESTAMP for TIMESTAMP (and DATETIME since MySQL 5.6.5) columns. Therefore, attributes of type ' + attr.type + ' are converted to DATETIME columns.');
+        console.log('Warning: MySQL does not allow functions as default values for columns except CURRENT_TIMESTAMP for TIMESTAMP (and DATETIME since MySQL 5.6.5) columns. Therefore, attributes of type ' + attr.type + ' are converted to DATETIME columns.');
         return 'DATETIME';
     }
 
     switch (attr.type) {
-      case 'Integer': {
+      case 'Integer':
         res = 'INT';
-      }
       break;
-      case 'String': {
+      case 'String':
         if (attr.maxLength)
           res = 'VARCHAR(' + attr.maxLength + ')';
         else
           res = 'VARCHAR(255)';
-      }
       break;
-      default: {
+      default:
         res = super.toSQLType(attr);
-      }
       break;
     }
 
@@ -134,29 +131,26 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
         res = String(attr.defaultValue).toUpperCase();
       }
       break;
-      case 'Date': {
+      case 'Date':
         res = attr.defaultValue;
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         res = attr.defaultValue;
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         res = attr.defaultValue;
-      }
       break;
-      case 'Integer': {
+      case 'Float':
         res = attr.defaultValue;
-      }
       break;
-      case 'String': {
+      case 'Integer':
+        res = attr.defaultValue;
+      break;
+      case 'String':
         res = JSON.stringify(attr.defaultValue);
-      }
       break;
-      case 'Time': {
+      case 'Time':
         res = '"' + new Date(attr.defaultValue).toLocaleTimeString(Toolkit.getLocale(), { hour12: false }) + '"';
-      }
       break;
     }
 
