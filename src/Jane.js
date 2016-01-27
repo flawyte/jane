@@ -55,18 +55,19 @@ export default class Jane {
     }
 
     var gen = Jane.generator;
-    var src = Jane.workingDir + args.from;
-    // var src = Jane.workingDir + (args.from.match(/.*\.xml$/) ? Jane.path.dirname(args.from) : args.from);
+    var src = Jane.path.normalize(Jane.workingDir + args.from);
 
     gen.setOptions(args);
 
     if (args.data) {
       var dataSrc;
 
-      if (~src.match(/.*\.xml$/))
+      if (~src.indexOf(/.*\.xml$/)) {
         dataSrc = Jane.path.normalize(Jane.path.dirname(src) + '/data/');
-      else
+      }
+      else {
         dataSrc = Jane.path.normalize(src + '/data/');
+      }
 
       if (!Toolkit.directoryExists(dataSrc)) {
         console.log(dataSrc + ' does not exist... Aborting.');

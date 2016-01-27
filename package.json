@@ -7,7 +7,9 @@
     "jane": "bin/jane.js"
   },
   "scripts": {
-    "test": "bash scripts/npm-test.sh"
+    "test": "bash scripts/npm-test.sh",
+    "test-example1": "bash scripts/npm-test-example1.sh",
+    "test-example2": "bash scripts/npm-test-example2.sh"
   },
   "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "license": "MIT",
