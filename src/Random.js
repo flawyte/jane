@@ -69,7 +69,21 @@ export default class Random {
         val = Random.integer();
       break;
       case 'String':
-        val = Random.string();
+        if (attr.exactLength)
+          val = Random.string(attr.exactLength)
+        else if (attr.minLength && attr.maxLength)
+          val = Random.string(Random.integer(attr.minLength, attr.maxLength));
+        else if (attr.maxLength)
+          val = Random.string(Random.integer(0, attr.maxLength));
+        else if (attr.minLength)
+          val = Random.string(
+            Random.integer(
+              attr.minLength,
+              attr.minLength + Math.pow(Random.integer(), Random.integer())
+            )
+          );
+        else
+          val = Random.string();
       break;
       case 'Time':
         val = Random.time();
