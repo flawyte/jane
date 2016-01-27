@@ -16,7 +16,6 @@
       - 'Time' genres: /
  * ✗ Add genre guessing based on the attribute's name (if name is a genre, set the attribute to this genre)
  * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too
- * ✗ Add doc support: allow to specify entity's doc
  */
 
 /*

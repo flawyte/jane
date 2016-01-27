@@ -19,6 +19,8 @@ export default class Attribute {
     );
 
     attr.defaultValueIsFunction = ((obj.$['default'] !== undefined) && obj.$['default'].match(/^.*\(\)$/) !== null);
+    if (obj.$['doc'] !== undefined)
+      attr.doc = obj.$['doc'];
     if (obj.$['exact-length'] !== undefined)
       attr.exactLength = Cast.integer(obj.$['exact-length']);
     else {
@@ -41,6 +43,7 @@ export default class Attribute {
 
   constructor(name, type, primaryKey = false, unique = false, nullable = false, defaultValue = undefined) {
     this.defaultValue = defaultValue;
+    this.doc = null;
     this.entity = null;
     this.name = name;
     this.nullable = primaryKey ? false : ((defaultValue !== undefined) || nullable);

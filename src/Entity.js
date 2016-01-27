@@ -29,6 +29,9 @@ export default class Entity {
         }
       }
     }
+    if (obj.doc instanceof Array && obj.doc.length > 0) {
+      ent.doc = obj.doc[0];
+    }
     if (obj.references instanceof Array) {
       for (var refs of obj.references) {
         for (var ref of refs.reference) {
@@ -61,6 +64,7 @@ export default class Entity {
 
   constructor(name, plural = null) {
     this.attributes = [];
+    this.doc = null;
     this.name = name;
     this.plural = plural;
     this.references = [];

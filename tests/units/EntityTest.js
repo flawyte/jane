@@ -1,6 +1,4 @@
-var traceur = require('traceur');
-
-traceur.require.makeDefault(function(filename) {
+require('traceur').require.makeDefault(function(filename) {
   return filename.indexOf('node_modules') === -1;
 });
 
@@ -104,13 +102,16 @@ module.exports = {
             default: 'false'
           }
         }]
-      }]
+      }],
+      doc: [ 'The entity\'s doc.' ]
     };
     ent = Entity.fromXMLObject(obj);
 
     assert.equal('Task', ent.name);
     assert.equal('Tasks', ent.plural);
     assert.equal(5, ent.attributes.length);
+    assert.equal('The entity\'s doc.', ent.doc);
+    assert.equal(0, ent.references.length);
 
     assert.done();
   },

@@ -1,6 +1,4 @@
-var traceur = require('traceur');
-
-traceur.require.makeDefault(function(filename) {
+require('traceur').require.makeDefault(function(filename) {
   return filename.indexOf('node_modules') === -1;
 });
 
@@ -37,6 +35,7 @@ module.exports = {
 
     obj = {
       '$': {
+        doc: [ 'The entity\'s ID.' ],
         name: 'id',
         type: 'Integer',
         'primary-key': 'true'
@@ -46,6 +45,7 @@ module.exports = {
 
     assert.equal(undefined, attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
+    assert.equal('The entity\'s ID.', attr.doc);
     assert.equal('id', attr.name);
     assert.equal(false, attr.nullable);
     assert.equal(false, attr.optional);
@@ -65,6 +65,7 @@ module.exports = {
 
     assert.equal(null, attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
+    assert.equal(null, attr.doc);
     assert.equal(3, attr.maxLength);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
