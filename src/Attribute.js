@@ -31,6 +31,8 @@ export default class Attribute {
     }
     if (obj.$['genre'] !== undefined)
       attr.genre = obj.$['genre'];
+    else if (Valid.genre(attr.name)) // If attribute's name is a genre
+      attr.genre = attr.name;
     attr.regex = obj.$.regex;
 
     var matches;
