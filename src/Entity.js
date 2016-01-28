@@ -64,12 +64,13 @@ export default class Entity {
     });
   }
 
-  constructor(name, plural = null) {
+  constructor(name, plural, version = null) {
     this.attributes = [];
     this.doc = null;
     this.name = name;
     this.plural = plural;
     this.references = [];
+    this.version = version;
 
     Entity.add(this);
   }

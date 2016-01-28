@@ -19,14 +19,33 @@ module.exports = {
     assert.done();
   },
   'attrs default values': function(assert) {
-    var ent = new Entity('Task');
+    Entity.instances = [];
+
+    var ent = null;
+
+    ent = new Entity('Task');
 
     assert.equal('Task', ent.name);
-    assert.equal(null, ent.plural);
+    assert.equal(undefined, ent.plural);
+    assert.equal(null, ent.version);
+
+    ent = new Entity('Product', 'Products');
+
+    assert.equal('Product', ent.name);
+    assert.equal('Products', ent.plural);
+    assert.equal(null, ent.version);
+
+    ent = new Entity('User', 'Users', '1');
+
+    assert.equal('User', ent.name);
+    assert.equal('Users', ent.plural);
+    assert.equal('1', ent.version);
 
     assert.done();
   },
   'attrs values': function(assert) {
+    Entity.instances = [];
+
     var ent = new Entity('Task', 'Tasks');
 
     assert.equal('Task', ent.name);
@@ -41,6 +60,8 @@ module.exports = {
     assert.done();
   },
   'static add': function(assert) {
+    Entity.instances = [];
+
     var ent = null;
 
     assert.equal(true, Entity.add instanceof Function);
@@ -58,6 +79,8 @@ module.exports = {
     assert.done();
   },
   'static fromXMLObject': function(assert) {
+    Entity.instances = [];
+
     var ent = null;
     var obj = null;
 
@@ -116,7 +139,11 @@ module.exports = {
     assert.done();
   },
   'static get': function(assert) {
+    Entity.instances = [];
+
     var ent = null;
+
+    new Entity('User', 'Users');
 
     assert.equal(true, Entity.get instanceof Function);
 
@@ -133,7 +160,11 @@ module.exports = {
     assert.done();
   },
   'static getByPlural': function(assert) {
+    Entity.instances = [];
+
     var ent = null;
+
+    new Entity('User', 'Users');
 
     assert.equal(true, Entity.getByPlural instanceof Function);
 
@@ -150,6 +181,8 @@ module.exports = {
     assert.done();
   },
   'addAttribute': function(assert) {
+    Entity.instances = [];
+
     var ent = new Entity('Account', 'Accounts');
 
     assert.equal(true, ent.addAttribute instanceof Function);
@@ -169,6 +202,8 @@ module.exports = {
     assert.done();
   },
   'addReference': function(assert) {
+    Entity.instances = [];
+
     var ent = new Entity('Account', 'Accounts');
 
     assert.equal(true, ent.addReference instanceof Function);
@@ -188,6 +223,8 @@ module.exports = {
     assert.done();
   },
   'getAttributeByName': function(assert) {
+    Entity.instances = [];
+
     var attr;
     var ent = new Entity('Account', 'Accounts');
 
@@ -217,6 +254,8 @@ module.exports = {
     assert.done();
   },
   'getReferenceByAlias': function(assert) {
+    Entity.instances = [];
+
     var ref;
     var ent = new Entity('Account', 'Accounts');
 
