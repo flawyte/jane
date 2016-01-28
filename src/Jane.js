@@ -92,7 +92,7 @@ export default class Jane {
           gen.addEntity(entity);
           gen.data = Jane.processDataFile(Jane.baseDir + 'data/' + entity.plural + '.xml');
         } catch (e) {
-          console.log('No data for the entity named ' + entity.name + ' (corresponding to the table ' + entity.plural + ')... Aborting.');
+          console.log('Error: No data for the entity named ' + entity.name + ' (corresponding to the table ' + entity.plural + ')... Aborting.');
           return;
         }
       }
@@ -105,13 +105,20 @@ export default class Jane {
       if (Toolkit.directoryExists(src)) { // Source is a directory
         Jane.baseDir = Jane.path.normalize(src + '/');
 
+        if (args.version)
+          Jane.baseDir += 'v' + args.version + '/';
+
         var entities = Jane.processEntitiesDirectory(Jane.baseDir);
 
-        if (!entities || entities.length === 0)
-          console.log('Error while processing directory : ' + src);
+        if (!entities || entities.length === 0) {
+          console.log('Error: No entities in the directory: ' + Jane.baseDir);
+          return;
+        }
 
-        for (let entity of entities)
+        for (let entity of entities) {
+          entity.version = args.version;
           gen.addEntity(entity);
+        }
       }
       else if (Toolkit.fileExists(src)) { // Source is an XML file
         Jane.baseDir = Jane.path.normalize(Jane.path.dirname(src) + '/');
@@ -119,7 +126,7 @@ export default class Jane {
         var entity = Jane.processEntityFile(src);
 
         if (!entity)
-          console.log('Error while processing file : ' + src);
+          console.log('Error while processing file: ' + src);
 
         gen.addEntity(entity);
       }

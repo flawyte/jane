@@ -55,21 +55,21 @@ export default class Toolkit {
   }
 
   static loadEntities(path) {
-    Toolkit.readXMLDirectory(path).forEach(function(xmlFile) {
-      Entity.default.fromXMLFile(xmlFile);
+    return Toolkit.readXMLDirectory(path).map(function(xmlFile) {
+      return Entity.default.fromXMLFile(xmlFile);
     });
   }
 
   static readXMLDirectory(path) {
     if (!Toolkit.ready)
-      throw "You must call Jane.init(<params>) first";
+      throw "You must call Jane.init() first";
 
     return Jane.default.glob.sync(path + '*.xml');
   }
 
   static readXMLFile(path) {
     if (!Toolkit.ready)
-      throw "You must call Jane.init(<params>) first";
+      throw "You must call Jane.init() first";
 
     var res = null;
     var buffer = Jane.default.fs.readFileSync(path); // sync function
