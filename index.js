@@ -2,6 +2,7 @@
  * TODO ✓✗
  * ====
  *
+ * ✗ [1] Add Schemas upgrade support
  * ✗ Default data: for foreign keys columns, allow prefixes like 'name:foobar' that would be converted into (SELECT `primary key column` FROM `referenced table` WHERE name = 'foobar')
  * ✗ SQL generators: add REGEX support
  * ✗ SQL generators: add MIN/MAX LENGTH support

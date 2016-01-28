@@ -1,0 +1,21 @@
+<entity name="User" plural="Users">
+  <attributes>
+    <attribute name="id" type="Integer" primary-key="true"></attribute>
+    <attribute name="first_name" type="String"></attribute>
+    <attribute name="last_name" type="String"></attribute>
+    <attribute name="email" type="String" unique="true"></attribute>
+    <attribute name="password" type="String" genre="sha1" min-length="10">
+      <doc>The user's password in SHA1 format.</doc>
+    </attribute>
+    <attribute name="address" type="String" regex="[0-9]{2,3} (Rue|Avenue|Boulevard|Impasse) [A-Z]{1}[a-z]{1,14} [A-Z]{1}[a-z]{1,14}"></attribute>
+    <attribute name="country_code" type="String">
+      <doc>The user's country code e.g. FR, UK...</doc>
+    </attribute>
+    <attribute name="city" type="String"></attribute>
+    <attribute name="postal_code" type="String"></attribute>
+    <attribute name="phone" type="String">
+      <doc>The user's phone number prefixed by its country code (e.g. +33 for France etc.) and without any blank chacracter.</doc>
+    </attribute>
+    <attribute name="signup_date" type="DateTime" default="DATETIME()"></attribute>
+  </attributes>
+</entity>

@@ -1,0 +1,6 @@
+<entity name="ProductsCategory" plural="ProductsCategories" old-name="ProductCategory">
+  <attributes>
+    <attribute name="id" type="Integer" primary-key="true"></attribute>
+    <attribute name="name" type="String" genre="word" unique="true"></attribute>
+  </attributes>
+</entity>
