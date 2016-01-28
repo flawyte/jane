@@ -10,9 +10,9 @@ export default class Entity {
       throw 'Given entity can not be null or undefined';
 
     if (!Entity.instances)
-      Entity.instances = {};
+      Entity.instances = [];
 
-    Entity.instances[entity.name] = entity;
+    Entity.instances.push(entity);
   }
 
   static fromXMLFile(file) {
@@ -44,22 +44,24 @@ export default class Entity {
   }
 
   static get(name) {
-    if (!Entity.instances[name]) {
-      if (Toolkit.ready) {
-        Entity.instances[name] = Entity.fromXMLFile(Jane.default.baseDir + name + '.xml');
-      }
+    var entity = Entity.instances.find(function(item) {
+      return (item.name === name);
+    });
+
+    if (!entity && Toolkit.ready) {
+      // Entity.fromXMLFile() instanciates a new Entity object
+      // which automatically adds it to the 'instances' field
+      // so no need to do it again here
+      entity = Entity.fromXMLFile(Jane.default.baseDir + name + '.xml');
     }
 
-    return Entity.instances[name];
+    return entity;
   }
 
   static getByPlural(val) {
-    var name = Object.keys(Entity.instances).find(function(name) {
-      return (Entity.instances[name].plural === val);
+    return Entity.instances.find(function(item) {
+      return (item.plural === val);
     });
-
-    if (name)
-      return Entity.get(name);
   }
 
   constructor(name, plural = null) {
