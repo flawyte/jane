@@ -55,7 +55,7 @@ export default class Toolkit {
   }
 
   static loadEntities(path) {
-    return Toolkit.readXMLDirectory(path).map(function(xmlFile) {
+    return Toolkit.readXMLDirectory(Jane.default.path.normalize(path + '/')).map(function(xmlFile) {
       return Entity.default.fromXMLFile(xmlFile);
     });
   }
