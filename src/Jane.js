@@ -105,8 +105,18 @@ export default class Jane {
       if (Toolkit.directoryExists(src)) { // Source is a directory
         Jane.baseDir = Jane.path.normalize(src + '/');
 
-        if (args.version)
+        if (args.version) {
           Jane.baseDir += 'v' + args.version + '/';
+
+          if (args.upgrade) {
+            var upgradeDir = Jane.path.dirname(Jane.baseDir) + '/v' + args.upgrade + '/';
+            console.log(args.upgrade);
+            console.log(Jane.baseDir);
+            console.log(upgradeDir);
+
+            // Jane.processEntitiesDirectory()
+          }
+        }
 
         var entities = Jane.processEntitiesDirectory(Jane.baseDir);
 
