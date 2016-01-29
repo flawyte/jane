@@ -1,7 +1,13 @@
 {
   "name": "jane",
-  "version": "0.7.0",
-  "description": "",
+  "version": "0.7.1",
+  "homepage": "https://github.com/flawyte/jane.js",
+  "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
+  "description": "Jane is an extensible code generator which allows you to generate SQL queries to create, drop and populate your database based on its XML data description.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flawyte/jane.git"
+  },
   "main": "index.js",
   "bin": {
     "jane": "bin/jane.js"
@@ -11,8 +17,24 @@
     "test-example1": "bash scripts/npm-test-example1.sh",
     "test-example2": "bash scripts/npm-test-example2.sh"
   },
-  "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "license": "MIT",
+  "keywords": [
+    "code",
+    "data",
+    "database",
+    "es6",
+    "generator",
+    "model",
+    "mysql",
+    "postgresql",
+    "rdbms",
+    "sql",
+    "sqlite",
+    "xml"
+  ],
+  "bugs": {
+    "url": "https://github.com/flawyte/jane/issues"
+  },
   "dependencies": {
     "chance": "^0.8.0",
     "country-list": "^0.0.3",
