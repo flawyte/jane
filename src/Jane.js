@@ -20,7 +20,7 @@ export default class Jane {
   }
 
   static logHelp() {
-    console.log('Jane version 0.7.0');
+    console.log('Jane version 0.7.1');
     console.log('Usage: node index.js <generator-name> --from <XML file/directory> [--to <output directory>] [<generator-specific arguments>]');
     console.log('');
     console.log('Arguments');
