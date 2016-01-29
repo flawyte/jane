@@ -223,7 +223,7 @@ export default class AbstractSQLGenerator extends AbstractGenerator {
    */
   generate() {
     if (!(this.options.create || this.options.drop || this.options['insert-into'] || this.options.data))
-      throw 'You must specify an operation as CLI argument, one of --create / --drop / --insert-into <count> / --data <path>';
+      throw 'You must specify an operation as CLI argument, e.g. --create / --data / --drop / --insert-into <count>';
 
 
     if (this.options.data) {
