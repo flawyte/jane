@@ -1,3 +1,5 @@
+import Toolkit from './Toolkit';
+
 export default class Cast {
 
   static boolean(val) {
@@ -39,6 +41,10 @@ export default class Cast {
     return parseFloat(val);
   }
 
+  static float(val) {
+    return parseFloat(val);
+  }
+
   static integer(val) {
     return parseInt(parseInt(val).toFixed(0)); // Removes any floating part
   }
@@ -47,40 +53,49 @@ export default class Cast {
     return new String(val);
   }
 
+  static time(val) {
+    var parts = val.split(':');
+
+    return new Date(0, 0, 0, parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+  }
+
   static value(val, type) {
     var res;
 
-    if (val === 'null')
+    if (val === 'null') {
       return null;
+    }
+    else if ((Toolkit.typeOf(val) === 'String') && /.*\(\)/.test(val)) { // Jane function e.g. ends with '()'
+      return val;
+    }
 
     switch (type) {
-      case 'Boolean': {
+      case 'Boolean':
         res = Cast.boolean(val);
-      }
       break;
-      case 'Date': {
+      case 'Date':
         res = Cast.date(val);
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         res = Cast.datetime(val);
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         res = Cast.decimal(val);
-      }
       break;
-      case 'Integer': {
+      case 'Float':
+        res = Cast.float(val);
+      break;
+      case 'Integer':
         res = Cast.integer(val);
-      }
       break;
-      case 'String': {
+      case 'String':
         res = Cast.string(val);
-      }
       break;
-      default: {
+      case 'Time':
+        res = Cast.time(val);
+      break;
+      default:
         throw 'Unsupported attribute type "' + attr.type + '"';
-      }
       break;
     }
 

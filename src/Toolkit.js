@@ -1,28 +1,45 @@
+import Entity from './Entity';
 import Jane from './Jane';
 
 export default class Toolkit {
 
-  static createDirectory(dir) {
+  static createDirectory(path) {
     try {
-      Jane.default.fs.mkdirSync(dir);
+      Jane.default.fs.mkdirSync(path);
     } catch (e) { // One of the parent directory doesn't exist
-      Toolkit.createDirectory(Jane.default.path.dirname(dir)); // Create all the parents recursively
-      Toolkit.createDirectory(dir); // And then the director
+      Toolkit.createDirectory(Jane.default.path.dirname(path)); // Create all the parents recursively
+      Toolkit.createDirectory(path); // And then the director
     }
   }
 
-  static directoryExists(dir) {
+  static directoryExists(path) {
     try {
-      return Jane.default.fs.statSync(dir).isDirectory();
+      return Jane.default.fs.statSync(path).isDirectory();
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static fileExists(path) {
+    try {
+      return Jane.default.fs.statSync(path).isFile();
     } catch (e) {
       return false;
     }
   }
 
   static get ready() {
-    return Jane.default.fs
+    return Jane.default
+      && Jane.default.fs
       && Jane.default.path
       && Jane.default.xml2js;
+  }
+
+  static getLocale() {
+    if (process.env.LANG)
+      return process.env.LANG.split('.')[0].replace('_', '-');
+    else
+      return 'en-US';
   }
 
   static getDirectoryPath(filePath) {
@@ -35,6 +52,19 @@ export default class Toolkit {
 
   static getFileName(filePath) {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
+  }
+
+  static loadEntities(path) {
+    Toolkit.readXMLDirectory(path).forEach(function(xmlFile) {
+      Entity.default.fromXMLFile(xmlFile);
+    });
+  }
+
+  static readXMLDirectory(path) {
+    if (!Toolkit.ready)
+      throw "You must call Jane.init(<params>) first";
+
+    return Jane.default.glob.sync(path + '*.xml');
   }
 
   static readXMLFile(path) {

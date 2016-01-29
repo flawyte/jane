@@ -6,10 +6,13 @@ import Toolkit from './Toolkit';
 export default class Entity {
 
   static add(entity) {
-    if (!Entity.instances)
-      Entity.instances = {};
+    if (!entity)
+      throw 'Given entity can not be null or undefined';
 
-    Entity.instances[entity.name] = entity;
+    if (!Entity.instances)
+      Entity.instances = [];
+
+    Entity.instances.push(entity);
   }
 
   static fromXMLFile(file) {
@@ -26,6 +29,9 @@ export default class Entity {
         }
       }
     }
+    if (obj.doc instanceof Array && obj.doc.length > 0) {
+      ent.doc = obj.doc[0];
+    }
     if (obj.references instanceof Array) {
       for (var refs of obj.references) {
         for (var ref of refs.reference) {
@@ -38,19 +44,29 @@ export default class Entity {
   }
 
   static get(name) {
-    if (!Entity.instances[name]) {
-      if (Toolkit.ready) {
-        Entity.instances[name] = Entity.fromXMLFile(Jane.default.basePath + name + '.xml');
-      }
-      else
-        return name;
+    var entity = Entity.instances.find(function(item) {
+      return (item.name === name);
+    });
+
+    if (!entity && Toolkit.ready) {
+      // Entity.fromXMLFile() instanciates a new Entity object
+      // which automatically adds it to the 'instances' field
+      // so no need to do it again here
+      entity = Entity.fromXMLFile(Jane.default.baseDir + name + '.xml');
     }
 
-    return Entity.instances[name];
+    return entity;
+  }
+
+  static getByPlural(val) {
+    return Entity.instances.find(function(item) {
+      return (item.plural === val);
+    });
   }
 
   constructor(name, plural = null) {
     this.attributes = [];
+    this.doc = null;
     this.name = name;
     this.plural = plural;
     this.references = [];
@@ -59,11 +75,36 @@ export default class Entity {
   }
 
   addAttribute(attr) {
+    if (!attr)
+      throw 'Given attr can not be null or undefined';
+
+    attr.entity = this;
     this.attributes.push(attr);
   }
 
   addReference(ref) {
+    if (!ref)
+      throw 'Given ref can not be null or undefined';
+
     ref.source = this;
     this.references.push(ref);
+  }
+
+  getAttributeByName(name) {
+    if (!name)
+      throw 'Given name can not be null or undefined';
+
+    return this.attributes.find(function(attr) {
+      return (attr.name === name);
+    });
+  }
+
+  getReferenceByAlias(alias) {
+    if (!alias)
+      throw 'Given alias can not be null or undefined';
+
+    return this.references.find(function(ref) {
+      return (ref.alias === alias);
+    });
   }
 }

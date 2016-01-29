@@ -1,12 +1,27 @@
 import AbstractSQLGenerator from './../AbstractSQLGenerator';
-import InsertIntoStatement from './../InsertIntoStatement';
-import Random from './../../Random';
+import Toolkit from './../../Toolkit';
 
 export default class MySQLGenerator extends AbstractSQLGenerator {
 
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     this.name = 'mysql';
+  }
+
+  connectDatabase(name) {
+    return 'USE ' + name + ';';
+  }
+
+  createColumnPrimaryKey(name) {
+    return name + ' INT PRIMARY KEY AUTO_INCREMENT';
+  }
+
+  createDatabase(name) {
+    return 'CREATE DATABASE IF NOT EXISTS ' + name + ';';
+  }
+
+  dropDatabase(name) {
+    return 'DROP DATABASE ' + name + ';';
   }
 
   generate() {
@@ -32,51 +47,69 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
   }
 
   getContent(fileName) {
+    var str = '';
+
     if (~fileName.indexOf('create-database'))
-      return 'CREATE DATABASE IF NOT EXISTS ' + this.options['db-name'] + ';\n'
-        + 'USE ' + this.options['db-name'] + ';\n\n'
-        + super.getContent(fileName);
-    else if (~fileName.indexOf('drop-database'))
-      return 'USE ' + this.options['db-name'] + ';\n\n'
-        + super.getContent(fileName)
-        + 'DROP DATABASE ' + this.options['db-name'] + ';\n';
-    else if (~fileName.indexOf('.sql'))
-      return 'USE ' + this.options['db-name'] + ';\n\n'
-        + super.getContent(fileName);
-    else
-      return super.getContent(fileName);
+      str += this.createDatabase(this.options['db-name']) + '\n';
+    if (~fileName.indexOf('.sql'))
+      str += this.connectDatabase(this.options['db-name']) + '\n\n';
+
+    str += super.getContent(fileName);
+
+    if (~fileName.indexOf('drop-database'))
+      str += '\n' + this.dropDatabase(this.options['db-name']) + '\n';
+
+    return str;
   }
 
   getExecuteScriptContent() {
+    var content = '#!/bin/bash\n\n';
+    var fileName = (this.entities.length === 1) ? 'table-' + this.entities[0].plural.toLowerCase() : 'database';
     var userName = 'root';
 
     if (typeof this.options['user'] === 'string')
       userName = this.options['user'];
 
-    return '#!/bin/bash\n\n'
-      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/drop-database.sql\n'
-      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/create-database.sql\n'
-      + 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/insert-into-database.sql\n';
+    if (this.options.data)
+        content += 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/insert-into-' + fileName +'-default-data.sql';
+    else {
+      if (this.options.drop) {
+        content += 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/drop-' + fileName +'.sql';
+      }
+      if (this.options.create) {
+        content += '\n';
+        content += 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/create-' + fileName +'.sql';
+      }
+      if (this.options['insert-into']) {
+        content += '\n';
+        content += 'mysql -h localhost -u\'' + userName + '\' -p < `pwd`/`dirname $0`/insert-into-' + fileName +'.sql';
+      }
+    }
+
+    return content + '\n';
   }
 
   toSQLType(attr) {
     var res = null;
 
+    if (attr.defaultValueIsFunction) {
+      if (attr.defaultValue === 'DATE()' || attr.defaultValue === 'TIME()')
+        console.log('Warning: MySQL does not allow functions as default values for columns except CURRENT_TIMESTAMP for TIMESTAMP (and DATETIME since MySQL 5.6.5) columns. Therefore, attributes of type ' + attr.type + ' are converted to DATETIME columns.');
+        return 'DATETIME';
+    }
+
     switch (attr.type) {
-      case 'Integer': {
+      case 'Integer':
         res = 'INT';
-      }
       break;
-      case 'String': {
+      case 'String':
         if (attr.maxLength)
           res = 'VARCHAR(' + attr.maxLength + ')';
         else
           res = 'VARCHAR(255)';
-      }
       break;
-      default: {
+      default:
         res = super.toSQLType(attr);
-      }
       break;
     }
 
@@ -87,7 +120,10 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
     var res = null;
 
     if (attr.defaultValueIsFunction) {
-      return super.toSQLValue(attr, createStatement);
+      if (attr.defaultValue !== 'DATE()' && attr.defaultValue !== 'TIME()')
+        return super.toSQLValue(attr, createStatement);
+      else
+        return 'CURRENT_TIMESTAMP';
     }
 
     switch (attr.type) {
@@ -95,25 +131,26 @@ export default class MySQLGenerator extends AbstractSQLGenerator {
         res = String(attr.defaultValue).toUpperCase();
       }
       break;
-      case 'Date': {
+      case 'Date':
         res = attr.defaultValue;
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         res = attr.defaultValue;
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         res = attr.defaultValue;
-      }
       break;
-      case 'Integer': {
+      case 'Float':
         res = attr.defaultValue;
-      }
       break;
-      case 'String': {
+      case 'Integer':
+        res = attr.defaultValue;
+      break;
+      case 'String':
         res = JSON.stringify(attr.defaultValue);
-      }
+      break;
+      case 'Time':
+        res = '"' + new Date(attr.defaultValue).toLocaleTimeString(Toolkit.getLocale(), { hour12: false }) + '"';
       break;
     }
 

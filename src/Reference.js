@@ -18,6 +18,9 @@ export default class Reference {
       Cast.value(obj.$.default, 'Integer') || undefined,
       (obj.$.nullable === 'true'));
 
+    if (obj.$['doc'] !== undefined)
+      attr.doc = obj.$['doc'];
+
     return attr;
   }
 
@@ -25,6 +28,7 @@ export default class Reference {
     this.alias = alias;
     this.attribute = attribute;
     this.defaultValue = ((defaultValue === undefined) && (nullable === true)) ? null : defaultValue;
+    this.doc = null;
     this.entity = entity;
     this.nullable = nullable || (defaultValue === null);
     this.source = source;

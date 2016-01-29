@@ -21,15 +21,90 @@ export default class Random {
 
     var left = Random.integer(0, Math.pow(10, (precision - scale)) - 1);
     var right = Random.integer(0, Math.pow(10, scale) - 1);
-    return Number(left + '.' + right);
+    return parseFloat(left + '.' + right);
+  }
+
+  static float() {
+    return parseFloat(Random.integer(0, 999999) + '.' + Random.integer(0, 999999));
   }
 
   static integer(min = 1, max = 10) {
     return (Math.floor(Math.random() * (max - min + 1)) + min);
   }
 
-  static string() {
-    return (Math.random() + 1).toString(36).slice(2);
+  static string(options = {}) {
+    if (options.nullable && Random.boolean())
+      return null;
+
+    if (!options.genre) {
+      if (options.exactLength)
+        return Jane.randomstring.generate(options.exactLength)
+      else if (options.maxLength && options.minLength)
+        return Jane.randomstring.generate(Random.integer(options.minLength, options.maxLength));
+      else if (options.maxLength)
+        return Jane.randomstring.generate(Random.integer(0, options.maxLength));
+      else if (options.minLength)
+        return Jane.randomstring.generate(
+          Random.integer(
+            options.minLength,
+            options.minLength + Math.pow(Random.integer(), Random.integer())
+          )
+        );
+      else
+        return Jane.chance.string();
+    }
+
+    var res = null;
+
+    switch (options.genre) {
+      case 'address':
+        res = Jane.chance.address();
+      break;
+      case 'city':
+        res = Jane.chance.city();
+      break;
+      case 'country_code':
+        res = Jane.chance.country();
+      break;
+      case 'country':
+        res = Jane.chance.country({ full: true });
+      break;
+      case 'email':
+        res = Jane.chance.email();
+      break;
+      case 'first_name':
+        res = Jane.chance.first();
+      break;
+      case 'last_name':
+        res = Jane.chance.last();
+      break;
+      case 'md5':
+        res = Jane.chance.md5();
+      break;
+      case 'paragraph':
+        res = Jane.chance.paragraph();
+      break;
+      case 'postal_code':
+        res = Jane.chance.string({
+          pool: '0123456789'
+        });
+      break;
+      case 'phone':
+        res = Jane.chance.paragraph();
+      break;
+      case 'sha1':
+        res = Jane.crypto.randomBytes(20).toString('hex');
+      break;
+      case 'word':
+        res = Jane.chance.word();
+      break;
+    }
+
+    return res;
+  }
+
+  static time() {
+    return new Date(0, 0, 0, Random.integer(0, 23), Random.integer(0, 59), Random.integer(0, 59));
   }
 
   static value(attr) {
@@ -42,33 +117,32 @@ export default class Random {
     }
 
     switch (attr.type) {
-      case 'Boolean': {
+      case 'Boolean':
         val = Random.boolean();
-      }
       break;
-      case 'Date': {
+      case 'Date':
         val = Random.date();
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         val = Random.datetime();
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         val = Random.decimal(attr.precision, attr.scale);
-      }
       break;
-      case 'Integer': {
+      case 'Float':
+        val = Random.float();
+      break;
+      case 'Integer':
         val = Random.integer();
-      }
       break;
-      case 'String': {
-        val = Random.string();
-      }
+      case 'String':
+        val = Random.string(attr);
       break;
-      default: {
+      case 'Time':
+        val = Random.time();
+      break;
+      default:
         throw 'Unsupported attribute type "' + attr.type + '"';
-      }
       break;
     }
 

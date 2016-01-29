@@ -1,17 +1,25 @@
 {
   "name": "jane",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "jane": "bin/jane.js"
+  },
   "scripts": {
-    "test": "node_modules/nodeunit/bin/nodeunit tests/units/AttributeTest.js && node_modules/nodeunit/bin/nodeunit tests/units/CastTest.js && node_modules/nodeunit/bin/nodeunit tests/units/EntityTest.js && node_modules/nodeunit/bin/nodeunit tests/units/RandomTest.js && node_modules/nodeunit/bin/nodeunit tests/units/ValidTest.js && node_modules/nodeunit/bin/nodeunit tests/units/InsertIntoStatementTest.js"
+    "test": "bash scripts/npm-test.sh",
+    "test-example1": "bash scripts/npm-test-example1.sh",
+    "test-example2": "bash scripts/npm-test-example2.sh"
   },
   "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "license": "MIT",
   "dependencies": {
+    "chance": "^0.8.0",
+    "country-list": "^0.0.3",
     "glob": "^6.0.1",
     "randexp": "^0.4.2",
-    "traceur": "0.0.93",
+    "randomstring": "^1.1.3",
+    "traceur": "^0.0.96",
     "xml2js": "^0.4.15",
     "yargs": "^3.31.0"
   },

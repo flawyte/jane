@@ -1,12 +1,27 @@
 import AbstractSQLGenerator from './../AbstractSQLGenerator';
-import InsertIntoStatement from './../InsertIntoStatement';
-import Random from './../../Random';
+import Toolkit from './../../Toolkit';
 
 export default class PostgreSQLGenerator extends AbstractSQLGenerator {
 
   constructor(options) {
     super(options);
     this.name = 'postgresql';
+  }
+
+  connectDatabase(name) {
+    return '\\connect ' + name + ';';
+  }
+
+  createColumnPrimaryKey(name) {
+    return name + ' SERIAL PRIMARY KEY';
+  }
+
+  createDatabase(name) {
+    return 'CREATE DATABASE ' + name + ';';
+  }
+
+  dropDatabase(name) {
+    return '\\connect postgres;\nDROP DATABASE ' + name + ';';
   }
 
   escapeColumnName(name) {
@@ -35,27 +50,48 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
   }
 
   getContent(fileName) {
+    var str = '';
+
+    this.options['db-name'] = this.options['db-name'].toLowerCase();
+
     if (~fileName.indexOf('create-database'))
-      return 'CREATE DATABASE ' + this.options['db-name'].toLowerCase() + ';\n'
-        + '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
-        + super.getContent(fileName);
-    else if (~fileName.indexOf('drop-database'))
-      return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
-        + super.getContent(fileName)
-        + '\\connect postgres;\n'
-        + 'DROP DATABASE ' + this.options['db-name'].toLowerCase() + ';\n';
-    else if (~fileName.indexOf('.sql'))
-      return '\\connect ' + this.options['db-name'].toLowerCase() + ';\n\n'
-        + super.getContent(fileName);
-    else
-      return super.getContent(fileName);
+      str += this.createDatabase(this.options['db-name']) + '\n';
+    if (~fileName.indexOf('.sql'))
+      str += this.connectDatabase(this.options['db-name']) + '\n\n';
+
+    str += super.getContent(fileName);
+
+    if (~fileName.indexOf('drop-database'))
+      str += '\n' + this.dropDatabase(this.options['db-name']) + '\n';
+
+    return str;
   }
 
   getExecuteScriptContent() {
-    return '#!/bin/bash\n\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/drop-database.sql\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/create-database.sql\n'
-      + 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-database.sql\n';
+    var content = '#!/bin/bash\n\n';
+    var fileName = (this.entities.length === 1) ? 'table-' + this.entities[0].plural.toLowerCase() : 'database';
+    var userName = 'root';
+
+    if (typeof this.options['user'] === 'string')
+      userName = this.options['user'];
+
+    if (this.options.data)
+        content += 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-' + fileName +'-default-data.sql';
+    else {
+      if (this.options.drop) {
+        content += 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/drop-' + fileName + '.sql';
+      }
+      if (this.options.create) {
+        content += '\n';
+        content += 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/create-' + fileName + '.sql';
+      }
+      if (this.options['insert-into']) {
+        content += '\n';
+        content += 'psql postgres ' + this.options.user + ' < `pwd`/`dirname $0`/insert-into-' + fileName + '.sql';
+      }
+    }
+
+    return content + '\n';
   }
 
   toSQLType(attr) {
@@ -65,20 +101,17 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
       return 'SERIAL';
 
     switch (attr.type) {
-      case 'DateTime': {
+      case 'DateTime':
         res = 'TIMESTAMP';
-      }
       break;
-      case 'String': {
+      case 'String':
         if (attr.maxLength)
           res = 'VARCHAR(' + attr.maxLength + ')';
         else
           res = 'TEXT';
-      }
       break;
-      default: {
+      default:
         res = super.toSQLType(attr);
-      }
       break;
     }
 
@@ -93,29 +126,29 @@ export default class PostgreSQLGenerator extends AbstractSQLGenerator {
     }
 
     switch (attr.type) {
-      case 'Boolean': {
+      case 'Boolean':
         res = String(attr.defaultValue).toUpperCase();
-      }
       break;
-      case 'Date': {
+      case 'Date':
         res = attr.defaultValue;
-      }
       break;
-      case 'DateTime': {
+      case 'DateTime':
         res = attr.defaultValue;
-      }
       break;
-      case 'Decimal': {
+      case 'Decimal':
         res = attr.defaultValue;
-      }
       break;
-      case 'Integer': {
+      case 'Float':
         res = attr.defaultValue;
-      }
       break;
-      case 'String': {
+      case 'Integer':
+        res = attr.defaultValue;
+      break;
+      case 'String':
         res = "'" + attr.defaultValue + "'";
-      }
+      break;
+      case 'Time':
+        res = "'" + new Date(attr.defaultValue).toLocaleTimeString(Toolkit.getLocale(), { hour12: false }) + "'";
       break;
     }
 

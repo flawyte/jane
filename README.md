@@ -27,22 +27,15 @@ into this (for MySQL) :
 CREATE DATABASE IF NOT EXISTS MyDatabaseName;
 USE MyDatabaseName;
 
-CREATE TABLE Labels (
+CREATE TABLE Products (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(25) NOT NULL,
-  color VARCHAR(255) NOT NULL
-);
+  name VARCHAR(63) NOT NULL,
+  price DECIMAL(5,2) NOT NULL,
+  description VARCHAR(1023) NOT NULL,
+  stock INT NOT NULL,
+  category INT NOT NULL,
 
-CREATE TABLE Tasks (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  number INT DEFAULT 800,
-  description VARCHAR(255) DEFAULT "",
-  completed BOOLEAN DEFAULT FALSE,
-  label INT NOT NULL,
-  parent INT DEFAULT NULL,
-
-  FOREIGN KEY (label) REFERENCES Labels (id),
-  FOREIGN KEY (parent) REFERENCES Tasks (id)
+  FOREIGN KEY (category) REFERENCES ProductsCategories (id)
 );
 ```
 
@@ -63,7 +56,7 @@ CREATE TABLE Products (
 
 Jane is RDBMS and programming language agnostic. You can use one of the [generators supported by default](#supported-generators) or write your own generator to generate isolated model classes for a specific programming language, whole APIs or to add support for another RDBMS, everything based only on your data description.
 
-Jane is data-oriented and thus doesn't require any programming knowledge to be used, except knowing XML (or HTML) syntax. However if you want to write your own generator or to modify an existing one, JavaScript (ES6) knowledge is required.
+Jane is an object-oriented method and only requires to know the basics of programming (including XML or HTML) to be used. However if you want to write your own generator or to modify an existing one, JavaScript (ES6) knowledge is required.
 
 ## Installation
 

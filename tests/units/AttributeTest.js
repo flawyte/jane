@@ -1,6 +1,4 @@
-var traceur = require('traceur');
-
-traceur.require.makeDefault(function(filename) {
+require('traceur').require.makeDefault(function(filename) {
   return filename.indexOf('node_modules') === -1;
 });
 
@@ -37,8 +35,10 @@ module.exports = {
 
     obj = {
       '$': {
+        doc: [ 'The entity\'s ID.' ],
         name: 'id',
         type: 'Integer',
+        genre: 'paragraph',
         'primary-key': 'true'
       }
     };
@@ -46,7 +46,8 @@ module.exports = {
 
     assert.equal(undefined, attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
-    assert.equal(false, attr.defaultValueIsRaw);
+    assert.equal('The entity\'s ID.', attr.doc);
+    assert.equal('paragraph', attr.genre);
     assert.equal('id', attr.name);
     assert.equal(false, attr.nullable);
     assert.equal(false, attr.optional);
@@ -66,7 +67,8 @@ module.exports = {
 
     assert.equal(null, attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
-    assert.equal(false, attr.defaultValueIsRaw);
+    assert.equal(null, attr.doc);
+    assert.equal(null, attr.genre);
     assert.equal(3, attr.maxLength);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
@@ -87,7 +89,6 @@ module.exports = {
 
     assert.equal('2012-11-13', attr.defaultValue);
     assert.equal(false, attr.defaultValueIsFunction);
-    assert.equal(false, attr.defaultValueIsRaw);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
     assert.equal(true, attr.optional);
@@ -107,7 +108,6 @@ module.exports = {
 
     assert.equal('DATE()', attr.defaultValue);
     assert.equal(true, attr.defaultValueIsFunction);
-    assert.equal(false, attr.defaultValueIsRaw);
     assert.equal('name', attr.name);
     assert.equal(true, attr.nullable);
     assert.equal(true, attr.optional);
@@ -168,7 +168,7 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
-    attr = new Attribute('completed', 'DateTime');
+    attr = new Attribute('signup_datetime', 'DateTime');
     assert.equal(false, attr.isValueValid(false));
     assert.equal(false, attr.isValueValid(true));
     assert.equal(false, attr.isValueValid('true'));
@@ -180,7 +180,7 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
-    attr = new Attribute('completed', 'Decimal');
+    attr = new Attribute('number', 'Decimal');
     attr.precision = 6;
     attr.scale = 3;
     assert.equal(false, attr.isValueValid(false));
@@ -194,7 +194,19 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
-    attr = new Attribute('completed', 'Integer');
+    attr = new Attribute('number', 'Float');
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(true, attr.isValueValid(123));
+    assert.equal(true, attr.isValueValid(123.456));
+    assert.equal(true, attr.isValueValid(123.456789));
+    assert.equal(false, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
+    attr = new Attribute('number', 'Integer');
     assert.equal(false, attr.isValueValid(false));
     assert.equal(false, attr.isValueValid(true));
     assert.equal(false, attr.isValueValid('true'));
@@ -206,7 +218,7 @@ module.exports = {
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));
 
-    attr = new Attribute('completed', 'String');
+    attr = new Attribute('name', 'String');
     assert.equal(false, attr.isValueValid(false));
     assert.equal(false, attr.isValueValid(true));
     assert.equal(true, attr.isValueValid('true'));
@@ -214,6 +226,18 @@ module.exports = {
     assert.equal(false, attr.isValueValid(123.456));
     assert.equal(false, attr.isValueValid(123.456789));
     assert.equal(false, attr.isValueValid(new Date()));
+    assert.equal(false, attr.isValueValid(null));
+    attr.nullable = true;
+    assert.equal(true, attr.isValueValid(null));
+
+    attr = new Attribute('updated_at', 'Time');
+    assert.equal(false, attr.isValueValid(false));
+    assert.equal(false, attr.isValueValid(true));
+    assert.equal(false, attr.isValueValid('true'));
+    assert.equal(false, attr.isValueValid(123));
+    assert.equal(false, attr.isValueValid(123.456));
+    assert.equal(false, attr.isValueValid(123.456789));
+    assert.equal(true, attr.isValueValid(new Date()));
     assert.equal(false, attr.isValueValid(null));
     attr.nullable = true;
     assert.equal(true, attr.isValueValid(null));

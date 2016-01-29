@@ -6,8 +6,9 @@ export default class Attribute {
   static fromXMLObject(obj) {
     var defaultValue = undefined;
 
-    if (obj.$['default'] !== undefined)
+    if (obj.$['default'] !== undefined) {
       defaultValue = Cast.value(obj.$['default'], obj.$.type);
+    }
 
     var attr = new Attribute(obj.$.name,
       obj.$.type,
@@ -18,11 +19,20 @@ export default class Attribute {
     );
 
     attr.defaultValueIsFunction = ((obj.$['default'] !== undefined) && obj.$['default'].match(/^.*\(\)$/) !== null);
-    attr.defaultValueIsRaw = ((obj.$['default'] !== undefined) && obj.$['default'].startsWith('raw:'));
-    if (obj.$['max-length'] !== undefined)
-      attr.maxLength = Cast.integer(obj.$['max-length']);
-    if (obj.$['min-length'] !== undefined)
-      attr.minLength = Cast.integer(obj.$['min-length']);
+    if (obj.$['doc'] !== undefined)
+      attr.doc = obj.$['doc'];
+    if (obj.$['exact-length'] !== undefined)
+      attr.exactLength = Cast.integer(obj.$['exact-length']);
+    else {
+      if (obj.$['max-length'] !== undefined)
+        attr.maxLength = Cast.integer(obj.$['max-length']);
+      if (obj.$['min-length'] !== undefined)
+        attr.minLength = Cast.integer(obj.$['min-length']);
+    }
+    if (obj.$['genre'] !== undefined)
+      attr.genre = obj.$['genre'];
+    else if (Valid.genre(attr.name)) // If attribute's name is a genre
+      attr.genre = attr.name;
     attr.regex = obj.$.regex;
 
     var matches;
@@ -37,6 +47,9 @@ export default class Attribute {
 
   constructor(name, type, primaryKey = false, unique = false, nullable = false, defaultValue = undefined) {
     this.defaultValue = defaultValue;
+    this.doc = null;
+    this.entity = null;
+    this.genre = null;
     this.name = name;
     this.nullable = primaryKey ? false : ((defaultValue !== undefined) || nullable);
     this.primaryKey = primaryKey;
@@ -87,11 +100,17 @@ export default class Attribute {
       case 'Decimal':
         valid = valid && Valid.decimal(val, this.precision, this.scale);
         break;
+      case 'Float':
+        valid = valid && Valid.float(val);
+        break;
       case 'Integer':
         valid = valid && Valid.integer(val);
         break;
       case 'String':
         valid = valid && Valid.string(val);
+        break;
+      case 'Time':
+        valid = valid && Valid.time(val);
         break;
     }
 

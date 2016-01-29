@@ -2,12 +2,13 @@
  * TODO ✓✗
  * ====
  *
- * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too
- * ✗ XML: Consider adding 'Time' attribute type support (with default value support [ISO-8601])
- * ✗ XML: Consider adding 'Float' attribute type support (with default value support)
+ * ✗ [1] Add Schemas upgrade support
+ * ✗ Default data: for foreign keys columns, allow prefixes like 'name:foobar' that would be converted into (SELECT `primary key column` FROM `referenced table` WHERE name = 'foobar')
+ * ✗ SQL generators: add REGEX support
+ * ✗ SQL generators: add MIN/MAX LENGTH support
+ * ✗ Add regex guessing based on the attribute's name
  * ✗ XML: Add 'length' attribute support for attributes
- * ✗ JS: add support for references
- * ✗ JS: add partial set(object) and all setters
+ * ✗ Attribute: build regex based on constraints attributes and use it alone for checks instead of using other attributes (max-length etc.) too
  */
 
 /*
@@ -20,14 +21,8 @@ require('traceur').require.makeDefault(function(filename) {
 });
 
 var args = require('yargs').argv;
-var fs = require('fs');
-var glob = require('glob');
 var Jane = require('./src/Jane').default;
-var path = require('path');
-var randexp = require('randexp');
 var Toolkit = require('./src/Toolkit').default;
-var util = require('util');
-var xml2js = require('xml2js');
 
 /*
  * Command line parsing
@@ -56,8 +51,7 @@ else
  */
 
 function init() {
-  args.src = __dirname + '/' + args.from;
   var Generator = require('./src/generators/' + generatorName).default;
 
-  Jane.init(fs, new Generator(args), glob, path, randexp, xml2js);
+  Jane.init(require, new Generator(args), process.cwd() + '/');
 }
