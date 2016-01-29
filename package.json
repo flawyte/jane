@@ -1,6 +1,6 @@
 {
   "name": "jane",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "homepage": "https://github.com/flawyte/jane.js",
   "author": "Mickaël Allonneau <mickael.allonneau@gmail.com> (https://flawyte.github.io/)",
   "description": "Jane is an extensible code generator which allows you to generate SQL queries to create, drop and populate your database based on its XML data description.",
