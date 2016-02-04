@@ -52,18 +52,18 @@ export default class Jane {
     }
   }
 
-  static process(args) {
-    if (!args.from) {
+  static process(options) {
+    if (!options.from) {
       Jane.logHelp();
       return;
     }
 
     var gen = Jane.generator;
-    var src = Jane.path.normalize(Jane.workingDir + args.from);
+    var src = Jane.path.normalize(Jane.workingDir + options.from);
 
-    gen.setOptions(args);
+    gen.setOptions(options);
 
-    if (args.data) {
+    if (options.data) {
       var dataSrc;
 
       if (~src.indexOf(/.*\.xml$/)) {
@@ -138,8 +138,8 @@ export default class Jane {
 
     var outputDir;
 
-    if (args.to)
-      outputDir = Jane.workingDir + args.to;
+    if (options.to)
+      outputDir = Jane.workingDir + options.to;
     else
       outputDir = Jane.baseDir + 'generated/' + Jane.generator.name;
 
