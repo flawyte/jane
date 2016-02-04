@@ -13,9 +13,9 @@
     "jane": "bin/jane.js"
   },
   "scripts": {
-    "test": "bash scripts/npm-test.sh",
-    "test-example1": "bash scripts/npm-test-example1.sh",
-    "test-example2": "bash scripts/npm-test-example2.sh"
+    "test": "bash npm-scripts/npm-test.sh",
+    "test-example1": "bash npm-scripts/npm-test-example1.sh",
+    "test-example2": "bash npm-scripts/npm-test-example2.sh"
   },
   "license": "MIT",
   "keywords": [
